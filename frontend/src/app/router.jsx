@@ -7,7 +7,7 @@ import { LoginPage } from "../features/auth/pages/LoginPage";
 import { DashboardPage } from "../features/dashboard/pages/DashboardPage";
 import { ContentLibraryPage } from "../features/content/pages/ContentLibraryPage";
 import { CreateContentPage } from "../features/content/pages/CreateContentPage";
-import { ContentPlaceholderPage } from "../features/content/pages/ContentPlaceholderPage";
+import { ContentDetailPage } from "../features/content/pages/ContentDetailPage";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 function FullPageLoader() {
@@ -61,10 +61,7 @@ export function AppRouter() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/content" element={<ContentLibraryPage />} />
         <Route path="/content/new" element={<CreateContentPage />} />
-        <Route
-          path="/content/:id"
-          element={<ContentPlaceholderPage mode="detail" />}
-        />
+        <Route path="/content/:id" element={<ContentDetailPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

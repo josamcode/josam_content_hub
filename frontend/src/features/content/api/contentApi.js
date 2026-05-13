@@ -16,6 +16,24 @@ export async function createContentItem(payload) {
   return data?.data;
 }
 
+export async function fetchContentItem(id) {
+  const { data } = await api.get(`/content-items/${id}`);
+  return data?.data;
+}
+
+const PATCHABLE_FIELDS = ["title", "category", "hook", "script", "notes", "status"];
+
+export async function updateContentItem(id, payload) {
+  const body = {};
+  for (const key of PATCHABLE_FIELDS) {
+    if (key in payload) {
+      body[key] = payload[key];
+    }
+  }
+  const { data } = await api.patch(`/content-items/${id}`, body);
+  return data?.data;
+}
+
 export async function fetchContentItems({
   page = 1,
   limit = 12,
