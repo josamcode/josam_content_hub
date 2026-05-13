@@ -7,13 +7,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ContentItemStatus {
+  idea
+  scripted
+  recorded
+  edited
+  ready
+  scheduled
+  published
+  failed
+  archived
+}
+
+enum ContentCategory {
+  programming
+  software_engineering
+  business_systems
+  ara_financial
+  portfolio_client_acquisition
+  course_content
+  saas_product_journey
+  personal_brand
+}
+
+enum Platform {
+  youtube
+  instagram
+  facebook
+  tiktok
+}
+
+enum PlatformPostStatus {
+  draft
+  ready
+  scheduled
+  published
+  failed
+  manual_pending
+  manual_done
+}
+
 model User {
-  id           String   @id @default(cuid())
+  id           String        @id @default(cuid())
   name         String
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  email        String        @unique
+  passwordHash String        @map("password_hash")
+  contentItems ContentItem[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model ContentItem {
+  id            String            @id @default(cuid())
+  userId        String            @map("user_id")
+  title         String
+  category      ContentCategory
+  status        ContentItemStatus @default(idea)
+  hook          String?
+  script        String?
+  notes         String?
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  user          User              @relation(fields: [userId], references: [id])
+  platformPosts PlatformPost[]
+
+  @@map("content_items")
+}
+
+model PlatformPost {
+  id              String             @id @default(cuid())
+  contentItemId   String             @map("content_item_id")
+  platform        Platform
+  title           String?
+  caption         String?
+  description     String?
+  hashtags        String[]           @default([])
+  tags            String[]           @default([])
+  status          PlatformPostStatus @default(draft)
+  platformPostUrl String?            @map("platform_post_url")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+  contentItem     ContentItem        @relation(fields: [contentItemId], references: [id])
+
+  @@unique([contentItemId, platform])
+  @@map("platform_posts")
 }
