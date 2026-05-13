@@ -47,6 +47,22 @@ enum PlatformPostStatus {
   manual_done
 }
 
+enum ScheduleStatus {
+  scheduled
+  processing
+  published
+  failed
+  cancelled
+  manual_pending
+  manual_done
+}
+
+enum PublishMode {
+  auto
+  manual
+  reminder
+}
+
 model User {
   id           String        @id @default(cuid())
   name         String
@@ -91,6 +107,7 @@ model PlatformPost {
   createdAt       DateTime           @default(now()) @map("created_at")
   updatedAt       DateTime           @updatedAt @map("updated_at")
   contentItem     ContentItem        @relation(fields: [contentItemId], references: [id])
+  schedule        Schedule?
 
   @@unique([contentItemId, platform])
   @@map("platform_posts")
@@ -113,4 +130,21 @@ model QueueSlot {
   @@index([platform])
   @@index([isActive])
   @@map("queue_slots")
+}
+
+model Schedule {
+  id             String         @id @default(cuid())
+  platformPostId String         @unique @map("platform_post_id")
+  scheduledAt    DateTime       @map("scheduled_at")
+  timezone       String
+  status         ScheduleStatus @default(scheduled)
+  publishMode    PublishMode    @map("publish_mode")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  platformPost   PlatformPost   @relation(fields: [platformPostId], references: [id])
+
+  @@index([scheduledAt])
+  @@index([status])
+  @@index([publishMode])
+  @@map("schedules")
 }
