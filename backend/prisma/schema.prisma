@@ -70,6 +70,14 @@ enum ReminderStatus {
   missed
 }
 
+enum PublishAttemptStatus {
+  success
+  failed
+  skipped
+  manual_completed
+  cancelled
+}
+
 model User {
   id           String        @id @default(cuid())
   name         String
@@ -115,6 +123,7 @@ model PlatformPost {
   updatedAt       DateTime           @updatedAt @map("updated_at")
   contentItem     ContentItem        @relation(fields: [contentItemId], references: [id])
   schedule        Schedule?
+  publishAttempts PublishAttempt[]
 
   @@unique([contentItemId, platform])
   @@map("platform_posts")
@@ -150,6 +159,7 @@ model Schedule {
   updatedAt      DateTime       @updatedAt @map("updated_at")
   platformPost   PlatformPost   @relation(fields: [platformPostId], references: [id])
   reminder       Reminder?
+  publishAttempts PublishAttempt[]
 
   @@index([scheduledAt])
   @@index([status])
@@ -171,4 +181,25 @@ model Reminder {
   @@index([remindAt])
   @@index([status])
   @@map("reminders")
+}
+
+model PublishAttempt {
+  id              String               @id @default(cuid())
+  platformPostId  String               @map("platform_post_id")
+  scheduleId      String?              @map("schedule_id")
+  platform        Platform
+  status          PublishAttemptStatus
+  publishMode     PublishMode          @map("publish_mode")
+  errorMessage    String?              @map("error_message")
+  responsePayload Json?                @map("response_payload")
+  attemptedAt     DateTime             @default(now()) @map("attempted_at")
+  platformPost    PlatformPost         @relation(fields: [platformPostId], references: [id])
+  schedule        Schedule?            @relation(fields: [scheduleId], references: [id])
+
+  @@index([platformPostId])
+  @@index([scheduleId])
+  @@index([platform])
+  @@index([status])
+  @@index([attemptedAt])
+  @@map("publish_attempts")
 }
