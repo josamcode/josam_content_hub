@@ -15,6 +15,11 @@ const envSchema = z.object({
   SEED_USER_NAME: z.string().min(1),
   SEED_USER_EMAIL: z.string().email(),
   SEED_USER_PASSWORD: z.string().min(1),
+  UPLOAD_DIR: z.string().min(1).default("uploads"),
+  PUBLIC_UPLOAD_BASE_URL: z
+    .string()
+    .min(1)
+    .default("http://localhost:5000/uploads"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -36,5 +41,7 @@ module.exports = {
   seedUserName: parsedEnv.data.SEED_USER_NAME,
   seedUserEmail: parsedEnv.data.SEED_USER_EMAIL,
   seedUserPassword: parsedEnv.data.SEED_USER_PASSWORD,
+  uploadDir: parsedEnv.data.UPLOAD_DIR,
+  publicUploadBaseUrl: parsedEnv.data.PUBLIC_UPLOAD_BASE_URL,
   isProduction: parsedEnv.data.NODE_ENV === "production",
 };

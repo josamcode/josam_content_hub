@@ -78,6 +78,13 @@ enum PublishAttemptStatus {
   cancelled
 }
 
+enum MediaAssetType {
+  video
+  thumbnail
+  image
+  attachment
+}
+
 model User {
   id           String        @id @default(cuid())
   name         String
@@ -104,6 +111,7 @@ model ContentItem {
   updatedAt     DateTime          @updatedAt @map("updated_at")
   user          User              @relation(fields: [userId], references: [id])
   platformPosts PlatformPost[]
+  mediaAssets   MediaAsset[]
 
   @@map("content_items")
 }
@@ -202,4 +210,25 @@ model PublishAttempt {
   @@index([status])
   @@index([attemptedAt])
   @@map("publish_attempts")
+}
+
+model MediaAsset {
+  id              String         @id @default(cuid())
+  contentItemId   String         @map("content_item_id")
+  type            MediaAssetType
+  fileUrl         String         @map("file_url")
+  storageKey      String         @map("storage_key")
+  fileName        String         @map("file_name")
+  mimeType        String         @map("mime_type")
+  fileSizeBytes   Int            @map("file_size_bytes")
+  durationSeconds Int?           @map("duration_seconds")
+  width           Int?
+  height          Int?
+  aspectRatio     String?        @map("aspect_ratio")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  contentItem     ContentItem    @relation(fields: [contentItemId], references: [id])
+
+  @@index([contentItemId])
+  @@index([type])
+  @@map("media_assets")
 }
