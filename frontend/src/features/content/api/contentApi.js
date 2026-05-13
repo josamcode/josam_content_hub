@@ -1,5 +1,21 @@
 import { api } from "../../../lib/axios";
 
+export async function createContentItem(payload) {
+  const body = {
+    title: payload.title,
+    category: payload.category,
+  };
+  if (payload.hook) body.hook = payload.hook;
+  if (payload.script) body.script = payload.script;
+  if (payload.notes) body.notes = payload.notes;
+  if (Array.isArray(payload.targetPlatforms) && payload.targetPlatforms.length > 0) {
+    body.targetPlatforms = payload.targetPlatforms;
+  }
+
+  const { data } = await api.post("/content-items", body);
+  return data?.data;
+}
+
 export async function fetchContentItems({
   page = 1,
   limit = 12,
