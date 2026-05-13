@@ -72,7 +72,7 @@ const ICONS = {
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard", enabled: true },
-  { to: "/content", label: "Content Library", icon: "library" },
+  { to: "/content", label: "Content Library", icon: "library", enabled: true },
   { to: "/content/new", label: "Create Content", icon: "create" },
   { to: "/calendar", label: "Calendar", icon: "calendar" },
   { to: "/reminders", label: "Reminders", icon: "reminders" },

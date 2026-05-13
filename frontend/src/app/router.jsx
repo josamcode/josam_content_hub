@@ -5,6 +5,8 @@ import { AuthLayout } from "../layouts/AuthLayout";
 import { Spinner } from "../components/ui/Spinner";
 import { LoginPage } from "../features/auth/pages/LoginPage";
 import { DashboardPage } from "../features/dashboard/pages/DashboardPage";
+import { ContentLibraryPage } from "../features/content/pages/ContentLibraryPage";
+import { ContentPlaceholderPage } from "../features/content/pages/ContentPlaceholderPage";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 function FullPageLoader() {
@@ -56,6 +58,15 @@ export function AppRouter() {
       >
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/content" element={<ContentLibraryPage />} />
+        <Route
+          path="/content/new"
+          element={<ContentPlaceholderPage mode="create" />}
+        />
+        <Route
+          path="/content/:id"
+          element={<ContentPlaceholderPage mode="detail" />}
+        />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
