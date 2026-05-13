@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Build and coverage output
+dist/
+build/
+coverage/
+
+# Prisma local files
+prisma/*.db
+prisma/*.db-journal
+prisma/dev.db*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Runtime/cache files
+.cache/
+tmp/
+temp/
