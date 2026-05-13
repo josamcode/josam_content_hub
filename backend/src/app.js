@@ -12,7 +12,18 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(publicUploadPath, express.static(uploadRoot));
+
+// Uploaded media is public by design in this MVP. Override the default
+// Cross-Origin-Resource-Policy set by helmet so frontends on a different
+// origin can embed <img>/<video> previews without disabling helmet globally.
+app.use(
+  publicUploadPath,
+  (req, res, next) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  },
+  express.static(uploadRoot)
+);
 
 app.use("/api/v1", routes);
 
