@@ -24,7 +24,7 @@ import {
   statusTone,
 } from "../../../lib/format";
 import { ContentDetailSkeleton } from "../components/ContentDetailSkeleton";
-import { MediaPlaceholderSection } from "../components/MediaPlaceholderSection";
+import { MediaUploadSection } from "../../media/components/MediaUploadSection";
 import { PlatformTabs } from "../components/PlatformTabs";
 import { PublishHistorySummary } from "../components/PublishHistorySummary";
 import { useContentItem } from "../hooks/useContentItem";
@@ -301,11 +301,7 @@ export function ContentDetailPage() {
   const submitting = mutation.isPending;
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-      className="flex flex-col gap-8"
-    >
+    <div className="flex flex-col gap-8">
       <PageHeader
         eyebrow="Library / Detail"
         title={data.title || "Untitled"}
@@ -428,9 +424,7 @@ export function ContentDetailPage() {
         </div>
       </Card>
 
-      <Card padding="lg">
-        <MediaPlaceholderSection />
-      </Card>
+      <MediaUploadSection contentItemId={data.id} />
 
       <section>
         <div className="mb-4 flex flex-col gap-1">
@@ -481,16 +475,17 @@ export function ContentDetailPage() {
               Revert
             </Button>
             <Button
-              type="submit"
+              type="button"
               variant="primary"
               size="md"
               loading={submitting}
+              onClick={handleSubmit(onSubmit)}
             >
               {submitting ? "Saving" : "Save changes"}
             </Button>
           </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
