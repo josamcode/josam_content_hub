@@ -27,7 +27,6 @@ import { ContentDetailSkeleton } from "../components/ContentDetailSkeleton";
 import { MediaPlaceholderSection } from "../components/MediaPlaceholderSection";
 import { PlatformTabs } from "../components/PlatformTabs";
 import { PublishHistorySummary } from "../components/PublishHistorySummary";
-import { ScheduleSummary } from "../components/ScheduleSummary";
 import { useContentItem } from "../hooks/useContentItem";
 import { useUpdateContentItem } from "../hooks/useUpdateContentItem";
 
@@ -448,17 +447,6 @@ export function ContentDetailPage() {
         </div>
         <PlatformTabs contentItemId={data.id} />
       </section>
-
-      {Array.isArray(data.schedules) && data.schedules.length > 0 && (
-        <Card padding="lg">
-          <SectionHeading
-            eyebrow="Schedules"
-            title="Schedule summary"
-            description="When this piece is set to go live."
-          />
-          <ScheduleSummary schedules={data.schedules} />
-        </Card>
-      )}
 
       {Array.isArray(data.publishAttempts) && data.publishAttempts.length > 0 && (
         <Card padding="lg">

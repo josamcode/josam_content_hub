@@ -5,13 +5,19 @@ import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
 import { Input } from "../../../../components/ui/Input";
 import { Select } from "../../../../components/ui/Select";
+import { Spinner } from "../../../../components/ui/Spinner";
 import { TagInput } from "../../../../components/ui/TagInput";
 import { Textarea } from "../../../../components/ui/Textarea";
 import { extractErrorMessage } from "../../../../lib/axios";
 import { cn } from "../../../../lib/cn";
 import { formatPlatform, formatStatus, statusTone } from "../../../../lib/format";
+import { useCancelSchedule } from "../../hooks/useCancelSchedule";
+import { useSchedulePlatformPost } from "../../hooks/useSchedulePlatformPost";
+import { useScheduleForPlatformPost } from "../../hooks/useScheduleForPlatformPost";
 import { useUpdatePlatformPost } from "../../hooks/useUpdatePlatformPost";
 import { useValidatePlatformPost } from "../../hooks/useValidatePlatformPost";
+import { ScheduleForm } from "../ScheduleForm";
+import { ScheduleSummary } from "../ScheduleSummary";
 import { CopyButton } from "./CopyButton";
 import { ValidationPanel } from "./ValidationPanel";
 
@@ -207,6 +213,7 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
   };
 
   return (
+    <div className="flex flex-col gap-6">
     <form onSubmit={handleSubmit(handleSave)} noValidate className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
@@ -381,5 +388,217 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
         </div>
       </div>
     </form>
+
+    <SchedulePanel post={post} contentItemId={contentItemId} />
+    </div>
+  );
+}
+
+function SchedulePanel({ post, contentItemId }) {
+  const scheduleQuery = useScheduleForPlatformPost(post);
+  const cachedSchedule = scheduleQuery.data || null;
+
+  const [editing, setEditing] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const [savedAt, setSavedAt] = useState(null);
+  const [validation, setValidation] = useState(null);
+
+  useEffect(() => {
+    if (!savedAt) return;
+    const timer = setTimeout(() => setSavedAt(null), 2500);
+    return () => clearTimeout(timer);
+  }, [savedAt]);
+
+  const handleMutationError = (error) => {
+    const status = error?.response?.status;
+    const errors = error?.response?.data?.errors;
+    if (status === 422 && errors && Array.isArray(errors.warnings)) {
+      setValidation(errors);
+      setFeedback(null);
+    } else {
+      setValidation(null);
+      setFeedback({
+        tone: "error",
+        message: extractErrorMessage(
+          error,
+          "We couldn't save this schedule just now."
+        ),
+      });
+    }
+  };
+
+  const scheduleMutation = useSchedulePlatformPost(
+    { platformPostId: post.id, contentItemId },
+    {
+      onSuccess: () => {
+        setEditing(false);
+        setValidation(null);
+        setFeedback(null);
+        setSavedAt(Date.now());
+      },
+      onError: handleMutationError,
+    }
+  );
+
+  const cancelMutation = useCancelSchedule(
+    {
+      scheduleId: cachedSchedule?.id,
+      platformPostId: post.id,
+      contentItemId,
+    },
+    {
+      onSuccess: () => {
+        setEditing(false);
+        setValidation(null);
+        setFeedback({ tone: "success", message: "Schedule cancelled." });
+      },
+      onError: (error) => {
+        setFeedback({
+          tone: "error",
+          message: extractErrorMessage(
+            error,
+            "We couldn't cancel this schedule just now."
+          ),
+        });
+      },
+    }
+  );
+
+  const hasActiveSchedule =
+    Boolean(cachedSchedule) &&
+    ["scheduled", "manual_pending", "processing"].includes(
+      cachedSchedule.status
+    );
+
+  const handleSubmit = (values) => {
+    setFeedback(null);
+    setValidation(null);
+    scheduleMutation.mutate(values);
+  };
+
+  const handleCancelSchedule = () => {
+    if (!cachedSchedule?.id) return;
+    setFeedback(null);
+    setValidation(null);
+    cancelMutation.mutate();
+  };
+
+  return (
+    <section className="rounded-2xl border border-border bg-canvas/40 p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+            Schedule
+          </p>
+          <h3 className="font-display text-lg leading-tight text-ink">
+            {hasActiveSchedule ? "Currently scheduled" : "Schedule this post"}
+          </h3>
+        </div>
+        {savedAt && (
+          <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
+            Saved
+          </span>
+        )}
+      </div>
+
+      {scheduleQuery.isLoading && hasActiveSchedule === false && (
+        <div className="flex items-center gap-2 text-xs text-muted">
+          <Spinner size="sm" />
+          Loading schedule…
+        </div>
+      )}
+
+      {scheduleQuery.isError && (
+        <div className="mb-3 rounded-xl border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
+            Couldn't load schedule
+          </p>
+          <p className="mt-1">
+            {extractErrorMessage(scheduleQuery.error, "Unexpected error.")}
+          </p>
+        </div>
+      )}
+
+      {feedback && (
+        <div
+          className={cn(
+            "mb-3 rounded-xl border px-3 py-2 text-sm",
+            feedback.tone === "error"
+              ? "border-danger/30 bg-danger/5 text-ink"
+              : "border-emerald-200 bg-emerald-50 text-emerald-700"
+          )}
+        >
+          {feedback.tone === "error" && (
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
+              Schedule failed
+            </p>
+          )}
+          <p className={feedback.tone === "error" ? "mt-1" : undefined}>
+            {feedback.message}
+          </p>
+        </div>
+      )}
+
+      <ValidationPanel result={validation} source="patch" />
+
+      {hasActiveSchedule && !editing && (
+        <div className="mt-3 flex flex-col gap-3">
+          <ScheduleSummary schedule={cachedSchedule} />
+          <p className="text-xs text-muted">
+            Manual reminder will fire at the scheduled time. You can reschedule
+            or cancel anytime.
+          </p>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleCancelSchedule}
+              loading={cancelMutation.isPending}
+              disabled={scheduleMutation.isPending}
+            >
+              {cancelMutation.isPending ? "Cancelling" : "Cancel schedule"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setEditing(true);
+                setFeedback(null);
+                setValidation(null);
+              }}
+              disabled={cancelMutation.isPending}
+            >
+              Reschedule
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {(!hasActiveSchedule || editing) && (
+        <div className="mt-2">
+          <ScheduleForm
+            mode={editing ? "edit" : "create"}
+            schedule={editing ? cachedSchedule : null}
+            isSubmitting={scheduleMutation.isPending}
+            isCancelling={cancelMutation.isPending}
+            onSubmit={handleSubmit}
+            onCancel={
+              editing
+                ? () => {
+                    setEditing(false);
+                    setFeedback(null);
+                    setValidation(null);
+                  }
+                : null
+            }
+            onDelete={editing ? handleCancelSchedule : null}
+            submitLabel={editing ? "Save reschedule" : "Schedule this post"}
+            cancelLabel="Discard"
+          />
+        </div>
+      )}
+    </section>
   );
 }
