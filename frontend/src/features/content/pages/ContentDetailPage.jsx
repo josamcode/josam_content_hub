@@ -25,7 +25,7 @@ import {
 } from "../../../lib/format";
 import { ContentDetailSkeleton } from "../components/ContentDetailSkeleton";
 import { MediaPlaceholderSection } from "../components/MediaPlaceholderSection";
-import { PlatformPostsSummary } from "../components/PlatformPostsSummary";
+import { PlatformTabs } from "../components/PlatformTabs";
 import { PublishHistorySummary } from "../components/PublishHistorySummary";
 import { ScheduleSummary } from "../components/ScheduleSummary";
 import { useContentItem } from "../hooks/useContentItem";
@@ -300,7 +300,6 @@ export function ContentDetailPage() {
   if (!data) return <NotFoundState />;
 
   const submitting = mutation.isPending;
-  const platformPosts = Array.isArray(data.platformPosts) ? data.platformPosts : [];
 
   return (
     <form
@@ -434,14 +433,21 @@ export function ContentDetailPage() {
         <MediaPlaceholderSection />
       </Card>
 
-      <Card padding="lg">
-        <SectionHeading
-          eyebrow="Platforms"
-          title="Platform versions"
-          description="One draft per platform. Full editing comes in a later phase."
-        />
-        <PlatformPostsSummary posts={platformPosts} />
-      </Card>
+      <section>
+        <div className="mb-4 flex flex-col gap-1">
+          <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+            Platforms
+          </span>
+          <h2 className="font-display text-xl leading-tight text-ink">
+            Platform composer
+          </h2>
+          <p className="text-sm text-muted">
+            Tailor copy per platform. Save changes, validate against platform rules,
+            and mark a version as ready when it's set.
+          </p>
+        </div>
+        <PlatformTabs contentItemId={data.id} />
+      </section>
 
       {Array.isArray(data.schedules) && data.schedules.length > 0 && (
         <Card padding="lg">
