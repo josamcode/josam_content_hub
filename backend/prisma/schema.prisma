@@ -53,6 +53,7 @@ model User {
   email        String        @unique
   passwordHash String        @map("password_hash")
   contentItems ContentItem[]
+  queueSlots   QueueSlot[]
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
 
@@ -93,4 +94,23 @@ model PlatformPost {
 
   @@unique([contentItemId, platform])
   @@map("platform_posts")
+}
+
+model QueueSlot {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  platform  Platform
+  dayOfWeek Int      @map("day_of_week")
+  timeOfDay String   @map("time_of_day")
+  timezone  String
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, platform, dayOfWeek, timeOfDay])
+  @@index([userId])
+  @@index([platform])
+  @@index([isActive])
+  @@map("queue_slots")
 }
