@@ -9,6 +9,7 @@ import { ContentLibraryPage } from "../features/content/pages/ContentLibraryPage
 import { CreateContentPage } from "../features/content/pages/CreateContentPage";
 import { ContentDetailPage } from "../features/content/pages/ContentDetailPage";
 import { CalendarPage } from "../features/calendar/pages/CalendarPage";
+import { RemindersPage } from "../features/reminders/pages/RemindersPage";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 function FullPageLoader() {
@@ -64,6 +65,7 @@ export function AppRouter() {
         <Route path="/content/new" element={<CreateContentPage />} />
         <Route path="/content/:id" element={<ContentDetailPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/reminders" element={<RemindersPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

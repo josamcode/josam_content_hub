@@ -75,7 +75,7 @@ const NAV = [
   { to: "/content", label: "Content Library", icon: "library", enabled: true },
   { to: "/content/new", label: "Create Content", icon: "create", enabled: true },
   { to: "/calendar", label: "Calendar", icon: "calendar", enabled: true },
-  { to: "/reminders", label: "Reminders", icon: "reminders" },
+  { to: "/reminders", label: "Reminders", icon: "reminders", enabled: true },
   { to: "/queue-settings", label: "Queue Settings", icon: "queue" },
   { to: "/platform-settings", label: "Platform Settings", icon: "platform" },
   { to: "/publish-logs", label: "Publish Logs", icon: "logs" },
