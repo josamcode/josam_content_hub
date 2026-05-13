@@ -78,7 +78,7 @@ const NAV = [
   { to: "/reminders", label: "Reminders", icon: "reminders", enabled: true },
   { to: "/queue", label: "Queue Settings", icon: "queue", enabled: true },
   { to: "/platform-settings", label: "Platform Settings", icon: "platform" },
-  { to: "/publish-logs", label: "Publish Logs", icon: "logs" },
+  { to: "/publish-logs", label: "Publish Logs", icon: "logs", enabled: true },
 ];
 
 function NavItem({ item }) {
