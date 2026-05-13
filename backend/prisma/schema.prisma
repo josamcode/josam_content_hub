@@ -63,6 +63,13 @@ enum PublishMode {
   reminder
 }
 
+enum ReminderStatus {
+  pending
+  done
+  cancelled
+  missed
+}
+
 model User {
   id           String        @id @default(cuid())
   name         String
@@ -142,9 +149,26 @@ model Schedule {
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
   platformPost   PlatformPost   @relation(fields: [platformPostId], references: [id])
+  reminder       Reminder?
 
   @@index([scheduledAt])
   @@index([status])
   @@index([publishMode])
   @@map("schedules")
+}
+
+model Reminder {
+  id          String         @id @default(cuid())
+  scheduleId  String         @unique @map("schedule_id")
+  title       String
+  message     String
+  remindAt    DateTime       @map("remind_at")
+  status      ReminderStatus @default(pending)
+  createdAt   DateTime       @default(now()) @map("created_at")
+  completedAt DateTime?      @map("completed_at")
+  schedule    Schedule       @relation(fields: [scheduleId], references: [id])
+
+  @@index([remindAt])
+  @@index([status])
+  @@map("reminders")
 }

@@ -21,7 +21,14 @@ const platformPostValidationSelect = {
   description: true,
   hashtags: true,
   tags: true,
+  contentItem: {
+    select: {
+      title: true,
+    },
+  },
 };
+
+const reminderPublishModes = ["manual", "reminder"];
 
 function hasText(value) {
   return typeof value === "string" && value.trim().length > 0;
@@ -125,6 +132,52 @@ function getCalendarRange(query) {
   return { start, end };
 }
 
+function isReminderPublishMode(publishMode) {
+  return reminderPublishModes.includes(publishMode);
+}
+
+function getScheduleStatusForPublishMode(publishMode) {
+  return isReminderPublishMode(publishMode) ? "manual_pending" : "scheduled";
+}
+
+function buildReminderPayload(schedule, platformPost) {
+  const contentTitle = platformPost.contentItem.title;
+
+  return {
+    title: `Publish "${contentTitle}" on ${platformPost.platform}`,
+    message: `Manual publishing reminder for "${contentTitle}" on ${platformPost.platform}. Copy the caption/hashtags and publish it manually.`,
+    remindAt: schedule.scheduledAt,
+    status: "pending",
+    completedAt: null,
+  };
+}
+
+async function upsertPendingReminder(tx, schedule, platformPost) {
+  const reminderPayload = buildReminderPayload(schedule, platformPost);
+
+  return tx.reminder.upsert({
+    where: {
+      scheduleId: schedule.id,
+    },
+    update: reminderPayload,
+    create: {
+      ...reminderPayload,
+      scheduleId: schedule.id,
+    },
+  });
+}
+
+async function cancelReminder(tx, scheduleId) {
+  return tx.reminder.updateMany({
+    where: {
+      scheduleId,
+    },
+    data: {
+      status: "cancelled",
+    },
+  });
+}
+
 async function getOwnedPlatformPost(userId, id) {
   const platformPost = await prisma.platformPost.findFirst({
     where: {
@@ -158,6 +211,18 @@ async function getOwnedSchedule(userId, id) {
         select: {
           id: true,
           status: true,
+          platform: true,
+          contentItem: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      },
+      reminder: {
+        select: {
+          id: true,
+          status: true,
         },
       },
     },
@@ -173,6 +238,7 @@ async function getOwnedSchedule(userId, id) {
 async function saveSchedule(userId, platformPostId, payload) {
   const platformPost = await getOwnedPlatformPost(userId, platformPostId);
   const validationResult = buildPlatformPostValidationResult(platformPost);
+  const nextStatus = getScheduleStatusForPublishMode(payload.publishMode);
 
   if (!validationResult.valid) {
     throw new ApiError(
@@ -191,14 +257,14 @@ async function saveSchedule(userId, platformPostId, payload) {
         scheduledAt: new Date(payload.scheduledAt),
         timezone: payload.timezone,
         publishMode: payload.publishMode,
-        status: "scheduled",
+        status: nextStatus,
       },
       create: {
         platformPostId,
         scheduledAt: new Date(payload.scheduledAt),
         timezone: payload.timezone,
         publishMode: payload.publishMode,
-        status: "scheduled",
+        status: nextStatus,
       },
       select: scheduleSelect,
     });
@@ -208,29 +274,84 @@ async function saveSchedule(userId, platformPostId, payload) {
         id: platformPostId,
       },
       data: {
-        status: "scheduled",
+        status: nextStatus,
       },
     });
+
+    if (isReminderPublishMode(payload.publishMode)) {
+      await upsertPendingReminder(tx, schedule, platformPost);
+    } else {
+      await cancelReminder(tx, schedule.id);
+    }
 
     return schedule;
   });
 }
 
 async function updateSchedule(userId, id, payload) {
-  await getOwnedSchedule(userId, id);
+  const existingSchedule = await getOwnedSchedule(userId, id);
 
   const data = { ...payload };
+  const hasPublishMode = Object.prototype.hasOwnProperty.call(
+    payload,
+    "publishMode"
+  );
+  const hasStatus = Object.prototype.hasOwnProperty.call(payload, "status");
+  const hasScheduledAt = Object.prototype.hasOwnProperty.call(
+    payload,
+    "scheduledAt"
+  );
 
   if (data.scheduledAt) {
     data.scheduledAt = new Date(data.scheduledAt);
   }
 
-  return prisma.schedule.update({
-    where: {
-      id,
-    },
-    data,
-    select: scheduleSelect,
+  if (hasPublishMode && !hasStatus) {
+    data.status = getScheduleStatusForPublishMode(payload.publishMode);
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const schedule = await tx.schedule.update({
+      where: {
+        id,
+      },
+      data,
+      select: scheduleSelect,
+    });
+
+    if (hasPublishMode) {
+      const nextStatus = getScheduleStatusForPublishMode(payload.publishMode);
+
+      await tx.platformPost.update({
+        where: {
+          id: schedule.platformPostId,
+        },
+        data: {
+          status: nextStatus,
+        },
+      });
+
+      if (isReminderPublishMode(payload.publishMode)) {
+        await upsertPendingReminder(tx, schedule, existingSchedule.platformPost);
+      } else {
+        await cancelReminder(tx, schedule.id);
+      }
+    } else if (
+      hasScheduledAt &&
+      existingSchedule.reminder &&
+      existingSchedule.reminder.status !== "done"
+    ) {
+      await tx.reminder.update({
+        where: {
+          scheduleId: schedule.id,
+        },
+        data: {
+          remindAt: schedule.scheduledAt,
+        },
+      });
+    }
+
+    return schedule;
   });
 }
 
@@ -246,6 +367,8 @@ async function cancelSchedule(userId, id) {
         status: "cancelled",
       },
     });
+
+    await cancelReminder(tx, id);
 
     if (["scheduled", "manual_pending"].includes(schedule.platformPost.status)) {
       await tx.platformPost.update({
