@@ -7,6 +7,10 @@ function errorMiddleware(error, req, res, next) {
     message: error.message || "Internal server error",
   };
 
+  if (error.errors) {
+    response.errors = error.errors;
+  }
+
   if (!env.isProduction && error.stack) {
     response.stack = error.stack;
   }
