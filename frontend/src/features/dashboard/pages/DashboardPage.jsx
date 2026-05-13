@@ -1,56 +1,94 @@
-import { Badge } from "../../../components/ui/Badge";
-import { Card, CardDescription, CardTitle } from "../../../components/ui/Card";
+import { Button } from "../../../components/ui/Button";
+import { Card } from "../../../components/ui/Card";
 import { PageHeader } from "../../../components/shared/PageHeader";
+import { extractErrorMessage } from "../../../lib/axios";
 import { useAuth } from "../../auth/hooks/useAuth";
+import { useDashboard } from "../hooks/useDashboard";
+import { DashboardSkeleton } from "../components/DashboardSkeleton";
+import { NeedsAttentionList } from "../components/NeedsAttentionList";
+import { RecentAttemptsList } from "../components/RecentAttemptsList";
+import { ReminderList } from "../components/ReminderList";
+import { SectionCard } from "../components/SectionCard";
+import { StatCard } from "../components/StatCard";
+import { UpcomingPostsList } from "../components/UpcomingPostsList";
 
-const SUMMARY_TILES = [
-  {
-    key: "ideas",
-    label: "Ideas",
-    description: "Sparks waiting to grow into drafts.",
-    tone: "neutral",
-  },
-  {
-    key: "ready",
-    label: "Ready",
-    description: "Polished and waiting for a slot.",
-    tone: "accent",
-  },
-  {
-    key: "scheduled",
-    label: "Scheduled",
-    description: "On the calendar, queued to publish.",
-    tone: "warning",
-  },
-  {
-    key: "published",
-    label: "Published",
-    description: "Out in the world. Out of your head.",
-    tone: "success",
-  },
-];
+function sumValues(record) {
+  if (!record) return 0;
+  return Object.values(record).reduce(
+    (acc, value) => acc + (typeof value === "number" ? value : 0),
+    0
+  );
+}
 
-function SummaryCard({ tile }) {
+function getRefreshLabel(isFetching) {
+  return isFetching ? "Refreshing" : "Refresh";
+}
+
+function ErrorState({ message, onRetry }) {
   return (
-    <Card padding="md" className="flex flex-col gap-5">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-            {tile.label}
-          </p>
-          <p className="mt-3 font-display text-4xl leading-none text-ink">
-            —
-          </p>
-        </div>
-        <Badge tone={tile.tone}>Pending</Badge>
+    <Card padding="lg" className="border-danger/30 bg-danger/5">
+      <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
+        Couldn't load dashboard
+      </p>
+      <p className="mt-2 text-sm text-ink">{message}</p>
+      <div className="mt-4">
+        <Button variant="outline" size="sm" onClick={onRetry}>
+          Try again
+        </Button>
       </div>
-      <p className="text-sm leading-relaxed text-muted">{tile.description}</p>
     </Card>
   );
 }
 
 export function DashboardPage() {
   const { user } = useAuth();
+  const { data, isLoading, isError, error, isFetching, refetch } =
+    useDashboard();
+
+  if (isLoading) return <DashboardSkeleton />;
+
+  if (isError) {
+    return (
+      <div className="flex flex-col gap-6">
+        <PageHeader
+          eyebrow={user?.name ? `Hello, ${user.name.split(" ")[0]}` : "Hello"}
+          title="Dashboard"
+          subtitle="Your content machine today."
+        />
+        <ErrorState
+          message={extractErrorMessage(
+            error,
+            "We couldn't reach the API just now."
+          )}
+          onRetry={() => refetch()}
+        />
+      </div>
+    );
+  }
+
+  const stats = data?.stats || {};
+  const content = stats.contentItems || {};
+  const schedules = stats.schedules || {};
+  const reminders = stats.reminders || {};
+  const publishing = stats.publishing || {};
+
+  const ideasCount = content.idea || 0;
+  const readyCount = content.ready || 0;
+  const scheduledCount =
+    (schedules.scheduled || 0) + (schedules.manualPending || 0);
+  const publishedThisMonth = publishing.publishedOrManualDoneThisMonth || 0;
+  const failedThisMonth = publishing.failedAttemptsThisMonth || 0;
+
+  const draftPlatformCount = stats.platformPosts?.draft || 0;
+  const archivedCount = content.archived || 0;
+
+  const totalInPipeline = sumValues({
+    idea: content.idea,
+    scripted: content.scripted,
+    recorded: content.recorded,
+    edited: content.edited,
+    ready: content.ready,
+  });
 
   return (
     <div className="flex flex-col gap-8">
@@ -58,43 +96,117 @@ export function DashboardPage() {
         eyebrow={user?.name ? `Hello, ${user.name.split(" ")[0]}` : "Hello"}
         title="Dashboard"
         subtitle="Your content machine today."
+        actions={
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            loading={isFetching}
+          >
+            {getRefreshLabel(isFetching)}
+          </Button>
+        }
       />
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {SUMMARY_TILES.map((tile) => (
-          <SummaryCard key={tile.key} tile={tile} />
-        ))}
+        <StatCard
+          label="Ideas"
+          value={ideasCount}
+          helper={
+            totalInPipeline > 0
+              ? `${totalInPipeline} pieces total in the pipeline`
+              : "Fresh sparks waiting to be developed."
+          }
+        />
+        <StatCard
+          label="Ready"
+          value={readyCount}
+          helper={
+            draftPlatformCount > 0
+              ? `${draftPlatformCount} platform drafts still need work`
+              : "All polished — nothing waiting on you to draft."
+          }
+        />
+        <StatCard
+          label="Scheduled"
+          value={scheduledCount}
+          helper={
+            schedules.manualPending
+              ? `${schedules.manualPending} need manual publishing`
+              : "Queued and on the calendar."
+          }
+        />
+        <StatCard
+          accent
+          label="Published this month"
+          value={publishedThisMonth}
+          trend={failedThisMonth > 0 ? `${failedThisMonth} failed` : "On track"}
+          helper={
+            failedThisMonth > 0
+              ? `${failedThisMonth} attempt${failedThisMonth === 1 ? "" : "s"} failed this month.`
+              : "No failed publish attempts this month."
+          }
+        />
       </section>
 
-      <Card padding="lg" className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <CardTitle>What you'll see here next</CardTitle>
-            <CardDescription className="mt-1">
-              Once the dashboard API is wired up, this space will show your real numbers, your reminders for today, and the next pieces moving toward publish.
-            </CardDescription>
-          </div>
-          <Badge tone="accent">Phase 2.2</Badge>
-        </div>
-        <ul className="mt-2 grid grid-cols-1 gap-2 text-sm text-muted sm:grid-cols-2">
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Live counts for ideas, ready, scheduled and published
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Today's reminders surfaced at the top
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Next scheduled content with platform tags
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Quick links into Content Library and Calendar
-          </li>
-        </ul>
-      </Card>
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <SectionCard
+          title="Today's reminders"
+          description="Things you asked yourself to handle today."
+          count={data?.todayReminders?.length}
+          countTone={reminders.pendingToday ? "accent" : "neutral"}
+        >
+          <ReminderList
+            reminders={data?.todayReminders}
+            variant="today"
+          />
+        </SectionCard>
+
+        <SectionCard
+          title="Overdue"
+          description="Slipped past their window — clear these first."
+          count={data?.overdueReminders?.length}
+          countTone={data?.overdueReminders?.length ? "danger" : "neutral"}
+        >
+          <ReminderList
+            reminders={data?.overdueReminders}
+            variant="overdue"
+          />
+        </SectionCard>
+      </section>
+
+      <SectionCard
+        title="Upcoming posts"
+        description="The next pieces moving toward publish."
+        count={data?.upcomingPosts?.length}
+        countTone="neutral"
+      >
+        <UpcomingPostsList posts={data?.upcomingPosts} />
+      </SectionCard>
+
+      <SectionCard
+        title="Needs attention"
+        description="Drafts missing text, ready posts without a slot, failed publishes — fix these to keep moving."
+        count={data?.needsAttention?.length}
+        countTone={data?.needsAttention?.length ? "warning" : "neutral"}
+      >
+        <NeedsAttentionList items={data?.needsAttention} />
+      </SectionCard>
+
+      <SectionCard
+        title="Recent publish attempts"
+        description="Most recent publish actions across every platform."
+        count={data?.recentPublishAttempts?.length}
+        countTone="neutral"
+      >
+        <RecentAttemptsList attempts={data?.recentPublishAttempts} />
+      </SectionCard>
+
+      {archivedCount > 0 && (
+        <p className="text-center text-[11px] uppercase tracking-[0.18em] text-muted">
+          {archivedCount} archived item{archivedCount === 1 ? "" : "s"} hidden from this view
+        </p>
+      )}
     </div>
   );
 }
