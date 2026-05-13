@@ -1,5 +1,6 @@
+import { PlatformIcon } from "../../../components/ui/PlatformIcon";
 import { cn } from "../../../lib/cn";
-import { formatPlatform, platformInitial } from "../utils";
+import { formatPlatform } from "../utils";
 
 const TONES = {
   youtube: "bg-rose-50 text-rose-700 border-rose-200",
@@ -19,9 +20,7 @@ export function PlatformBadge({ platform, className }) {
       )}
       title={formatPlatform(platform)}
     >
-      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-current/10 text-[10px] font-semibold leading-none">
-        {platformInitial(platform)}
-      </span>
+      <PlatformIcon platform={platform} className="h-3.5 w-3.5" />
       {formatPlatform(platform)}
     </span>
   );

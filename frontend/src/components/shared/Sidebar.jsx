@@ -126,7 +126,7 @@ function NavItem({ item }) {
 
 export function Sidebar() {
   return (
-    <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-surface md:flex">
+    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col self-start border-r border-border bg-surface md:flex">
       <div className="flex items-center gap-2 px-5 pt-6 pb-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-canvas">
           <span className="font-display text-base leading-none">J</span>

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
+import { PlatformIcon } from "../../../components/ui/PlatformIcon";
 import { cn } from "../../../lib/cn";
 import { formatPlatform } from "../../../lib/format";
 import { QueueSlotCard } from "./QueueSlotCard";
@@ -43,11 +44,11 @@ export function QueuePlatformSection({ platform, slots }) {
           <span
             aria-hidden="true"
             className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg text-white text-[12px] font-semibold leading-none",
+              "flex h-8 w-8 items-center justify-center rounded-lg text-white",
               dot
             )}
           >
-            {formatPlatform(platform).charAt(0)}
+            <PlatformIcon platform={platform} className="h-4 w-4" />
           </span>
           <div>
             <h2 className="font-display text-xl leading-tight text-ink">

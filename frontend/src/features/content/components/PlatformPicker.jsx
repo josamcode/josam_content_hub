@@ -1,3 +1,4 @@
+import { PlatformIcon } from "../../../components/ui/PlatformIcon";
 import { cn } from "../../../lib/cn";
 import { PLATFORMS, formatPlatform } from "../../../lib/format";
 
@@ -51,9 +52,7 @@ function PlatformToggle({ platform, checked, onToggle }) {
           )}
           aria-hidden="true"
         >
-          <span className="text-[11px] font-semibold leading-none">
-            {formatPlatform(platform).charAt(0)}
-          </span>
+          <PlatformIcon platform={platform} className="h-4 w-4" />
         </span>
         <div>
           <p className="text-sm font-medium text-ink">
