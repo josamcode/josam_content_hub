@@ -2,6 +2,7 @@ const express = require("express");
 
 const authRoutes = require("../modules/auth/auth.routes");
 const contentRoutes = require("../modules/content/content.routes");
+const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
 const healthRoutes = require("./health.routes");
 const platformPostRoutes = require("../modules/platform-posts/platformPost.routes");
 const publishingRoutes = require("../modules/publishing/publishing.routes");
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.use("/auth", authRoutes);
 router.use("/content-items", contentRoutes);
+router.use("/dashboard", dashboardRoutes);
 router.use("/", platformPostRoutes);
 router.use("/", publishingRoutes);
 router.use("/queue-slots", queueSlotRoutes);
