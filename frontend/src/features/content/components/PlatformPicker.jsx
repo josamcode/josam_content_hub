@@ -60,7 +60,7 @@ function PlatformToggle({ platform, checked, onToggle }) {
             {formatPlatform(platform)}
           </p>
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-            {checked ? "Selected" : "Tap to include"}
+            {checked ? "Selected" : "Include?"}
           </p>
         </div>
       </div>

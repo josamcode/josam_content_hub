@@ -8,6 +8,7 @@ import { DashboardPage } from "../features/dashboard/pages/DashboardPage";
 import { ContentLibraryPage } from "../features/content/pages/ContentLibraryPage";
 import { CreateContentPage } from "../features/content/pages/CreateContentPage";
 import { ContentDetailPage } from "../features/content/pages/ContentDetailPage";
+import { CalendarPage } from "../features/calendar/pages/CalendarPage";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 function FullPageLoader() {
@@ -62,6 +63,7 @@ export function AppRouter() {
         <Route path="/content" element={<ContentLibraryPage />} />
         <Route path="/content/new" element={<CreateContentPage />} />
         <Route path="/content/:id" element={<ContentDetailPage />} />
+        <Route path="/calendar" element={<CalendarPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

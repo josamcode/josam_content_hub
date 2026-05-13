@@ -35,7 +35,7 @@ export function StatCard({
         {trend && (
           <span
             className={cn(
-              "rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider",
+              "rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider text-nowrap",
               accent
                 ? "bg-canvas/10 text-canvas/80"
                 : "bg-accent-soft text-accent"

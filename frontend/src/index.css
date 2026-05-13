@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,50&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -16,7 +16,7 @@
   --font-sans:
     "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system,
     Segoe UI, sans-serif;
-  --font-display: "Instrument Serif", "Plus Jakarta Sans", ui-serif, serif;
+  --font-display: "Fraunces", "Plus Jakarta Sans", ui-serif, serif;
 }
 
 @layer base {
@@ -37,7 +37,9 @@
 
   .font-display {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 96, "SOFT" 50;
+    letter-spacing: -0.015em;
   }
 
   ::selection {
