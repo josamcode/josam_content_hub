@@ -14,6 +14,7 @@ import { RemindersPage } from "../features/reminders/pages/RemindersPage";
 import { QueueSettingsPage } from "../features/queueSlots/pages/QueueSettingsPage";
 import { PublishLogsPage } from "../features/publishLogs/pages/PublishLogsPage";
 import { PlatformSettingsPage } from "../features/platformSettings/pages/PlatformSettingsPage";
+import { CategoryDefaultsPage } from "../features/categoryDefaults/pages/CategoryDefaultsPage";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 function FullPageLoader() {
@@ -74,6 +75,7 @@ export function AppRouter() {
         <Route path="/queue" element={<QueueSettingsPage />} />
         <Route path="/publish-logs" element={<PublishLogsPage />} />
         <Route path="/platforms" element={<PlatformSettingsPage />} />
+        <Route path="/category-defaults" element={<CategoryDefaultsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

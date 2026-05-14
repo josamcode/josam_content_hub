@@ -76,6 +76,14 @@ const ICONS = {
       <path d="M9 12h6M9 16h6M9 8h3" />
     </>
   ),
+  categoryDefaults: (
+    <>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h10" />
+      <path d="M17 16l2 2 3-3" />
+    </>
+  ),
 };
 
 const NAV = [
@@ -87,6 +95,7 @@ const NAV = [
   { to: "/reminders", label: "Reminders", icon: "reminders", enabled: true },
   { to: "/queue", label: "Queue Settings", icon: "queue", enabled: true },
   { to: "/platforms", label: "Platform Settings", icon: "platform", enabled: true },
+  { to: "/category-defaults", label: "Category Defaults", icon: "categoryDefaults", enabled: true },
   { to: "/publish-logs", label: "Publish Logs", icon: "logs", enabled: true },
 ];
 
