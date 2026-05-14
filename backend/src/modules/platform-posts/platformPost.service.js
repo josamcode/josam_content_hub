@@ -1,4 +1,7 @@
 const prisma = require("../../config/prisma");
+const {
+  getPlatformSettingDefaultsForPost,
+} = require("../platform-settings/platformSetting.service");
 const platformRules = require("../../rules/platformRules");
 const ApiError = require("../../utils/apiError");
 
@@ -156,11 +159,17 @@ async function createPlatformPost(userId, contentItemId, payload) {
     throw new ApiError(409, "Platform post already exists for this content item");
   }
 
+  const defaults = await getPlatformSettingDefaultsForPost(
+    userId,
+    payload.platform
+  );
+
   try {
     return await prisma.platformPost.create({
       data: {
         contentItemId,
         platform: payload.platform,
+        ...defaults,
       },
       select: platformPostSummarySelect,
     });

@@ -1,4 +1,7 @@
 const prisma = require("../../config/prisma");
+const {
+  getPlatformSettingDefaultsForPost,
+} = require("../platform-settings/platformSetting.service");
 const ApiError = require("../../utils/apiError");
 
 const platformPostSummarySelect = {
@@ -80,8 +83,15 @@ async function createContentItem(userId, payload) {
   };
 
   if (platforms.length > 0) {
+    const platformPostCreates = await Promise.all(
+      platforms.map(async (platform) => ({
+        platform,
+        ...(await getPlatformSettingDefaultsForPost(userId, platform)),
+      }))
+    );
+
     data.platformPosts = {
-      create: platforms.map((platform) => ({ platform })),
+      create: platformPostCreates,
     };
   }
 

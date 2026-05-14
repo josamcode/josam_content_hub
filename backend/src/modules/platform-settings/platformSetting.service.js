@@ -133,10 +133,37 @@ async function updatePlatformSetting(userId, platform, payload) {
   });
 }
 
+async function getPlatformSettingDefaultsForPost(userId, platform) {
+  const setting = await getPlatformSetting(userId, platform);
+  const defaults = {
+    hashtags: [...setting.defaultHashtags],
+    tags: [...setting.defaultTags],
+  };
+
+  if (platform === "youtube") {
+    if (setting.titleTemplate) {
+      defaults.title = setting.titleTemplate;
+    }
+
+    if (setting.descriptionTemplate) {
+      defaults.description = setting.descriptionTemplate;
+    }
+
+    return defaults;
+  }
+
+  if (setting.captionTemplate) {
+    defaults.caption = setting.captionTemplate;
+  }
+
+  return defaults;
+}
+
 module.exports = {
   PLATFORM_ORDER,
   PLATFORM_DEFAULTS,
   listPlatformSettings,
   getPlatformSetting,
   updatePlatformSetting,
+  getPlatformSettingDefaultsForPost,
 };
