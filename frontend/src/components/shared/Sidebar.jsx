@@ -33,6 +33,13 @@ const ICONS = {
       <path d="M4 6V4h12" />
     </>
   ),
+  workflow: (
+    <>
+      <rect x="3" y="4" width="5" height="16" rx="1.5" />
+      <rect x="10" y="4" width="5" height="10" rx="1.5" />
+      <rect x="17" y="4" width="4" height="7" rx="1.5" />
+    </>
+  ),
   create: (
     <>
       <path d="M12 5v14" />
@@ -74,6 +81,7 @@ const ICONS = {
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard", enabled: true },
   { to: "/content", label: "Content Library", icon: "library", enabled: true },
+  { to: "/workflow", label: "Workflow", icon: "workflow", enabled: true },
   { to: "/content/new", label: "Create Content", icon: "create", enabled: true },
   { to: "/calendar", label: "Calendar", icon: "calendar", enabled: true },
   { to: "/reminders", label: "Reminders", icon: "reminders", enabled: true },
@@ -81,6 +89,8 @@ const NAV = [
   { to: "/platforms", label: "Platform Settings", icon: "platform", enabled: true },
   { to: "/publish-logs", label: "Publish Logs", icon: "logs", enabled: true },
 ];
+
+const WORKSPACE_COUNT = 6;
 
 function NavItem({ item }) {
   const location = useLocation();
@@ -152,14 +162,14 @@ export function Sidebar() {
           <div className="px-2 pt-2 pb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
             Workspace
           </div>
-          {NAV.slice(0, 5).map((item) => (
+          {NAV.slice(0, WORKSPACE_COUNT).map((item) => (
             <NavItem key={item.to} item={item} />
           ))}
 
           <div className="mt-4 px-2 pt-2 pb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
             Configuration
           </div>
-          {NAV.slice(5).map((item) => (
+          {NAV.slice(WORKSPACE_COUNT).map((item) => (
             <NavItem key={item.to} item={item} />
           ))}
         </nav>
