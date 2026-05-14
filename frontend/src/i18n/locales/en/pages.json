@@ -349,6 +349,41 @@
         "blockedTitle": "Can't mark this as ready yet",
         "warningTitle": "A few things need attention"
       },
+      "scheduleForm": {
+        "labels": {
+          "date": "Date",
+          "time": "Time",
+          "timezone": "Timezone",
+          "publishMode": "Publish mode"
+        },
+        "publishModes": {
+          "manual": "Manual - I'll publish it myself when reminded",
+          "reminder": "Reminder - just remind me, no auto-publish",
+          "auto": "Auto (when supported)"
+        },
+        "publishModeHint": "Manual reminder will be created for this scheduled time.",
+        "mode": {
+          "create": "Pick a slot to schedule",
+          "reschedule": "Reschedule mode"
+        },
+        "actions": {
+          "schedulePost": "Schedule this post",
+          "saveReschedule": "Save reschedule",
+          "cancelSchedule": "Cancel schedule",
+          "cancelling": "Cancelling",
+          "discard": "Discard"
+        }
+      },
+      "scheduleSummary": {
+        "publishMode": "Publish mode - {{mode}}",
+        "reminder": "Reminder {{status}}",
+        "reminderScheduled": "scheduled",
+        "publishModes": {
+          "manual": "Manual",
+          "reminder": "Reminder",
+          "auto": "Auto"
+        }
+      },
       "footer": {
         "unsaved": "You have unsaved changes"
       },

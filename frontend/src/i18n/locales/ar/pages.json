@@ -349,6 +349,41 @@
         "blockedTitle": "لا يمكن جعله جاهزًا بعد",
         "warningTitle": "هناك بعض الأشياء التي تحتاج انتباهك"
       },
+      "scheduleForm": {
+        "labels": {
+          "date": "التاريخ",
+          "time": "الوقت",
+          "timezone": "المنطقة الزمنية",
+          "publishMode": "طريقة النشر"
+        },
+        "publishModes": {
+          "manual": "يدوي - سأنشره بنفسي عند التذكير",
+          "reminder": "تذكير - ذكّرني فقط، بدون نشر تلقائي",
+          "auto": "تلقائي (عند دعمه)"
+        },
+        "publishModeHint": "سيتم إنشاء تذكير يدوي لهذا الموعد.",
+        "mode": {
+          "create": "اختر موعدًا للجدولة",
+          "reschedule": "وضع إعادة الجدولة"
+        },
+        "actions": {
+          "schedulePost": "جدولة هذا المنشور",
+          "saveReschedule": "حفظ إعادة الجدولة",
+          "cancelSchedule": "إلغاء الجدولة",
+          "cancelling": "جارٍ الإلغاء",
+          "discard": "تجاهل"
+        }
+      },
+      "scheduleSummary": {
+        "publishMode": "طريقة النشر - {{mode}}",
+        "reminder": "تذكير {{status}}",
+        "reminderScheduled": "مجدول",
+        "publishModes": {
+          "manual": "يدوي",
+          "reminder": "تذكير",
+          "auto": "تلقائي"
+        }
+      },
       "footer": {
         "unsaved": "لديك تعديلات غير محفوظة"
       },
