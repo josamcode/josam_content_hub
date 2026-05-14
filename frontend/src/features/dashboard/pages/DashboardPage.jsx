@@ -1,11 +1,15 @@
+import { Link } from "react-router-dom";
+
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
 import { PageHeader } from "../../../components/shared/PageHeader";
 import { extractErrorMessage } from "../../../lib/axios";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { useDashboard } from "../hooks/useDashboard";
+import { ActionCenter } from "../components/ActionCenter";
 import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import { NeedsAttentionList } from "../components/NeedsAttentionList";
+import { PipelineOverview } from "../components/PipelineOverview";
 import { RecentAttemptsList } from "../components/RecentAttemptsList";
 import { ReminderList } from "../components/ReminderList";
 import { SectionCard } from "../components/SectionCard";
@@ -22,6 +26,14 @@ function sumValues(record) {
 
 function getRefreshLabel(isFetching) {
   return isFetching ? "Refreshing" : "Refresh";
+}
+
+function SectionLinkAction({ to, children }) {
+  return (
+    <Button as={Link} to={to} variant="outline" size="sm">
+      {children}
+    </Button>
+  );
 }
 
 function ErrorState({ message, onRetry }) {
@@ -108,6 +120,10 @@ export function DashboardPage() {
         }
       />
 
+      <ActionCenter data={data} />
+
+      <PipelineOverview contentCounts={content} />
+
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Ideas"
@@ -155,6 +171,9 @@ export function DashboardPage() {
           description="Things you asked yourself to handle today."
           count={data?.todayReminders?.length}
           countTone={reminders.pendingToday ? "accent" : "neutral"}
+          action={
+            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
+          }
         >
           <ReminderList
             reminders={data?.todayReminders}
@@ -167,6 +186,12 @@ export function DashboardPage() {
           description="Slipped past their window — clear these first."
           count={data?.overdueReminders?.length}
           countTone={data?.overdueReminders?.length ? "danger" : "neutral"}
+          action={
+            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
+          }
+          className={
+            data?.overdueReminders?.length ? "border-rose-200 bg-rose-50/40" : ""
+          }
         >
           <ReminderList
             reminders={data?.overdueReminders}
@@ -180,6 +205,9 @@ export function DashboardPage() {
         description="The next pieces moving toward publish."
         count={data?.upcomingPosts?.length}
         countTone="neutral"
+        action={
+          <SectionLinkAction to="/calendar">Open calendar</SectionLinkAction>
+        }
       >
         <UpcomingPostsList posts={data?.upcomingPosts} />
       </SectionCard>
@@ -189,6 +217,9 @@ export function DashboardPage() {
         description="Drafts missing text, ready posts without a slot, failed publishes — fix these to keep moving."
         count={data?.needsAttention?.length}
         countTone={data?.needsAttention?.length ? "warning" : "neutral"}
+        action={
+          <SectionLinkAction to="/workflow">Open workflow</SectionLinkAction>
+        }
       >
         <NeedsAttentionList items={data?.needsAttention} />
       </SectionCard>
@@ -198,6 +229,11 @@ export function DashboardPage() {
         description="Most recent publish actions across every platform."
         count={data?.recentPublishAttempts?.length}
         countTone="neutral"
+        action={
+          <SectionLinkAction to="/publish-logs">
+            Open publish logs
+          </SectionLinkAction>
+        }
       >
         <RecentAttemptsList attempts={data?.recentPublishAttempts} />
       </SectionCard>
