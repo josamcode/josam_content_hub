@@ -86,14 +86,15 @@ enum MediaAssetType {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  name         String
-  email        String        @unique
-  passwordHash String        @map("password_hash")
-  contentItems ContentItem[]
-  queueSlots   QueueSlot[]
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  passwordHash     String            @map("password_hash")
+  contentItems     ContentItem[]
+  queueSlots       QueueSlot[]
+  platformSettings PlatformSetting[]
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -210,6 +211,29 @@ model PublishAttempt {
   @@index([status])
   @@index([attemptedAt])
   @@map("publish_attempts")
+}
+
+model PlatformSetting {
+  id                  String      @id @default(cuid())
+  userId              String      @map("user_id")
+  platform            Platform
+  isEnabled           Boolean     @default(true) @map("is_enabled")
+  defaultPublishMode  PublishMode @default(manual) @map("default_publish_mode")
+  defaultHashtags     String[]    @default([]) @map("default_hashtags")
+  defaultTags         String[]    @default([]) @map("default_tags")
+  captionTemplate     String?     @map("caption_template")
+  titleTemplate       String?     @map("title_template")
+  descriptionTemplate String?     @map("description_template")
+  notes               String?
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
+  user                User        @relation(fields: [userId], references: [id])
+
+  @@unique([userId, platform])
+  @@index([userId])
+  @@index([platform])
+  @@index([isEnabled])
+  @@map("platform_settings")
 }
 
 model MediaAsset {
