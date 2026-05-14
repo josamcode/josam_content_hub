@@ -11,6 +11,7 @@ import { Textarea } from "../../../../components/ui/Textarea";
 import { extractErrorMessage } from "../../../../lib/axios";
 import { cn } from "../../../../lib/cn";
 import { formatPlatform, formatStatus, statusTone } from "../../../../lib/format";
+import { useApplyPlatformDefaults } from "../../hooks/useApplyPlatformDefaults";
 import { useCancelSchedule } from "../../hooks/useCancelSchedule";
 import { useSchedulePlatformPost } from "../../hooks/useSchedulePlatformPost";
 import { useScheduleForPlatformPost } from "../../hooks/useScheduleForPlatformPost";
@@ -134,12 +135,21 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
   const [savedAt, setSavedAt] = useState(null);
   const [validation, setValidation] = useState(null);
   const [validationSource, setValidationSource] = useState(null);
+  const [defaultsError, setDefaultsError] = useState(null);
+  const [defaultsAppliedAt, setDefaultsAppliedAt] = useState(null);
+  const [confirmingOverwrite, setConfirmingOverwrite] = useState(false);
 
   useEffect(() => {
     if (!savedAt) return;
     const timer = setTimeout(() => setSavedAt(null), 2500);
     return () => clearTimeout(timer);
   }, [savedAt]);
+
+  useEffect(() => {
+    if (!defaultsAppliedAt) return;
+    const timer = setTimeout(() => setDefaultsAppliedAt(null), 3000);
+    return () => clearTimeout(timer);
+  }, [defaultsAppliedAt]);
 
   const updateMutation = useUpdatePlatformPost(
     { id: post.id, contentItemId },
@@ -167,6 +177,26 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
     }
   );
 
+  const applyDefaultsMutation = useApplyPlatformDefaults(
+    { id: post.id, contentItemId },
+    {
+      onSuccess: (updatedPost) => {
+        setDefaultsError(null);
+        setSubmitError(null);
+        setConfirmingOverwrite(false);
+        setDefaultsAppliedAt(Date.now());
+        if (updatedPost) {
+          reset(toDefaultValues(updatedPost, fields));
+        }
+      },
+      onError: (error) => {
+        setDefaultsError(
+          extractErrorMessage(error, "We couldn't apply defaults just now.")
+        );
+      },
+    }
+  );
+
   const validateMutation = useValidatePlatformPost(post.id, {
     onSuccess: (result) => {
       setValidation(result);
@@ -182,6 +212,22 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
 
   const submitting = updateMutation.isPending;
   const validating = validateMutation.isPending;
+  const applyingDefaults = applyDefaultsMutation.isPending;
+
+  const handleApplyDefaults = ({ overwrite }) => {
+    setDefaultsError(null);
+    setSubmitError(null);
+    applyDefaultsMutation.mutate({ overwrite });
+  };
+
+  const handleStartOverwrite = () => {
+    setDefaultsError(null);
+    setConfirmingOverwrite(true);
+  };
+
+  const handleCancelOverwrite = () => {
+    setConfirmingOverwrite(false);
+  };
 
   const handleSave = async (values) => {
     setSubmitError(null);
@@ -259,6 +305,18 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
           <p className="mt-1">{submitError}</p>
         </div>
       )}
+
+      <DefaultsPanel
+        isDirty={isDirty}
+        confirmingOverwrite={confirmingOverwrite}
+        applying={applyingDefaults}
+        appliedAt={defaultsAppliedAt}
+        error={defaultsError}
+        onFillEmpty={() => handleApplyDefaults({ overwrite: false })}
+        onStartOverwrite={handleStartOverwrite}
+        onConfirmOverwrite={() => handleApplyDefaults({ overwrite: true })}
+        onCancelOverwrite={handleCancelOverwrite}
+      />
 
       <ValidationPanel result={validation} source={validationSource} />
 
@@ -390,6 +448,111 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
     </form>
 
     <SchedulePanel post={post} contentItemId={contentItemId} />
+    </div>
+  );
+}
+
+function DefaultsPanel({
+  isDirty,
+  confirmingOverwrite,
+  applying,
+  appliedAt,
+  error,
+  onFillEmpty,
+  onStartOverwrite,
+  onConfirmOverwrite,
+  onCancelOverwrite,
+}) {
+  const disabledReason = isDirty
+    ? "Save or revert unsaved changes before applying defaults."
+    : null;
+
+  return (
+    <div className="rounded-xl border border-border bg-canvas/40 px-4 py-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+            Platform defaults
+          </p>
+          <p className="mt-0.5 text-sm text-ink">
+            Apply your saved platform settings defaults to this post.
+          </p>
+          {disabledReason && (
+            <p className="mt-1 text-xs text-muted">{disabledReason}</p>
+          )}
+        </div>
+
+        {!confirmingOverwrite ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onFillEmpty}
+              loading={applying}
+              disabled={applying || isDirty}
+              title={disabledReason || undefined}
+            >
+              {applying ? "Applying" : "Fill empty fields"}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onStartOverwrite}
+              disabled={applying || isDirty}
+              title={disabledReason || undefined}
+            >
+              Overwrite with defaults
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onCancelOverwrite}
+              disabled={applying}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={onConfirmOverwrite}
+              loading={applying}
+              disabled={applying}
+            >
+              {applying ? "Overwriting" : "Overwrite"}
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {confirmingOverwrite && (
+        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          This will replace current title, caption, description, tags, and
+          hashtags with your saved platform defaults. Status, schedule, and
+          publish history are not changed.
+        </p>
+      )}
+
+      {error && (
+        <div className="mt-3 rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
+            Couldn't apply defaults
+          </p>
+          <p className="mt-1">{error}</p>
+        </div>
+      )}
+
+      {appliedAt && !error && (
+        <p className="mt-3 inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
+          Platform defaults applied.
+        </p>
+      )}
     </div>
   );
 }

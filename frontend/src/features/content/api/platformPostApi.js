@@ -32,3 +32,10 @@ export async function validatePlatformPost(id) {
   const { data } = await api.post(`/platform-posts/${id}/validate`);
   return data?.data;
 }
+
+export async function applyPlatformDefaults(id, { overwrite = false } = {}) {
+  const { data } = await api.post(`/platform-posts/${id}/apply-defaults`, {
+    overwrite: !!overwrite,
+  });
+  return data?.data;
+}
