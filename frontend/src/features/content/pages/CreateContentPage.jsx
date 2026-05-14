@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import { Select } from "../../../components/ui/Select";
 import { Textarea } from "../../../components/ui/Textarea";
 import { PageHeader } from "../../../components/shared/PageHeader";
 import { extractErrorMessage } from "../../../lib/axios";
+import { cn } from "../../../lib/cn";
 import {
   CONTENT_CATEGORIES,
   PLATFORMS,
@@ -59,6 +60,84 @@ function ArrowLeftIcon() {
       <path d="M19 12H5" />
       <path d="m11 19-7-7 7-7" />
     </svg>
+  );
+}
+
+function ChevronIcon({ open }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={cn(
+        "shrink-0 text-muted transition-transform duration-150",
+        open ? "rotate-180" : "rotate-0"
+      )}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function CollapsibleCard({
+  title,
+  description,
+  meta,
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
+  children,
+}) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = controlledOpen !== undefined;
+  const isOpen = isControlled ? controlledOpen : internalOpen;
+  const reactId = useId();
+  const contentId = `${reactId}-content`;
+
+  const toggle = () => {
+    const next = !isOpen;
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
+
+  return (
+    <Card padding="none" className="overflow-hidden">
+      <button
+        type="button"
+        onClick={toggle}
+        aria-expanded={isOpen}
+        aria-controls={contentId}
+        className={cn(
+          "flex w-full items-start justify-between gap-3 px-5 py-4 text-left transition",
+          "hover:bg-canvas/40",
+          isOpen ? "border-b border-border bg-canvas/30" : ""
+        )}
+      >
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+            {title}
+          </p>
+          {description && (
+            <p className="mt-0.5 text-sm text-ink">{description}</p>
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {meta}
+          <ChevronIcon open={isOpen} />
+        </div>
+      </button>
+      {isOpen && (
+        <div id={contentId} className="px-5 py-5">
+          {children}
+        </div>
+      )}
+    </Card>
   );
 }
 
@@ -118,16 +197,22 @@ function GuidanceItem({ label, children }) {
   );
 }
 
-function CategoryGuidancePanel({ categoryDefault }) {
+function CategoryGuidancePanel({ categoryDefault, compact = false }) {
   if (!categoryDefault) return null;
 
   return (
-    <Card padding="lg">
-      <SectionHeading
-        eyebrow="Category guidance"
-        title={formatCategory(categoryDefault.category)}
-        description="Use these defaults as direction while drafting."
-      />
+    <Card padding={compact ? "md" : "lg"}>
+      <div className="mb-3 flex flex-col gap-1">
+        <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+          Category guidance
+        </span>
+        <h2 className="font-display text-base leading-tight text-ink">
+          {formatCategory(categoryDefault.category)}
+        </h2>
+        <p className="text-xs text-muted">
+          Defaults you can lean on while drafting.
+        </p>
+      </div>
 
       <div className="flex flex-col gap-3">
         <GuidanceItem label="Goal">
@@ -153,10 +238,35 @@ function CategoryGuidancePanel({ categoryDefault }) {
   );
 }
 
+function WhatHappensNextCard() {
+  return (
+    <Card padding="md" className="bg-canvas/40">
+      <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+        What happens next
+      </p>
+      <ul className="mt-3 flex flex-col gap-2 text-sm text-ink">
+        <li className="flex gap-2">
+          <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink" />
+          <span>A new <span className="font-medium">Content Item</span> is created in your library.</span>
+        </li>
+        <li className="flex gap-2">
+          <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink" />
+          <span>For each selected platform, a draft <span className="font-medium">Platform Post</span> is spun up.</span>
+        </li>
+        <li className="flex gap-2">
+          <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink" />
+          <span>From the details page you can upload media, refine captions, and schedule.</span>
+        </li>
+      </ul>
+    </Card>
+  );
+}
+
 export function CreateContentPage() {
   const navigate = useNavigate();
   const [submitError, setSubmitError] = useState(null);
   const [targetPlatformsTouched, setTargetPlatformsTouched] = useState(false);
+  const [platformsOpen, setPlatformsOpen] = useState(false);
   const categoryDefaultsQuery = useCategoryDefaults();
 
   const {
@@ -181,6 +291,10 @@ export function CreateContentPage() {
 
   const hookValue = watch("hook") || "";
   const selectedCategory = watch("category");
+  const watchedPlatforms = watch("targetPlatforms") || [];
+  const watchedScript = watch("script") || "";
+  const watchedNotes = watch("notes") || "";
+
   const categoryDefaults = Array.isArray(categoryDefaultsQuery.data)
     ? categoryDefaultsQuery.data
     : [];
@@ -205,6 +319,7 @@ export function CreateContentPage() {
       shouldDirty: true,
       shouldValidate: true,
     });
+    setPlatformsOpen(true);
   }, [
     getValues,
     hasDefaultPlatforms,
@@ -244,12 +359,15 @@ export function CreateContentPage() {
   };
 
   const submitting = isSubmitting || mutation.isPending;
+  const platformsCount = watchedPlatforms.length;
+  const scriptNotesCount =
+    (hasValue(watchedScript) ? 1 : 0) + (hasValue(watchedNotes) ? 1 : 0);
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="flex flex-col gap-8"
+      className="flex flex-col gap-6"
     >
       <PageHeader
         eyebrow="New"
@@ -272,13 +390,13 @@ export function CreateContentPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr_1fr]">
-        <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div className="flex min-w-0 flex-col gap-4">
           <Card padding="lg">
             <SectionHeading
-              eyebrow="Basics"
+              eyebrow="Quick idea"
               title="What is this piece?"
-              description="A title and a category are required. Everything else can grow with the idea."
+              description="A title and a category are all you need. Everything else can grow with the idea."
             />
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_1fr]">
@@ -316,15 +434,27 @@ export function CreateContentPage() {
             </div>
           </Card>
 
-          <CategoryGuidancePanel categoryDefault={selectedCategoryDefault} />
+          {selectedCategoryDefault && (
+            <div className="lg:hidden">
+              <CategoryGuidancePanel
+                categoryDefault={selectedCategoryDefault}
+                compact
+              />
+            </div>
+          )}
 
-          <Card padding="lg">
-            <SectionHeading
-              eyebrow="Body"
-              title="Script & notes"
-              description="Rough drafts welcome — both fields are optional and you can refine them later."
-            />
-
+          <CollapsibleCard
+            title="Script & notes"
+            description="Optional — outline, full script, references, links."
+            defaultOpen={hasValue(watchedScript) || hasValue(watchedNotes)}
+            meta={
+              scriptNotesCount > 0 ? (
+                <span className="inline-flex items-center rounded-md border border-border bg-canvas px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-muted">
+                  {scriptNotesCount === 2 ? "Both filled" : "Filled"}
+                </span>
+              ) : null
+            }
+          >
             <div className="flex flex-col gap-4">
               <Textarea
                 label="Script"
@@ -341,16 +471,25 @@ export function CreateContentPage() {
                 {...register("notes")}
               />
             </div>
-          </Card>
-        </div>
+          </CollapsibleCard>
 
-        <div className="flex flex-col gap-6">
-          <Card padding="lg">
-            <SectionHeading
-              eyebrow="Platforms"
-              title="Where will this live?"
-              description="Pick the platforms you plan to publish on. Each selected platform creates a draft you can refine later."
-            />
+          <CollapsibleCard
+            title="Target platforms"
+            description="Pick where this will live. Each platform gets its own draft."
+            open={platformsOpen}
+            onOpenChange={setPlatformsOpen}
+            meta={
+              platformsCount > 0 ? (
+                <span className="inline-flex items-center rounded-md border border-border bg-canvas px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-muted">
+                  {platformsCount} selected
+                </span>
+              ) : (
+                <span className="inline-flex items-center rounded-md border border-border bg-canvas px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-muted">
+                  Optional
+                </span>
+              )
+            }
+          >
             <Controller
               control={control}
               name="targetPlatforms"
@@ -383,21 +522,30 @@ export function CreateContentPage() {
                 </p>
               </div>
             )}
-          </Card>
+          </CollapsibleCard>
+        </div>
 
-          <Card padding="lg" className="bg-ink text-canvas">
-            <div className="flex items-center gap-2">
-              <Badge tone="accent">Tip</Badge>
-              <span className="font-display text-base text-canvas">Stay loose</span>
+        <div className="flex flex-col gap-4">
+          {selectedCategoryDefault ? (
+            <div className="hidden lg:block">
+              <CategoryGuidancePanel categoryDefault={selectedCategoryDefault} />
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-canvas/70">
-              You don't need a polished script to save this. Capture the spark, set a category, and pick platforms when you're ready. Status starts as <span className="text-canvas">Idea</span> — promote it as the piece matures.
-            </p>
-          </Card>
+          ) : (
+            <Card padding="md" className="hidden bg-canvas/40 lg:block">
+              <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+                Category guidance
+              </p>
+              <p className="mt-2 text-sm text-muted">
+                Pick a category to see saved goal, hook style, caption style, and default platforms.
+              </p>
+            </Card>
+          )}
+
+          <WhatHappensNextCard />
         </div>
       </div>
 
-      <div className="sticky bottom-0 -mx-6 mt-4 border-t border-border bg-canvas/95 px-6 py-4 backdrop-blur md:-mx-10 md:px-10">
+      <div className="sticky bottom-0 -mx-6 mt-2 border-t border-border bg-canvas/95 px-6 py-4 backdrop-blur md:-mx-10 md:px-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
             New item will be saved as an idea
