@@ -163,15 +163,20 @@ export function ReminderCard({ reminder }) {
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
-          <Button
-            as={Link}
-            to={`/content/${contentItem.id || ""}`}
-            variant="outline"
-            size="sm"
-            disabled={!contentItem.id}
-          >
-            Open content
-          </Button>
+          {contentItem.id ? (
+            <Button
+              as={Link}
+              to={`/content/${contentItem.id}`}
+              variant="outline"
+              size="sm"
+            >
+              Open content
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" disabled>
+              Open content
+            </Button>
+          )}
         </div>
 
         {showForm && (

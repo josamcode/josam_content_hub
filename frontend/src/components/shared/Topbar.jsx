@@ -59,6 +59,9 @@ export function Topbar() {
         <div ref={menuRef} className="relative">
           <button
             type="button"
+            aria-label="Open account menu"
+            aria-expanded={menuOpen}
+            aria-haspopup="menu"
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
               "flex items-center gap-2 rounded-full border border-border bg-surface px-2 py-1 text-sm transition hover:bg-canvas",
@@ -74,7 +77,10 @@ export function Topbar() {
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-surface shadow-lg">
+            <div
+              className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
+              role="menu"
+            >
               <div className="border-b border-border px-3 py-2.5">
                 <p className="truncate text-sm text-ink">{user?.name}</p>
                 <p className="truncate text-xs text-muted">{user?.email}</p>
@@ -85,6 +91,7 @@ export function Topbar() {
                   size="sm"
                   className="w-full justify-start"
                   onClick={handleLogout}
+                  role="menuitem"
                 >
                   Sign out
                 </Button>

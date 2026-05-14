@@ -51,7 +51,9 @@ export const Button = forwardRef(function Button(
       {...props}
     >
       {loading && <Spinner size="sm" className="text-current" />}
-      <span className={cn(loading && "opacity-90") + "flex items-center gap-2"}>{children}</span>
+      <span className={cn("flex items-center gap-2", loading && "opacity-90")}>
+        {children}
+      </span>
     </Component>
   );
 });

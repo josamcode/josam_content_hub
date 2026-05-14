@@ -25,6 +25,8 @@ export function useSchedulePlatformPost(
         queryKey: ["content-item", contentItemId],
       });
       queryClient.invalidateQueries({ queryKey: ["content-items"] });
+      queryClient.invalidateQueries({ queryKey: ["calendar"] });
+      queryClient.invalidateQueries({ queryKey: ["reminders"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       if (options.onSuccess) options.onSuccess(schedule, variables, context);
     },

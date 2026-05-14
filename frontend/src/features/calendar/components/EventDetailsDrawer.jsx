@@ -71,6 +71,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
     mutationFn: () => cancelSchedule(event?.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["calendar"] });
+      queryClient.invalidateQueries({ queryKey: ["reminders"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["content-items"] });
       if (event?.contentItemId) {
@@ -267,16 +268,27 @@ export function EventDetailsDrawer({ event, open, onClose }) {
               )}
 
               <div className="flex items-center gap-2">
-                <Button
-                  as={Link}
-                  to={`/content/${event.contentItemId}`}
-                  variant="primary"
-                  size="md"
-                  className="flex-1"
-                  onClick={onClose}
-                >
-                  Open content
-                </Button>
+                {event.contentItemId ? (
+                  <Button
+                    as={Link}
+                    to={`/content/${event.contentItemId}`}
+                    variant="primary"
+                    size="md"
+                    className="flex-1"
+                    onClick={onClose}
+                  >
+                    Open content
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    className="flex-1"
+                    disabled
+                  >
+                    Open content
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="ghost"

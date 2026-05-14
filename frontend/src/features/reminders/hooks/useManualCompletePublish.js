@@ -13,6 +13,8 @@ export function useManualCompletePublish(options = {}) {
       queryClient.invalidateQueries({ queryKey: ["calendar"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       queryClient.invalidateQueries({ queryKey: ["content-items"] });
+      queryClient.invalidateQueries({ queryKey: ["content-item"] });
+      queryClient.invalidateQueries({ queryKey: ["platform-posts"] });
       queryClient.invalidateQueries({ queryKey: ["publish-attempts"] });
       if (variables?.platformPostId) {
         queryClient.invalidateQueries({

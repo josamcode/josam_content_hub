@@ -14,6 +14,7 @@ import {
   setAuthToken,
   setUnauthorizedHandler,
 } from "../../../lib/axios";
+import { queryClient } from "../../../app/queryClient";
 import { fetchCurrentUser, loginRequest } from "../api/authApi";
 
 const AuthContext = createContext(null);
@@ -26,6 +27,7 @@ export function AuthProvider({ children }) {
   const handleUnauthorized = useCallback(() => {
     setUser(null);
     setStatus("unauthenticated");
+    queryClient.clear();
     if (typeof unauthorizedCallbackRef.current === "function") {
       unauthorizedCallbackRef.current();
     }
@@ -66,6 +68,7 @@ export function AuthProvider({ children }) {
     if (!result?.token) {
       throw new Error("Invalid server response");
     }
+    queryClient.clear();
     setAuthToken(result.token);
     setUser(result.user);
     setStatus("authenticated");
@@ -76,6 +79,7 @@ export function AuthProvider({ children }) {
     setAuthToken(null);
     setUser(null);
     setStatus("unauthenticated");
+    queryClient.clear();
   }, []);
 
   const registerUnauthorizedCallback = useCallback((cb) => {
