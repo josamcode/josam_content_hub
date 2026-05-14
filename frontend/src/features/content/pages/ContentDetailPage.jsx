@@ -171,6 +171,160 @@ function HeaderMeta({ item }) {
   );
 }
 
+function SummaryRow({ label, children }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted">
+        {label}
+      </span>
+      <div className="text-sm text-ink">{children}</div>
+    </div>
+  );
+}
+
+const PLATFORM_POST_STATUS_TONE = {
+  draft: "bg-canvas text-muted border border-border",
+  ready: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  scheduled: "bg-sky-50 text-sky-700 border border-sky-200",
+  manual_pending: "bg-amber-50 text-amber-800 border border-amber-200",
+  processing: "bg-amber-50 text-amber-800 border border-amber-200",
+  published: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  manual_done: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  failed: "bg-rose-50 text-rose-700 border border-rose-200",
+};
+
+function SummaryRail({
+  item,
+  watchedStatus,
+  watchedCategory,
+  isDirty,
+  submitting,
+  onSave,
+  onRevert,
+}) {
+  const platformPosts = Array.isArray(item.platformPosts)
+    ? item.platformPosts
+    : [];
+  const uniquePlatforms = Array.from(
+    new Set(platformPosts.map((p) => p.platform))
+  );
+
+  return (
+    <div className="flex flex-col gap-3">
+      <Card padding="md">
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+          Summary
+        </p>
+        <div className="mt-3 flex flex-col gap-4">
+          <SummaryRow label="Status">
+            <Badge tone={statusTone(watchedStatus || item.status)}>
+              {formatStatus(watchedStatus || item.status)}
+            </Badge>
+          </SummaryRow>
+          <SummaryRow label="Category">
+            <span className="text-sm text-ink">
+              {formatCategory(watchedCategory || item.category)}
+            </span>
+          </SummaryRow>
+          <SummaryRow label="Platforms">
+            {uniquePlatforms.length === 0 ? (
+              <span className="text-sm text-muted">None yet</span>
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {uniquePlatforms.map((platform) => {
+                  const post = platformPosts.find(
+                    (p) => p.platform === platform
+                  );
+                  return (
+                    <span
+                      key={platform}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-canvas px-2 py-0.5 text-[11px] text-ink"
+                    >
+                      <span
+                        className={cn(
+                          "h-1.5 w-1.5 rounded-full",
+                          PLATFORM_DOT[platform] || "bg-muted"
+                        )}
+                      />
+                      <span>{formatPlatform(platform)}</span>
+                      {post?.status && (
+                        <span
+                          className={cn(
+                            "rounded-full px-1.5 py-[1px] text-[10px] uppercase tracking-[0.14em]",
+                            PLATFORM_POST_STATUS_TONE[post.status] ||
+                              "bg-canvas text-muted border border-border"
+                          )}
+                        >
+                          {formatStatus(post.status)}
+                        </span>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+          </SummaryRow>
+          <SummaryRow label="Quick links">
+            <div className="flex flex-col gap-1">
+              <Link
+                to="/calendar"
+                className="text-sm text-accent hover:underline"
+              >
+                Open calendar →
+              </Link>
+              <Link
+                to="/workflow"
+                className="text-sm text-accent hover:underline"
+              >
+                Open workflow →
+              </Link>
+              <Link
+                to="/content"
+                className="text-sm text-accent hover:underline"
+              >
+                Back to library →
+              </Link>
+            </div>
+          </SummaryRow>
+        </div>
+      </Card>
+
+      <Card
+        padding="md"
+        className={cn(
+          "transition-opacity",
+          !isDirty && "opacity-70"
+        )}
+      >
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+          {isDirty ? "Unsaved changes" : "All changes saved"}
+        </p>
+        <div className="mt-3 flex flex-col gap-2">
+          <Button
+            type="button"
+            variant="primary"
+            size="md"
+            onClick={onSave}
+            loading={submitting}
+            disabled={!isDirty || submitting}
+          >
+            {submitting ? "Saving" : "Save changes"}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="md"
+            onClick={onRevert}
+            disabled={!isDirty || submitting}
+          >
+            Revert
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 function NotFoundState() {
   return (
     <div className="flex flex-col gap-8">
@@ -267,6 +421,8 @@ export function ContentDetailPage() {
   };
 
   const hookValue = watch("hook") || "";
+  const watchedStatus = watch("status");
+  const watchedCategory = watch("category");
 
   if (isLoading) return <ContentDetailSkeleton />;
 
@@ -299,9 +455,11 @@ export function ContentDetailPage() {
   if (!data) return <NotFoundState />;
 
   const submitting = mutation.isPending;
+  const hasHistory =
+    Array.isArray(data.publishAttempts) && data.publishAttempts.length > 0;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Library / Detail"
         title={data.title || "Untitled"}
@@ -325,7 +483,7 @@ export function ContentDetailPage() {
           </div>
         }
       />
-      <div className="-mt-4">
+      <div className="-mt-2">
         <HeaderMeta item={data} />
       </div>
 
@@ -347,115 +505,133 @@ export function ContentDetailPage() {
         </Card>
       )}
 
-      <Card padding="lg">
-        <SectionHeading
-          eyebrow="Main info"
-          title="The basics"
-          description="Title, category and status are the core signals for this item."
-        />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="flex min-w-0 flex-col gap-6">
+          <Card padding="lg">
+            <SectionHeading
+              eyebrow="Main info"
+              title="The basics"
+              description="Title, category and status are the core signals for this item."
+            />
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_1fr_1fr]">
-          <Input
-            label="Title"
-            placeholder="Give it a working title"
-            error={errors.title?.message}
-            {...register("title")}
-          />
-          <Controller
-            control={control}
-            name="category"
-            render={({ field }) => (
-              <Select
-                label="Category"
-                options={CATEGORY_OPTIONS}
-                error={errors.category?.message}
-                {...field}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_1fr_1fr]">
+              <Input
+                label="Title"
+                placeholder="Give it a working title"
+                error={errors.title?.message}
+                {...register("title")}
               />
-            )}
-          />
-          <Controller
-            control={control}
-            name="status"
-            render={({ field }) => (
-              <Select
-                label="Status"
-                options={STATUS_OPTIONS}
-                error={errors.status?.message}
-                {...field}
+              <Controller
+                control={control}
+                name="category"
+                render={({ field }) => (
+                  <Select
+                    label="Category"
+                    options={CATEGORY_OPTIONS}
+                    error={errors.category?.message}
+                    {...field}
+                  />
+                )}
               />
-            )}
-          />
+              <Controller
+                control={control}
+                name="status"
+                render={({ field }) => (
+                  <Select
+                    label="Status"
+                    options={STATUS_OPTIONS}
+                    error={errors.status?.message}
+                    {...field}
+                  />
+                )}
+              />
+            </div>
+
+            <div className="mt-4">
+              <Textarea
+                label="Hook"
+                placeholder="The one-line idea that grabs attention."
+                rows={3}
+                counter={500}
+                value={hookValue}
+                error={errors.hook?.message}
+                {...register("hook")}
+              />
+            </div>
+          </Card>
+
+          <Card padding="lg">
+            <SectionHeading
+              eyebrow="Body"
+              title="Script & notes"
+              description="Everything you're writing toward this piece."
+            />
+            <div className="flex flex-col gap-4">
+              <Textarea
+                label="Script"
+                placeholder="The full script or outline."
+                rows={10}
+                error={errors.script?.message}
+                {...register("script")}
+              />
+              <Textarea
+                label="Notes"
+                placeholder="Research links, references, talking points."
+                rows={5}
+                error={errors.notes?.message}
+                {...register("notes")}
+              />
+            </div>
+          </Card>
+
+          <MediaUploadSection contentItemId={data.id} />
+
+          <section>
+            <div className="mb-4 flex flex-col gap-1">
+              <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+                Platforms
+              </span>
+              <h2 className="font-display text-xl leading-tight text-ink">
+                Platform composer
+              </h2>
+              <p className="text-sm text-muted">
+                Tailor copy per platform. Save changes, validate against platform rules,
+                and mark a version as ready when it's set.
+              </p>
+            </div>
+            <PlatformTabs contentItemId={data.id} category={data.category} />
+          </section>
+
+          {hasHistory && (
+            <Card padding="lg">
+              <SectionHeading
+                eyebrow="History"
+                title="Publish history"
+                description="Recent publish attempts on this piece."
+              />
+              <PublishHistorySummary attempts={data.publishAttempts} />
+            </Card>
+          )}
         </div>
 
-        <div className="mt-4">
-          <Textarea
-            label="Hook"
-            placeholder="The one-line idea that grabs attention."
-            rows={3}
-            counter={500}
-            value={hookValue}
-            error={errors.hook?.message}
-            {...register("hook")}
-          />
-        </div>
-      </Card>
-
-      <Card padding="lg">
-        <SectionHeading
-          eyebrow="Body"
-          title="Script & notes"
-          description="Everything you're writing toward this piece."
-        />
-        <div className="flex flex-col gap-4">
-          <Textarea
-            label="Script"
-            placeholder="The full script or outline."
-            rows={10}
-            error={errors.script?.message}
-            {...register("script")}
-          />
-          <Textarea
-            label="Notes"
-            placeholder="Research links, references, talking points."
-            rows={5}
-            error={errors.notes?.message}
-            {...register("notes")}
-          />
-        </div>
-      </Card>
-
-      <MediaUploadSection contentItemId={data.id} />
-
-      <section>
-        <div className="mb-4 flex flex-col gap-1">
-          <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-            Platforms
-          </span>
-          <h2 className="font-display text-xl leading-tight text-ink">
-            Platform composer
-          </h2>
-          <p className="text-sm text-muted">
-            Tailor copy per platform. Save changes, validate against platform rules,
-            and mark a version as ready when it's set.
-          </p>
-        </div>
-        <PlatformTabs contentItemId={data.id} category={data.category} />
-      </section>
-
-      {Array.isArray(data.publishAttempts) && data.publishAttempts.length > 0 && (
-        <Card padding="lg">
-          <SectionHeading
-            eyebrow="History"
-            title="Publish history"
-            description="Recent publish attempts on this piece."
-          />
-          <PublishHistorySummary attempts={data.publishAttempts} />
-        </Card>
-      )}
+        <aside className="hidden lg:block">
+          <div className="sticky top-6">
+            <SummaryRail
+              item={data}
+              watchedStatus={watchedStatus}
+              watchedCategory={watchedCategory}
+              isDirty={isDirty}
+              submitting={submitting}
+              onSave={handleSubmit(onSubmit)}
+              onRevert={onRevert}
+            />
+          </div>
+        </aside>
+      </div>
 
       <div
         className={cn(
-          "sticky bottom-0 -mx-6 mt-4 border-t bg-canvas/95 px-6 py-4 backdrop-blur md:-mx-10 md:px-10 transition-opacity",
+          "sticky bottom-0 -mx-6 mt-4 border-t bg-canvas/95 px-6 py-4 backdrop-blur md:-mx-10 md:px-10 transition-opacity lg:hidden",
           isDirty ? "border-border opacity-100" : "border-transparent opacity-0 pointer-events-none"
         )}
         aria-hidden={!isDirty}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { Badge } from "../../../../components/ui/Badge";
@@ -33,6 +33,12 @@ const PLATFORM_POST_STATUSES = [
   "manual_pending",
   "manual_done",
 ];
+
+const ACTIVE_SCHEDULE_STATUSES = new Set([
+  "scheduled",
+  "manual_pending",
+  "processing",
+]);
 
 const STATUS_OPTIONS = PLATFORM_POST_STATUSES.map((value) => ({
   value,
@@ -110,6 +116,84 @@ function CheckIcon() {
     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M5 12.5 10 17 19 7.5" />
     </svg>
+  );
+}
+
+function ChevronIcon({ open }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={cn(
+        "shrink-0 text-muted transition-transform duration-150",
+        open ? "rotate-180" : "rotate-0"
+      )}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function AccordionSection({
+  title,
+  subtitle,
+  meta,
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
+  children,
+}) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = controlledOpen !== undefined;
+  const isOpen = isControlled ? controlledOpen : internalOpen;
+  const reactId = useId();
+  const contentId = `${reactId}-content`;
+
+  const toggle = () => {
+    const next = !isOpen;
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
+
+  return (
+    <section className="overflow-hidden rounded-2xl border border-border bg-surface">
+      <button
+        type="button"
+        onClick={toggle}
+        aria-expanded={isOpen}
+        aria-controls={contentId}
+        className={cn(
+          "flex w-full items-start justify-between gap-3 px-4 py-3 text-left transition",
+          "hover:bg-canvas/40",
+          isOpen ? "border-b border-border bg-canvas/40" : "border-b border-transparent"
+        )}
+      >
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+            {title}
+          </p>
+          {subtitle && (
+            <p className="mt-0.5 text-sm text-ink">{subtitle}</p>
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {meta}
+          <ChevronIcon open={isOpen} />
+        </div>
+      </button>
+      {isOpen && (
+        <div id={contentId} className="px-4 py-4">
+          {children}
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -316,8 +400,22 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
     reset(original);
   };
 
+  const hasActiveSchedule = ACTIVE_SCHEDULE_STATUSES.has(post.status);
+  const hasValidation = Boolean(validation);
+
+  const [validationOpen, setValidationOpen] = useState(hasValidation);
+  useEffect(() => {
+    if (hasValidation) setValidationOpen(true);
+  }, [hasValidation]);
+
+  const [scheduleOpen, setScheduleOpen] = useState(hasActiveSchedule);
+  useEffect(() => {
+    if (hasActiveSchedule) setScheduleOpen(true);
+  }, [hasActiveSchedule]);
+
+  const defaultsAppliedRecently = Boolean(defaultsAppliedAt);
+
   return (
-    <div className="flex flex-col gap-6">
     <form onSubmit={handleSubmit(handleSave)} noValidate className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
@@ -364,132 +462,216 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
         </div>
       )}
 
-      <SmartDefaultsSection hasCategory={Boolean(category)}>
-        <DefaultsPanel
-          isDirty={isDirty}
-          confirmingOverwrite={confirmingOverwrite}
-          applying={applyingDefaults}
-          appliedAt={defaultsAppliedAt}
-          error={defaultsError}
-          onFillEmpty={() => handleApplyDefaults({ overwrite: false })}
-          onStartOverwrite={handleStartOverwrite}
-          onConfirmOverwrite={() => handleApplyDefaults({ overwrite: true })}
-          onCancelOverwrite={handleCancelOverwrite}
-        />
-
-        {category && (
-          <CategoryGuidancePanel
-            category={category}
-            platform={post.platform}
-            supportsHashtags={supportsHashtags}
-            hashtagsCount={currentHashtagsCount}
-            confirmingReplace={confirmingReplaceHashtags}
-            applying={false}
-            onFill={handleFillCategoryHashtags}
-            onStartReplace={handleStartReplaceHashtags}
-            onConfirmReplace={handleConfirmReplaceHashtags}
-            onCancelReplace={handleCancelReplaceHashtags}
-            embedded
+      <AccordionSection
+        title="Smart defaults & category guidance"
+        subtitle={
+          category
+            ? "Apply saved platform defaults or use category-level guidance."
+            : "Apply saved platform defaults."
+        }
+        defaultOpen={false}
+        meta={
+          defaultsAppliedRecently ? (
+            <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-emerald-700">
+              Applied
+            </span>
+          ) : null
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <DefaultsPanel
+            isDirty={isDirty}
+            confirmingOverwrite={confirmingOverwrite}
+            applying={applyingDefaults}
+            appliedAt={defaultsAppliedAt}
+            error={defaultsError}
+            onFillEmpty={() => handleApplyDefaults({ overwrite: false })}
+            onStartOverwrite={handleStartOverwrite}
+            onConfirmOverwrite={() => handleApplyDefaults({ overwrite: true })}
+            onCancelOverwrite={handleCancelOverwrite}
           />
-        )}
-      </SmartDefaultsSection>
 
-      <ValidationPanel result={validation} source={validationSource} />
-
-      <div className="flex flex-col gap-4">
-        {fields.map((field) => {
-          const value = watch(field.name);
-          const error = errors[field.name]?.message;
-
-          if (field.kind === "input") {
-            return (
-              <div key={field.name}>
-                <FieldLabelRow
-                  label={field.label}
-                  copyValue={fieldCopyValue(field, value)}
-                />
-                <Input
-                  placeholder={field.placeholder}
-                  hint={field.hint}
-                  error={error}
-                  {...register(field.name, field.rules)}
-                />
-              </div>
-            );
-          }
-
-          if (field.kind === "textarea") {
-            return (
-              <div key={field.name}>
-                <FieldLabelRow
-                  label={field.label}
-                  copyValue={fieldCopyValue(field, value)}
-                />
-                <Textarea
-                  rows={field.rows || 6}
-                  placeholder={field.placeholder}
-                  counter={field.maxLength}
-                  value={value}
-                  hint={field.hint}
-                  error={error}
-                  {...register(field.name, field.rules)}
-                />
-              </div>
-            );
-          }
-
-          if (field.kind === "tags") {
-            return (
-              <Controller
-                key={field.name}
-                control={control}
-                name={field.name}
-                render={({ field: ctrl }) => (
-                  <div>
-                    <FieldLabelRow
-                      label={field.label}
-                      copyValue={fieldCopyValue(field, ctrl.value)}
-                      copyLabel={field.copyLabel}
-                    />
-                    <TagInput
-                      value={ctrl.value || []}
-                      onChange={ctrl.onChange}
-                      placeholder={field.placeholder}
-                      prefix={field.prefix}
-                      hint={field.hint}
-                      error={error}
-                    />
-                  </div>
-                )}
+          {category && (
+            <div className="border-t border-border pt-4">
+              <CategoryGuidancePanel
+                category={category}
+                platform={post.platform}
+                supportsHashtags={supportsHashtags}
+                hashtagsCount={currentHashtagsCount}
+                confirmingReplace={confirmingReplaceHashtags}
+                applying={false}
+                onFill={handleFillCategoryHashtags}
+                onStartReplace={handleStartReplaceHashtags}
+                onConfirmReplace={handleConfirmReplaceHashtags}
+                onCancelReplace={handleCancelReplaceHashtags}
+                embedded
               />
-            );
-          }
-
-          return null;
-        })}
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-[1.4fr_1fr]">
-          <Input
-            label="Platform post URL"
-            type="url"
-            placeholder="https://..."
-            hint="Set after the post is live."
-            error={errors.platformPostUrl?.message}
-            {...register("platformPostUrl")}
-          />
-          <Controller
-            control={control}
-            name="status"
-            render={({ field: ctrl }) => (
-              <Select
-                label="Status"
-                options={STATUS_OPTIONS}
-                {...ctrl}
-              />
-            )}
-          />
+            </div>
+          )}
         </div>
-      </div>
+      </AccordionSection>
+
+      <AccordionSection
+        title="Compose"
+        subtitle={`Caption, ${supportsHashtags ? "hashtags, " : ""}URL and status for the ${formatPlatform(post.platform)} version.`}
+        defaultOpen={true}
+      >
+        <div className="flex flex-col gap-4">
+          {fields.map((field) => {
+            const value = watch(field.name);
+            const error = errors[field.name]?.message;
+
+            if (field.kind === "input") {
+              return (
+                <div key={field.name}>
+                  <FieldLabelRow
+                    label={field.label}
+                    copyValue={fieldCopyValue(field, value)}
+                  />
+                  <Input
+                    placeholder={field.placeholder}
+                    hint={field.hint}
+                    error={error}
+                    {...register(field.name, field.rules)}
+                  />
+                </div>
+              );
+            }
+
+            if (field.kind === "textarea") {
+              return (
+                <div key={field.name}>
+                  <FieldLabelRow
+                    label={field.label}
+                    copyValue={fieldCopyValue(field, value)}
+                  />
+                  <Textarea
+                    rows={field.rows || 6}
+                    placeholder={field.placeholder}
+                    counter={field.maxLength}
+                    value={value}
+                    hint={field.hint}
+                    error={error}
+                    {...register(field.name, field.rules)}
+                  />
+                </div>
+              );
+            }
+
+            if (field.kind === "tags") {
+              return (
+                <Controller
+                  key={field.name}
+                  control={control}
+                  name={field.name}
+                  render={({ field: ctrl }) => (
+                    <div>
+                      <FieldLabelRow
+                        label={field.label}
+                        copyValue={fieldCopyValue(field, ctrl.value)}
+                        copyLabel={field.copyLabel}
+                      />
+                      <TagInput
+                        value={ctrl.value || []}
+                        onChange={ctrl.onChange}
+                        placeholder={field.placeholder}
+                        prefix={field.prefix}
+                        hint={field.hint}
+                        error={error}
+                      />
+                    </div>
+                  )}
+                />
+              );
+            }
+
+            return null;
+          })}
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-[1.4fr_1fr]">
+            <Input
+              label="Platform post URL"
+              type="url"
+              placeholder="https://..."
+              hint="Set after the post is live."
+              error={errors.platformPostUrl?.message}
+              {...register("platformPostUrl")}
+            />
+            <Controller
+              control={control}
+              name="status"
+              render={({ field: ctrl }) => (
+                <Select
+                  label="Status"
+                  options={STATUS_OPTIONS}
+                  {...ctrl}
+                />
+              )}
+            />
+          </div>
+        </div>
+      </AccordionSection>
+
+      <AccordionSection
+        title="Validation"
+        subtitle={
+          hasValidation
+            ? validation?.valid
+              ? "Looks good."
+              : "A few things need attention."
+            : "Run platform validation before marking ready."
+        }
+        open={validationOpen}
+        onOpenChange={setValidationOpen}
+        meta={
+          hasValidation ? (
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[10px] uppercase tracking-[0.16em]",
+                validation?.valid
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : validationSource === "patch"
+                    ? "border-danger/30 bg-danger/5 text-danger"
+                    : "border-amber-200 bg-amber-50 text-amber-800"
+              )}
+            >
+              {validation?.valid
+                ? "Valid"
+                : validationSource === "patch"
+                  ? "Blocked"
+                  : "Warnings"}
+            </span>
+          ) : null
+        }
+      >
+        {hasValidation ? (
+          <ValidationPanel result={validation} source={validationSource} />
+        ) : (
+          <p className="text-sm text-muted">
+            No validation run yet. Click <span className="font-medium text-ink">Validate</span> above to check this version against platform rules.
+          </p>
+        )}
+      </AccordionSection>
+
+      <AccordionSection
+        title="Schedule"
+        subtitle={
+          hasActiveSchedule
+            ? "This post is currently scheduled."
+            : "Pick a time to publish or remind you."
+        }
+        open={scheduleOpen}
+        onOpenChange={setScheduleOpen}
+        meta={
+          hasActiveSchedule ? (
+            <span className="inline-flex items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-sky-700">
+              {formatStatus(post.status)}
+            </span>
+          ) : null
+        }
+      >
+        <SchedulePanel post={post} contentItemId={contentItemId} />
+      </AccordionSection>
 
       <div
         className={cn(
@@ -522,35 +704,6 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
         </div>
       </div>
     </form>
-
-    <SchedulePanel post={post} contentItemId={contentItemId} />
-    </div>
-  );
-}
-
-function SmartDefaultsSection({ hasCategory, children }) {
-  return (
-    <section className="overflow-hidden rounded-2xl border border-border bg-surface">
-      <header className="border-b border-border bg-canvas/40 px-4 py-3">
-        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-          Smart defaults
-        </p>
-        <p className="mt-0.5 text-sm text-ink">
-          {hasCategory
-            ? "Apply your saved platform defaults and use category-level guidance — nothing changes until you act."
-            : "Apply your saved platform defaults — nothing changes until you act."}
-        </p>
-      </header>
-      <div className="divide-y divide-border">
-        {Array.isArray(children)
-          ? children.filter(Boolean).map((child, idx) => (
-              <div key={idx} className="px-4 py-3">
-                {child}
-              </div>
-            ))
-          : children && <div className="px-4 py-3">{children}</div>}
-      </div>
-    </section>
   );
 }
 
@@ -733,9 +886,7 @@ function SchedulePanel({ post, contentItemId }) {
 
   const hasActiveSchedule =
     Boolean(cachedSchedule) &&
-    ["scheduled", "manual_pending", "processing"].includes(
-      cachedSchedule.status
-    );
+    ACTIVE_SCHEDULE_STATUSES.has(cachedSchedule.status);
 
   const handleSubmit = (values) => {
     setFeedback(null);
@@ -751,22 +902,12 @@ function SchedulePanel({ post, contentItemId }) {
   };
 
   return (
-    <section className="rounded-2xl border border-border bg-canvas/40 p-5">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-            Schedule
-          </p>
-          <h3 className="font-display text-lg leading-tight text-ink">
-            {hasActiveSchedule ? "Currently scheduled" : "Schedule this post"}
-          </h3>
-        </div>
-        {savedAt && (
-          <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
-            Saved
-          </span>
-        )}
-      </div>
+    <div className="flex flex-col gap-3">
+      {savedAt && (
+        <span className="inline-flex items-center gap-1 self-start rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
+          Saved
+        </span>
+      )}
 
       {scheduleQuery.isLoading && hasActiveSchedule === false && (
         <div className="flex items-center gap-2 text-xs text-muted">
@@ -776,7 +917,7 @@ function SchedulePanel({ post, contentItemId }) {
       )}
 
       {scheduleQuery.isError && (
-        <div className="mb-3 rounded-xl border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
+        <div className="rounded-xl border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
             Couldn't load schedule
           </p>
@@ -789,7 +930,7 @@ function SchedulePanel({ post, contentItemId }) {
       {feedback && (
         <div
           className={cn(
-            "mb-3 rounded-xl border px-3 py-2 text-sm",
+            "rounded-xl border px-3 py-2 text-sm",
             feedback.tone === "error"
               ? "border-danger/30 bg-danger/5 text-ink"
               : "border-emerald-200 bg-emerald-50 text-emerald-700"
@@ -809,7 +950,7 @@ function SchedulePanel({ post, contentItemId }) {
       <ValidationPanel result={validation} source="patch" />
 
       {hasActiveSchedule && !editing && (
-        <div className="mt-3 flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <ScheduleSummary schedule={cachedSchedule} />
           <p className="text-xs text-muted">
             Manual reminder will fire at the scheduled time. You can reschedule
@@ -844,28 +985,26 @@ function SchedulePanel({ post, contentItemId }) {
       )}
 
       {(!hasActiveSchedule || editing) && (
-        <div className="mt-2">
-          <ScheduleForm
-            mode={editing ? "edit" : "create"}
-            schedule={editing ? cachedSchedule : null}
-            isSubmitting={scheduleMutation.isPending}
-            isCancelling={cancelMutation.isPending}
-            onSubmit={handleSubmit}
-            onCancel={
-              editing
-                ? () => {
-                    setEditing(false);
-                    setFeedback(null);
-                    setValidation(null);
-                  }
-                : null
-            }
-            onDelete={editing ? handleCancelSchedule : null}
-            submitLabel={editing ? "Save reschedule" : "Schedule this post"}
-            cancelLabel="Discard"
-          />
-        </div>
+        <ScheduleForm
+          mode={editing ? "edit" : "create"}
+          schedule={editing ? cachedSchedule : null}
+          isSubmitting={scheduleMutation.isPending}
+          isCancelling={cancelMutation.isPending}
+          onSubmit={handleSubmit}
+          onCancel={
+            editing
+              ? () => {
+                  setEditing(false);
+                  setFeedback(null);
+                  setValidation(null);
+                }
+              : null
+          }
+          onDelete={editing ? handleCancelSchedule : null}
+          submitLabel={editing ? "Save reschedule" : "Schedule this post"}
+          cancelLabel="Discard"
+        />
       )}
-    </section>
+    </div>
   );
 }
