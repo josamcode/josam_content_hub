@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Button } from "../../../components/ui/Button";
@@ -43,48 +44,89 @@ function ArrowIcon() {
   );
 }
 
+function ChevronIcon({ open }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={cn(
+        "shrink-0 text-muted transition-transform duration-150",
+        open ? "rotate-180" : "rotate-0"
+      )}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
 export function PipelineOverview({ contentCounts = {} }) {
+  const [open, setOpen] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.innerWidth >= 1024;
+  });
+
   return (
     <Card padding="lg" className="flex flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
-            Production pipeline
-          </p>
-          <h2 className="font-display text-lg leading-tight text-ink">
-            Content by status
-          </h2>
-        </div>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="pipeline-overview-content"
+          className="group flex flex-1 items-center gap-2 text-left"
+        >
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
+              Production pipeline
+            </p>
+            <h2 className="font-display text-lg leading-tight text-ink">
+              Content by status
+            </h2>
+          </div>
+          <ChevronIcon open={open} />
+        </button>
         <Button as={Link} to="/workflow" variant="outline" size="sm">
           Open Workflow Board
           <ArrowIcon />
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-7">
-        {PIPELINE_STAGES.map((stage) => {
-          const count = contentCounts[stage.status] || 0;
-          const tone = TONE_BY_STATUS[stage.status] || "bg-canvas text-ink";
-          return (
-            <div
-              key={stage.status}
-              className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-3"
-            >
-              <span className="text-[11px] uppercase tracking-wide text-muted">
-                {stage.label}
-              </span>
-              <span
-                className={cn(
-                  "inline-flex h-7 w-fit items-center justify-center rounded-md px-2 text-base font-semibold tabular-nums",
-                  tone
-                )}
+      {open && (
+        <div
+          id="pipeline-overview-content"
+          className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-7"
+        >
+          {PIPELINE_STAGES.map((stage) => {
+            const count = contentCounts[stage.status] || 0;
+            const tone = TONE_BY_STATUS[stage.status] || "bg-canvas text-ink";
+            return (
+              <div
+                key={stage.status}
+                className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-3"
               >
-                {count}
-              </span>
-            </div>
-          );
-        })}
-      </div>
+                <span className="text-[11px] uppercase tracking-wide text-muted">
+                  {stage.label}
+                </span>
+                <span
+                  className={cn(
+                    "inline-flex h-7 w-fit items-center justify-center rounded-md px-2 text-base font-semibold tabular-nums",
+                    tone
+                  )}
+                >
+                  {count}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </Card>
   );
 }

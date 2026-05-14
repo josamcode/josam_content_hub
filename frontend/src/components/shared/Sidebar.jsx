@@ -84,13 +84,19 @@ const ICONS = {
       <path d="M17 16l2 2 3-3" />
     </>
   ),
+  guide: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7" />
+      <path d="M12 17h.01" />
+    </>
+  ),
 };
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard", enabled: true },
   { to: "/content", label: "Content Library", icon: "library", enabled: true },
   { to: "/workflow", label: "Workflow", icon: "workflow", enabled: true },
-  { to: "/content/new", label: "Create Content", icon: "create", enabled: true },
   { to: "/calendar", label: "Calendar", icon: "calendar", enabled: true },
   { to: "/reminders", label: "Reminders", icon: "reminders", enabled: true },
   { to: "/queue", label: "Queue Settings", icon: "queue", enabled: true },
@@ -99,7 +105,11 @@ const NAV = [
   { to: "/publish-logs", label: "Publish Logs", icon: "logs", enabled: true },
 ];
 
-const WORKSPACE_COUNT = 6;
+const WORKSPACE_COUNT = 5;
+
+const SUPPORT_NAV = [
+  { to: "/guide", label: "Guide", icon: "guide", enabled: true },
+];
 
 function NavItem({ item }) {
   const location = useLocation();
@@ -181,6 +191,13 @@ export function Sidebar() {
           {NAV.slice(WORKSPACE_COUNT).map((item) => (
             <NavItem key={item.to} item={item} />
           ))}
+
+          <div className="mt-4 px-2 pt-2 pb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
+            Support
+          </div>
+          {SUPPORT_NAV.map((item) => (
+            <NavItem key={item.to} item={item} />
+          ))}
         </nav>
 
         <div className="border-t border-border px-5 py-4">
@@ -198,7 +215,7 @@ export function Sidebar() {
 const MOBILE_PRIMARY_KEYS = ["/dashboard", "/content", "/calendar", "/reminders"];
 
 function getMobileBuckets() {
-  const enabled = NAV.filter((item) => item.enabled);
+  const enabled = [...NAV, ...SUPPORT_NAV].filter((item) => item.enabled);
   const byKey = new Map(enabled.map((item) => [item.to, item]));
   const primary = MOBILE_PRIMARY_KEYS
     .map((key) => byKey.get(key))

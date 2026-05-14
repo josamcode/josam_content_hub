@@ -1,9 +1,28 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Button } from "../ui/Button";
 import { cn } from "../../lib/cn";
 import { useAuth } from "../../features/auth/hooks/useAuth";
+
+function PlusIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="14"
+      height="14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 5v14" />
+      <path d="M5 12h14" />
+    </svg>
+  );
+}
 
 function getInitials(name = "") {
   return name
@@ -50,8 +69,19 @@ export function Topbar() {
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className="hidden items-center gap-2 rounded-full border border-border bg-canvas px-3 py-1 text-[11px] text-muted sm:inline-flex">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Button
+          as={Link}
+          to="/content/new"
+          variant="primary"
+          size="sm"
+          aria-label="Create new content"
+        >
+          <PlusIcon />
+          <span className="hidden sm:inline">New Content</span>
+        </Button>
+
+        <span className="hidden items-center gap-2 rounded-full border border-border bg-canvas px-3 py-1 text-[11px] text-muted lg:inline-flex">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
           All systems calm
         </span>

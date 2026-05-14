@@ -122,7 +122,64 @@ export function DashboardPage() {
 
       <ActionCenter data={data} />
 
-      <PipelineOverview contentCounts={content} />
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <SectionCard
+          title="Today's reminders"
+          description="Things you asked yourself to handle today."
+          count={data?.todayReminders?.length}
+          countTone={reminders.pendingToday ? "accent" : "neutral"}
+          action={
+            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
+          }
+        >
+          <ReminderList
+            reminders={data?.todayReminders}
+            variant="today"
+          />
+        </SectionCard>
+
+        <SectionCard
+          title="Overdue"
+          description="Slipped past their window — clear these first."
+          count={data?.overdueReminders?.length}
+          countTone={data?.overdueReminders?.length ? "danger" : "neutral"}
+          action={
+            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
+          }
+          className={
+            data?.overdueReminders?.length ? "border-rose-200 bg-rose-50/40" : ""
+          }
+        >
+          <ReminderList
+            reminders={data?.overdueReminders}
+            variant="overdue"
+          />
+        </SectionCard>
+      </section>
+
+      <SectionCard
+        title="Needs attention"
+        description="Drafts missing text, ready posts without a slot, failed publishes — fix these to keep moving."
+        count={data?.needsAttention?.length}
+        countTone={data?.needsAttention?.length ? "warning" : "neutral"}
+        action={
+          <SectionLinkAction to="/workflow">Open workflow</SectionLinkAction>
+        }
+      >
+        <NeedsAttentionList items={data?.needsAttention} />
+      </SectionCard>
+
+      <SectionCard
+        title="Upcoming posts"
+        description="The next pieces moving toward publish."
+        count={data?.upcomingPosts?.length}
+        countTone="neutral"
+        action={
+          <SectionLinkAction to="/calendar">Open calendar</SectionLinkAction>
+        }
+      >
+        <UpcomingPostsList posts={data?.upcomingPosts} />
+      </SectionCard>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
@@ -165,64 +222,7 @@ export function DashboardPage() {
         />
       </section>
 
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <SectionCard
-          title="Today's reminders"
-          description="Things you asked yourself to handle today."
-          count={data?.todayReminders?.length}
-          countTone={reminders.pendingToday ? "accent" : "neutral"}
-          action={
-            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
-          }
-        >
-          <ReminderList
-            reminders={data?.todayReminders}
-            variant="today"
-          />
-        </SectionCard>
-
-        <SectionCard
-          title="Overdue"
-          description="Slipped past their window — clear these first."
-          count={data?.overdueReminders?.length}
-          countTone={data?.overdueReminders?.length ? "danger" : "neutral"}
-          action={
-            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
-          }
-          className={
-            data?.overdueReminders?.length ? "border-rose-200 bg-rose-50/40" : ""
-          }
-        >
-          <ReminderList
-            reminders={data?.overdueReminders}
-            variant="overdue"
-          />
-        </SectionCard>
-      </section>
-
-      <SectionCard
-        title="Upcoming posts"
-        description="The next pieces moving toward publish."
-        count={data?.upcomingPosts?.length}
-        countTone="neutral"
-        action={
-          <SectionLinkAction to="/calendar">Open calendar</SectionLinkAction>
-        }
-      >
-        <UpcomingPostsList posts={data?.upcomingPosts} />
-      </SectionCard>
-
-      <SectionCard
-        title="Needs attention"
-        description="Drafts missing text, ready posts without a slot, failed publishes — fix these to keep moving."
-        count={data?.needsAttention?.length}
-        countTone={data?.needsAttention?.length ? "warning" : "neutral"}
-        action={
-          <SectionLinkAction to="/workflow">Open workflow</SectionLinkAction>
-        }
-      >
-        <NeedsAttentionList items={data?.needsAttention} />
-      </SectionCard>
+      <PipelineOverview contentCounts={content} />
 
       <SectionCard
         title="Recent publish attempts"
