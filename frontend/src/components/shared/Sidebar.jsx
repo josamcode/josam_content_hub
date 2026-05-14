@@ -154,8 +154,8 @@ export function Sidebar() {
     <>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col self-start border-r border-border bg-surface md:flex">
         <div className="flex items-center gap-2 px-5 pt-6 pb-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-canvas">
-            <span className="font-display text-base leading-none">J</span>
+          <div className="flex h-8 w-auto items-center justify-center">
+            <img src='/logo.png' alt="Logo" className="h-full" />
           </div>
           <div className="flex flex-col">
             <span className="font-display text-[15px] leading-tight text-ink">

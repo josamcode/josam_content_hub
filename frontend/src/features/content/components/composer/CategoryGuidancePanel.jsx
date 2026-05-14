@@ -45,6 +45,7 @@ export function CategoryGuidancePanel({
   onStartReplace,
   onConfirmReplace,
   onCancelReplace,
+  embedded = false,
 }) {
   const { data, isLoading, isError } = useCategoryDefaults();
 
@@ -84,13 +85,18 @@ export function CategoryGuidancePanel({
   const canReplace =
     supportsHashtags && hashtags.length > 0 && !hashtagsEmpty;
 
+  const containerClass = embedded
+    ? ""
+    : "rounded-xl border border-accent/15 bg-accent-soft/40 px-4 py-3";
+  const eyebrowClass = embedded
+    ? "text-[11px] font-medium uppercase tracking-[0.18em] text-muted"
+    : "text-[11px] font-medium uppercase tracking-[0.18em] text-accent";
+
   return (
-    <div className="rounded-xl border border-accent/15 bg-accent-soft/40 px-4 py-3">
+    <div className={containerClass}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">
-            Category guidance
-          </p>
+          <p className={eyebrowClass}>Category guidance</p>
           <p className="mt-0.5 text-sm text-ink">
             Suggestions from <span className="font-medium">{label}</span>{" "}
             defaults — nothing is changed automatically.

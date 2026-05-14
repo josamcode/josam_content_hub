@@ -46,7 +46,7 @@ export function Topbar() {
         </span>
         <span className="hidden h-3 w-px bg-border md:inline" />
         <span className="text-sm text-ink">
-          {user?.name ? `${user.name}'s studio` : "JoSam Studio"}
+          {user?.name ? `${user.name}'s studio` : "JoSam's Studio"}
         </span>
       </div>
 

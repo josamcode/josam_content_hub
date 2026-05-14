@@ -364,32 +364,35 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
         </div>
       )}
 
-      <DefaultsPanel
-        isDirty={isDirty}
-        confirmingOverwrite={confirmingOverwrite}
-        applying={applyingDefaults}
-        appliedAt={defaultsAppliedAt}
-        error={defaultsError}
-        onFillEmpty={() => handleApplyDefaults({ overwrite: false })}
-        onStartOverwrite={handleStartOverwrite}
-        onConfirmOverwrite={() => handleApplyDefaults({ overwrite: true })}
-        onCancelOverwrite={handleCancelOverwrite}
-      />
-
-      {category && (
-        <CategoryGuidancePanel
-          category={category}
-          platform={post.platform}
-          supportsHashtags={supportsHashtags}
-          hashtagsCount={currentHashtagsCount}
-          confirmingReplace={confirmingReplaceHashtags}
-          applying={false}
-          onFill={handleFillCategoryHashtags}
-          onStartReplace={handleStartReplaceHashtags}
-          onConfirmReplace={handleConfirmReplaceHashtags}
-          onCancelReplace={handleCancelReplaceHashtags}
+      <SmartDefaultsSection hasCategory={Boolean(category)}>
+        <DefaultsPanel
+          isDirty={isDirty}
+          confirmingOverwrite={confirmingOverwrite}
+          applying={applyingDefaults}
+          appliedAt={defaultsAppliedAt}
+          error={defaultsError}
+          onFillEmpty={() => handleApplyDefaults({ overwrite: false })}
+          onStartOverwrite={handleStartOverwrite}
+          onConfirmOverwrite={() => handleApplyDefaults({ overwrite: true })}
+          onCancelOverwrite={handleCancelOverwrite}
         />
-      )}
+
+        {category && (
+          <CategoryGuidancePanel
+            category={category}
+            platform={post.platform}
+            supportsHashtags={supportsHashtags}
+            hashtagsCount={currentHashtagsCount}
+            confirmingReplace={confirmingReplaceHashtags}
+            applying={false}
+            onFill={handleFillCategoryHashtags}
+            onStartReplace={handleStartReplaceHashtags}
+            onConfirmReplace={handleConfirmReplaceHashtags}
+            onCancelReplace={handleCancelReplaceHashtags}
+            embedded
+          />
+        )}
+      </SmartDefaultsSection>
 
       <ValidationPanel result={validation} source={validationSource} />
 
@@ -525,6 +528,32 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
   );
 }
 
+function SmartDefaultsSection({ hasCategory, children }) {
+  return (
+    <section className="overflow-hidden rounded-2xl border border-border bg-surface">
+      <header className="border-b border-border bg-canvas/40 px-4 py-3">
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+          Smart defaults
+        </p>
+        <p className="mt-0.5 text-sm text-ink">
+          {hasCategory
+            ? "Apply your saved platform defaults and use category-level guidance — nothing changes until you act."
+            : "Apply your saved platform defaults — nothing changes until you act."}
+        </p>
+      </header>
+      <div className="divide-y divide-border">
+        {Array.isArray(children)
+          ? children.filter(Boolean).map((child, idx) => (
+              <div key={idx} className="px-4 py-3">
+                {child}
+              </div>
+            ))
+          : children && <div className="px-4 py-3">{children}</div>}
+      </div>
+    </section>
+  );
+}
+
 function DefaultsPanel({
   isDirty,
   confirmingOverwrite,
@@ -541,14 +570,16 @@ function DefaultsPanel({
     : null;
 
   return (
-    <div className="rounded-xl border border-border bg-canvas/40 px-4 py-3">
+    <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
             Platform defaults
           </p>
           <p className="mt-0.5 text-sm text-ink">
-            Apply your saved platform settings defaults to this post.
+            Use saved defaults for{" "}
+            <span className="font-medium">this platform</span> (title, caption,
+            description, tags, hashtags).
           </p>
           {disabledReason && (
             <p className="mt-1 text-xs text-muted">{disabledReason}</p>
