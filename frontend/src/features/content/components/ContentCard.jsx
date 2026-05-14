@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Badge } from "../../../components/ui/Badge";
 import { Card } from "../../../components/ui/Card";
@@ -52,6 +53,8 @@ function ArrowIcon() {
 }
 
 export function ContentCard({ item }) {
+  const { t, i18n } = useTranslation(["common", "pages", "status"]);
+  const locale = i18n.resolvedLanguage || i18n.language;
   const platforms = Array.isArray(item.platforms) ? item.platforms : [];
 
   return (
@@ -63,15 +66,15 @@ export function ContentCard({ item }) {
 
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tone={statusTone(item.status)}>{formatStatus(item.status)}</Badge>
+          <Badge tone={statusTone(item.status)}>{formatStatus(item.status, t)}</Badge>
           <span className="rounded-full border border-border bg-canvas px-2 py-0.5 text-[11px] uppercase tracking-wide text-muted">
-            {formatCategory(item.category)}
+            {formatCategory(item.category, t)}
           </span>
         </div>
 
         <div className="flex-1">
           <h3 className="font-display text-xl leading-snug text-ink">
-            {item.title || "Untitled"}
+            {item.title || t("untitled", { ns: "common" })}
           </h3>
           {item.hook && (
             <p className="mt-2 line-clamp-2 text-sm text-muted">{item.hook}</p>
@@ -86,17 +89,19 @@ export function ContentCard({ item }) {
           </div>
         ) : (
           <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
-            No platforms set
+            {t("contentLibrary.cards.noPlatforms", { ns: "pages" })}
           </p>
         )}
 
         <div className="mt-1 flex items-center justify-between border-t border-border pt-4 text-xs text-muted">
-          <span>Created {formatDate(item.createdAt)}</span>
+          <span>
+            {t("created", { ns: "common" })} {formatDate(item.createdAt, locale)}
+          </span>
           <Link
             to={`/content/${item.id}`}
             className="inline-flex items-center gap-1 font-medium text-ink transition group-hover:gap-2 hover:text-accent"
           >
-            Open
+            {t("contentLibrary.cards.open", { ns: "pages" })}
             <ArrowIcon />
           </Link>
         </div>

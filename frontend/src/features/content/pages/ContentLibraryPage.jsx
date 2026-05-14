@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -42,15 +43,17 @@ function PlusIcon() {
 }
 
 function ErrorState({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load content
+        {t("contentLibrary.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -58,6 +61,7 @@ function ErrorState({ message, onRetry }) {
 }
 
 export function ContentLibraryPage() {
+  const { t } = useTranslation(["common", "pages"]);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const debouncedSearch = useDebouncedValue(filters.search, 350);
 
@@ -100,13 +104,13 @@ export function ContentLibraryPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Library"
-        title="Content Library"
-        subtitle="Every idea, draft and finished piece — in one quiet place."
+        eyebrow={t("contentLibrary.eyebrow", { ns: "pages" })}
+        title={t("contentLibrary.title", { ns: "pages" })}
+        subtitle={t("contentLibrary.subtitle", { ns: "pages" })}
         actions={
           <Button as={Link} to="/content/new" variant="primary" size="md">
             <PlusIcon />
-            New Content
+            {t("newContent", { ns: "common" })}
           </Button>
         }
       />
@@ -127,27 +131,31 @@ export function ContentLibraryPage() {
         <ErrorState
           message={extractErrorMessage(
             error,
-            "We couldn't reach the API just now."
+            t("contentLibrary.error.fallback", { ns: "pages" })
           )}
           onRetry={() => refetch()}
         />
       ) : items.length === 0 ? (
         <EmptyState
-          title={hasFilters ? "Nothing matches those filters" : "No content yet"}
+          title={
+            hasFilters
+              ? t("contentLibrary.empty.filteredTitle", { ns: "pages" })
+              : t("contentLibrary.empty.noContentTitle", { ns: "pages" })
+          }
           description={
             hasFilters
-              ? "Try widening your search or clearing a filter or two."
-              : "Start with an idea — even a rough one. You can refine it later."
+              ? t("contentLibrary.empty.filteredDescription", { ns: "pages" })
+              : t("contentLibrary.empty.noContentDescription", { ns: "pages" })
           }
           action={
             hasFilters ? (
               <Button variant="outline" size="sm" onClick={resetFilters}>
-                Clear filters
+                {t("clearFilters", { ns: "common" })}
               </Button>
             ) : (
               <Button as={Link} to="/content/new" variant="primary" size="md">
                 <PlusIcon />
-                Create your first item
+                {t("contentLibrary.empty.createFirst", { ns: "pages" })}
               </Button>
             )
           }

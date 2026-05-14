@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import { Select } from "../../../components/ui/Select";
@@ -13,19 +16,6 @@ import {
 function toOptions(values, labeler) {
   return values.map((value) => ({ value, label: labeler(value) }));
 }
-
-const STATUS_OPTIONS = [
-  { value: "", label: "Any status" },
-  ...toOptions(CONTENT_STATUSES, formatStatus),
-];
-const CATEGORY_OPTIONS = [
-  { value: "", label: "Any category" },
-  ...toOptions(CONTENT_CATEGORIES, formatCategory),
-];
-const PLATFORM_OPTIONS = [
-  { value: "", label: "Any platform" },
-  ...toOptions(PLATFORMS, formatPlatform),
-];
 
 function SearchIcon() {
   return (
@@ -55,45 +45,69 @@ export function ContentFilters({
   onReset,
   isFetching,
 }) {
+  const { t } = useTranslation(["common", "pages", "status"]);
   const hasAny = Boolean(search || status || category || platform);
+  const statusOptions = useMemo(
+    () => [
+      { value: "", label: t("contentLibrary.filters.anyStatus", { ns: "pages" }) },
+      ...toOptions(CONTENT_STATUSES, (value) => formatStatus(value, t)),
+    ],
+    [t]
+  );
+  const categoryOptions = useMemo(
+    () => [
+      { value: "", label: t("contentLibrary.filters.anyCategory", { ns: "pages" }) },
+      ...toOptions(CONTENT_CATEGORIES, (value) => formatCategory(value, t)),
+    ],
+    [t]
+  );
+  const platformOptions = useMemo(
+    () => [
+      { value: "", label: t("contentLibrary.filters.anyPlatform", { ns: "pages" }) },
+      ...toOptions(PLATFORMS, formatPlatform),
+    ],
+    [t]
+  );
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 md:p-5">
       <div className="grid grid-cols-1 gap-3 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <Input
-          label="Search"
-          placeholder="Search title, hook, script or notes"
+          label={t("search", { ns: "common" })}
+          placeholder={t("contentLibrary.filters.searchPlaceholder", { ns: "pages" })}
           value={search}
           onChange={(e) => onChange({ search: e.target.value })}
           leftSlot={<SearchIcon />}
         />
         <Select
-          label="Status"
+          label={t("status", { ns: "common", defaultValue: "Status" })}
           value={status}
           onChange={(e) => onChange({ status: e.target.value })}
-          options={STATUS_OPTIONS}
+          options={statusOptions}
         />
         <Select
-          label="Category"
+          label={t("category", { ns: "common", defaultValue: "Category" })}
           value={category}
           onChange={(e) => onChange({ category: e.target.value })}
-          options={CATEGORY_OPTIONS}
+          options={categoryOptions}
         />
         <Select
-          label="Platform"
+          label={t("platform", { ns: "common", defaultValue: "Platform" })}
           value={platform}
           onChange={(e) => onChange({ platform: e.target.value })}
-          options={PLATFORM_OPTIONS}
+          options={platformOptions}
         />
       </div>
 
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-          {isFetching ? "Refreshing results…" : "Filters apply automatically"}
+          {isFetching
+            ? t("contentLibrary.filters.refreshingResults", { ns: "pages" })
+            : t("contentLibrary.filters.autoApply", { ns: "pages" })}
         </p>
         {hasAny && (
           <Button variant="ghost" size="sm" onClick={onReset}>
-            Clear filters
+            {t("clearFilters", { ns: "common" })}
           </Button>
         )}
       </div>

@@ -1,9 +1,13 @@
+import { useTranslation } from "react-i18next";
+
 import { EmptyState } from "../../../components/ui/EmptyState";
 import { PlatformBadge } from "./PlatformBadge";
 import { cn } from "../../../lib/cn";
 import { formatDateTime, formatRelative, formatTime } from "../utils";
 
 function ReminderRow({ reminder, variant }) {
+  const { t, i18n } = useTranslation("pages");
+  const locale = i18n.resolvedLanguage || i18n.language;
   const isOverdue = variant === "overdue";
   return (
     <li
@@ -38,8 +42,13 @@ function ReminderRow({ reminder, variant }) {
             )}
           >
             {isOverdue
-              ? `Was due ${formatRelative(reminder.remindAt)}`
-              : `${formatTime(reminder.remindAt)} · ${formatRelative(reminder.remindAt)}`}
+              ? t("dashboard.reminders.wasDue", {
+                  time: formatRelative(reminder.remindAt, locale),
+                })
+              : t("dashboard.reminders.timeWithRelative", {
+                  time: formatTime(reminder.remindAt, locale),
+                  relative: formatRelative(reminder.remindAt, locale),
+                })}
           </span>
         </div>
       </div>
@@ -50,21 +59,27 @@ function ReminderRow({ reminder, variant }) {
         )}
         dateTime={reminder.remindAt}
       >
-        {formatDateTime(reminder.remindAt)}
+        {formatDateTime(reminder.remindAt, locale)}
       </time>
     </li>
   );
 }
 
 export function ReminderList({ reminders = [], variant = "today" }) {
+  const { t } = useTranslation("pages");
+
   if (!reminders.length) {
     return (
       <EmptyState
-        title={variant === "overdue" ? "Nothing overdue" : "No reminders today"}
+        title={
+          variant === "overdue"
+            ? t("dashboard.empty.nothingOverdue.title")
+            : t("dashboard.empty.noRemindersToday.title")
+        }
         description={
           variant === "overdue"
-            ? "You're caught up — nothing slipped past its window."
-            : "A quiet day. Use it to push something forward."
+            ? t("dashboard.empty.nothingOverdue.description")
+            : t("dashboard.empty.noRemindersToday.description")
         }
       />
     );

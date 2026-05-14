@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { PlatformIcon } from "../../../components/ui/PlatformIcon";
 import { cn } from "../../../lib/cn";
 import { PLATFORMS, formatPlatform } from "../../../lib/format";
@@ -28,6 +30,7 @@ function CheckIcon() {
 }
 
 function PlatformToggle({ platform, checked, onToggle }) {
+  const { t } = useTranslation(["common", "pages"]);
   const accent = PLATFORM_ACCENTS[platform] || {};
 
   return (
@@ -37,7 +40,7 @@ function PlatformToggle({ platform, checked, onToggle }) {
       aria-checked={checked}
       onClick={() => onToggle(platform)}
       className={cn(
-        "group relative flex items-center justify-between gap-3 rounded-xl border bg-surface px-4 py-3 text-left transition",
+        "group relative flex items-center justify-between gap-3 rounded-xl border bg-surface px-4 py-3 text-start transition",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
         checked
           ? "border-ink/40 bg-canvas shadow-[0_1px_0_rgba(20,20,20,0.04)]"
@@ -59,7 +62,9 @@ function PlatformToggle({ platform, checked, onToggle }) {
             {formatPlatform(platform)}
           </p>
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-            {checked ? "Selected" : "Include?"}
+            {checked
+              ? t("selected", { ns: "common" })
+              : t("createContent.targetPlatforms.include", { ns: "pages" })}
           </p>
         </div>
       </div>
@@ -80,6 +85,7 @@ function PlatformToggle({ platform, checked, onToggle }) {
 }
 
 export function PlatformPicker({ value = [], onChange, error, hint }) {
+  const { t } = useTranslation(["pages"]);
   const selected = new Set(value);
 
   const toggle = (platform) => {
@@ -94,10 +100,12 @@ export function PlatformPicker({ value = [], onChange, error, hint }) {
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-muted">
-          Target platforms
+          {t("createContent.targetPlatforms.label")}
         </span>
         <span className="text-[11px] tabular-nums text-muted">
-          {value.length} selected
+          {t("createContent.targetPlatforms.selectedCount", {
+            count: value.length,
+          })}
         </span>
       </div>
 

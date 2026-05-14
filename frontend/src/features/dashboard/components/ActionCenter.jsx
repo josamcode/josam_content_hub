@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Card } from "../../../components/ui/Card";
 import { cn } from "../../../lib/cn";
@@ -102,7 +103,7 @@ function ActionCard({ action }) {
   );
 }
 
-function buildActions(data) {
+function buildActions(data, t) {
   const stats = data?.stats || {};
   const reminders = stats.reminders || {};
   const schedules = stats.schedules || {};
@@ -131,15 +132,14 @@ function buildActions(data) {
     actions.push({
       key: "overdue",
       tone: "critical",
-      eyebrow: "Overdue",
-      title: "Manual publishing overdue",
-      message:
-        overdueCount === 1
-          ? "1 reminder slipped past its window. Clear it first."
-          : `${overdueCount} reminders slipped past their window. Clear them first.`,
+      eyebrow: t("dashboard.actionCenter.actions.overdue.eyebrow"),
+      title: t("dashboard.actionCenter.actions.overdue.title"),
+      message: t("dashboard.actionCenter.actions.overdue.message", {
+        count: overdueCount,
+      }),
       count: overdueCount,
       to: "/reminders",
-      cta: "Open reminders",
+      cta: t("dashboard.actions.openReminders"),
     });
   }
 
@@ -147,13 +147,12 @@ function buildActions(data) {
     actions.push({
       key: "failed",
       tone: "critical",
-      eyebrow: "Failed",
-      title: "Failed posts or schedules",
-      message:
-        "Something didn't publish. Check the logs to see what happened.",
+      eyebrow: t("dashboard.actionCenter.actions.failed.eyebrow"),
+      title: t("dashboard.actionCenter.actions.failed.title"),
+      message: t("dashboard.actionCenter.actions.failed.message"),
       count: failureCount,
       to: "/publish-logs",
-      cta: "Open publish logs",
+      cta: t("dashboard.actions.openPublishLogs"),
     });
   }
 
@@ -161,15 +160,14 @@ function buildActions(data) {
     actions.push({
       key: "today",
       tone: "warning",
-      eyebrow: "Today",
-      title: "Reminders for today",
-      message:
-        todayCount === 1
-          ? "1 reminder is due today."
-          : `${todayCount} reminders are due today.`,
+      eyebrow: t("dashboard.actionCenter.actions.today.eyebrow"),
+      title: t("dashboard.actionCenter.actions.today.title"),
+      message: t("dashboard.actionCenter.actions.today.message", {
+        count: todayCount,
+      }),
       count: todayCount,
       to: "/reminders",
-      cta: "Open reminders",
+      cta: t("dashboard.actions.openReminders"),
     });
   }
 
@@ -177,13 +175,12 @@ function buildActions(data) {
     actions.push({
       key: "ready-not-scheduled",
       tone: "warning",
-      eyebrow: "Ready",
-      title: "Ready but not scheduled",
-      message:
-        "Polished platform versions waiting on a posting slot.",
+      eyebrow: t("dashboard.actionCenter.actions.readyNotScheduled.eyebrow"),
+      title: t("dashboard.actionCenter.actions.readyNotScheduled.title"),
+      message: t("dashboard.actionCenter.actions.readyNotScheduled.message"),
       count: readyNotScheduledCount,
       to: "/workflow",
-      cta: "Open workflow board",
+      cta: t("dashboard.actions.openWorkflowBoard"),
     });
   }
 
@@ -191,13 +188,12 @@ function buildActions(data) {
     actions.push({
       key: "drafts-missing-text",
       tone: "accent",
-      eyebrow: "Drafts",
-      title: "Drafts need text",
-      message:
-        "Some platform drafts are missing required title or caption.",
+      eyebrow: t("dashboard.actionCenter.actions.draftsMissingText.eyebrow"),
+      title: t("dashboard.actionCenter.actions.draftsMissingText.title"),
+      message: t("dashboard.actionCenter.actions.draftsMissingText.message"),
       count: draftsMissingTextCount,
       to: "/workflow",
-      cta: "Open workflow board",
+      cta: t("dashboard.actions.openWorkflowBoard"),
     });
   }
 
@@ -205,7 +201,8 @@ function buildActions(data) {
 }
 
 export function ActionCenter({ data }) {
-  const actions = buildActions(data);
+  const { t } = useTranslation("pages");
+  const actions = buildActions(data, t);
 
   if (actions.length === 0) {
     return (
@@ -213,17 +210,17 @@ export function ActionCenter({ data }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-emerald-700">
-              Action Center
+              {t("dashboard.actionCenter.title")}
             </p>
             <p className="mt-1 text-sm text-emerald-900">
-              Nothing urgent right now — calm, focused work time.
+              {t("dashboard.actionCenter.calmMessage")}
             </p>
           </div>
           <Link
             to="/workflow"
             className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 hover:underline"
           >
-            Open workflow board <ArrowIcon />
+            {t("dashboard.actions.openWorkflowBoard")} <ArrowIcon />
           </Link>
         </div>
       </Card>
@@ -234,10 +231,12 @@ export function ActionCenter({ data }) {
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <h2 className="font-display text-lg leading-tight text-ink">
-          Action Center
+          {t("dashboard.actionCenter.title")}
         </h2>
         <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-          {actions.length} thing{actions.length === 1 ? "" : "s"} to handle
+          {t("dashboard.actionCenter.itemsToHandle", {
+            count: actions.length,
+          })}
         </p>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">

@@ -33,8 +33,14 @@ const STATUS_LABELS = {
   pending_manual: "Pending manual",
 };
 
-export function formatStatus(status) {
+export function formatStatus(status, t) {
   if (!status) return "—";
+  if (typeof t === "function") {
+    return t(status, {
+      ns: "status",
+      defaultValue: STATUS_LABELS[status] || status.replace(/_/g, " "),
+    });
+  }
   return STATUS_LABELS[status] || status.replace(/_/g, " ");
 }
 
@@ -72,23 +78,33 @@ const CATEGORY_LABELS = {
   personal_brand: "Personal brand",
 };
 
-export function formatCategory(category) {
+export function formatCategory(category, t) {
   if (!category) return "—";
+  if (typeof t === "function") {
+    return t(`categories.${category}`, {
+      ns: "status",
+      defaultValue: CATEGORY_LABELS[category] || category.replace(/_/g, " "),
+    });
+  }
   return CATEGORY_LABELS[category] || category.replace(/_/g, " ");
 }
 
-const dateOnly = new Intl.DateTimeFormat(undefined, {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-});
+function dateOnlyFormatter(locale) {
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
-const dateWithTime = new Intl.DateTimeFormat(undefined, {
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-});
+function dateWithTimeFormatter(locale) {
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 
 function safeDate(value) {
   if (!value) return null;
@@ -97,17 +113,22 @@ function safeDate(value) {
   return date;
 }
 
-export function formatDate(value) {
+export function formatDate(value, locale) {
   const date = safeDate(value);
-  return date ? dateOnly.format(date) : "—";
+  return date ? dateOnlyFormatter(locale).format(date) : "—";
 }
 
-export function formatDateTime(value) {
+export function formatDateTime(value, locale) {
   const date = safeDate(value);
-  return date ? dateWithTime.format(date) : "—";
+  return date ? dateWithTimeFormatter(locale).format(date) : "—";
 }
 
-export function formatRelative(value, now = new Date()) {
+export function formatRelative(value, now = new Date(), locale) {
+  if (typeof now === "string") {
+    locale = now;
+    now = new Date();
+  }
+
   const date = safeDate(value);
   if (!date) return "—";
 
@@ -117,13 +138,13 @@ export function formatRelative(value, now = new Date()) {
   const hour = 60 * minute;
   const day = 24 * hour;
 
-  const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
 
   if (absMs < minute) return "just now";
   if (absMs < hour) return rtf.format(Math.round(diffMs / minute), "minute");
   if (absMs < day) return rtf.format(Math.round(diffMs / hour), "hour");
   if (absMs < 7 * day) return rtf.format(Math.round(diffMs / day), "day");
-  return formatDate(date);
+  return formatDate(date, locale);
 }
 
 export const CONTENT_STATUSES = [

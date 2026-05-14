@@ -2,15 +2,216 @@
   "dashboard": {
     "hello": "Hello",
     "title": "Dashboard",
-    "subtitle": "Your content machine today."
+    "subtitle": "Your content machine today.",
+    "error": {
+      "title": "Couldn't load dashboard",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "actions": {
+      "openReminders": "Open reminders",
+      "openWorkflow": "Open workflow",
+      "openWorkflowBoard": "Open workflow board",
+      "openCalendar": "Open calendar",
+      "openPublishLogs": "Open publish logs"
+    },
+    "actionCenter": {
+      "title": "Action Center",
+      "calmMessage": "Nothing urgent right now - calm, focused work time.",
+      "itemsToHandle": "Things to handle: {{count}}",
+      "actions": {
+        "overdue": {
+          "eyebrow": "Overdue",
+          "title": "Manual publishing overdue",
+          "message": "Overdue reminders: {{count}}. Clear them first."
+        },
+        "failed": {
+          "eyebrow": "Failed",
+          "title": "Failed posts or schedules",
+          "message": "Something didn't publish. Check the logs to see what happened."
+        },
+        "today": {
+          "eyebrow": "Today",
+          "title": "Reminders for today",
+          "message": "Reminders due today: {{count}}."
+        },
+        "readyNotScheduled": {
+          "eyebrow": "Ready",
+          "title": "Ready but not scheduled",
+          "message": "Polished platform versions waiting on a posting slot."
+        },
+        "draftsMissingText": {
+          "eyebrow": "Drafts",
+          "title": "Drafts need text",
+          "message": "Some platform drafts are missing required title or caption."
+        }
+      }
+    },
+    "sections": {
+      "todayReminders": {
+        "title": "Today's reminders",
+        "description": "Things you asked yourself to handle today."
+      },
+      "overdue": {
+        "title": "Overdue",
+        "description": "Slipped past their window - clear these first."
+      },
+      "needsAttention": {
+        "title": "Needs attention",
+        "description": "Drafts missing text, ready posts without a slot, failed publishes - fix these to keep moving."
+      },
+      "upcomingPosts": {
+        "title": "Upcoming posts",
+        "description": "The next pieces moving toward publish."
+      },
+      "pipeline": {
+        "eyebrow": "Production pipeline",
+        "title": "Content by status"
+      },
+      "recentAttempts": {
+        "title": "Recent publish attempts",
+        "description": "Most recent publish actions across every platform."
+      }
+    },
+    "empty": {
+      "everythingInOrder": {
+        "title": "Everything is in order",
+        "description": "No drafts, schedules, or reminders need a fix right now."
+      },
+      "nothingOverdue": {
+        "title": "Nothing overdue",
+        "description": "You're caught up - nothing slipped past its window."
+      },
+      "noRemindersToday": {
+        "title": "No reminders today",
+        "description": "A quiet day. Use it to push something forward."
+      },
+      "nothingOnRunway": {
+        "title": "Nothing on the runway",
+        "description": "Schedule a post from your content library to fill this list."
+      },
+      "noPublishAttempts": {
+        "title": "No publish attempts yet",
+        "description": "Once you publish manually or automatically, recent attempts will show here."
+      }
+    },
+    "stats": {
+      "ideas": {
+        "label": "Ideas",
+        "helperWithCount": "{{count}} pieces total in the pipeline",
+        "helperEmpty": "Fresh sparks waiting to be developed."
+      },
+      "ready": {
+        "label": "Ready",
+        "helperWithCount": "{{count}} platform drafts still need work",
+        "helperEmpty": "All polished - nothing waiting on you to draft."
+      },
+      "scheduled": {
+        "label": "Scheduled",
+        "helperManual": "{{count}} need manual publishing",
+        "helperEmpty": "Queued and on the calendar."
+      },
+      "publishedThisMonth": {
+        "label": "Published this month",
+        "trendFailed": "{{count}} failed",
+        "trendOnTrack": "On track",
+        "helperFailed": "Failed attempts this month: {{count}}.",
+        "helperEmpty": "No failed publish attempts this month."
+      }
+    },
+    "reminders": {
+      "wasDue": "Was due {{time}}",
+      "timeWithRelative": "{{time}} - {{relative}}"
+    },
+    "archivedHidden": "Archived items hidden from this view: {{count}}"
   },
   "contentLibrary": {
-    "title": "Content Library"
+    "eyebrow": "Library",
+    "title": "Content Library",
+    "subtitle": "Every idea, draft and finished piece - in one quiet place.",
+    "error": {
+      "title": "Couldn't load content",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "filters": {
+      "searchPlaceholder": "Search title, hook, script or notes",
+      "anyStatus": "Any status",
+      "anyCategory": "Any category",
+      "anyPlatform": "Any platform",
+      "refreshingResults": "Refreshing results...",
+      "autoApply": "Filters apply automatically"
+    },
+    "empty": {
+      "filteredTitle": "Nothing matches those filters",
+      "filteredDescription": "Try widening your search or clearing a filter or two.",
+      "noContentTitle": "No content yet",
+      "noContentDescription": "Start with an idea - even a rough one. You can refine it later.",
+      "createFirst": "Create your first item"
+    },
+    "cards": {
+      "noPlatforms": "No platforms set",
+      "open": "Open"
+    },
+    "pagination": {
+      "showing": "Showing {{start}}-{{end}} of {{total}}"
+    }
   },
   "createContent": {
     "eyebrow": "New",
     "title": "Create Content",
-    "subtitle": "Capture a new idea — title and category are all you need to start."
+    "subtitle": "Capture a new idea - title and category are all you need to start.",
+    "error": {
+      "title": "Couldn't save",
+      "fallback": "We couldn't create this item just now."
+    },
+    "quickIdea": {
+      "eyebrow": "Quick idea",
+      "title": "What is this piece?",
+      "description": "A title and a category are all you need. Everything else can grow with the idea.",
+      "titleLabel": "Title",
+      "titlePlaceholder": "e.g. How I'd architect a side-SaaS in a weekend",
+      "categoryLabel": "Category",
+      "categoryPlaceholder": "Pick a category",
+      "hookLabel": "Hook",
+      "hookPlaceholder": "The one-line idea that grabs attention."
+    },
+    "scriptNotes": {
+      "title": "Script & notes",
+      "description": "Optional - outline, full script, references, links.",
+      "scriptLabel": "Script",
+      "scriptPlaceholder": "The full script or outline.",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Research links, references, talking points, anything sticky."
+    },
+    "targetPlatforms": {
+      "title": "Target platforms",
+      "description": "Pick where this will live. Each platform gets its own draft.",
+      "label": "Target platforms",
+      "selectedCount": "{{count}} selected",
+      "include": "Include?",
+      "hint": "Optional - you can add platforms later.",
+      "applyNote": "Updates target platforms only. Title, hook, script, notes, and hashtags stay as written."
+    },
+    "categoryGuidance": {
+      "title": "Category guidance",
+      "description": "Defaults you can lean on while drafting.",
+      "emptyDescription": "Pick a category to see saved goal, hook style, caption style, and default platforms.",
+      "goal": "Goal",
+      "hookStyle": "Hook style",
+      "captionStyle": "Caption style",
+      "defaultHashtags": "Default hashtags",
+      "defaultPlatforms": "Default platforms"
+    },
+    "whatNext": {
+      "title": "What happens next",
+      "items": {
+        "contentItem": "A new Content Item is created in your library.",
+        "platformPosts": "For each selected platform, a draft Platform Post is spun up.",
+        "details": "From the details page you can upload media, refine captions, and schedule."
+      }
+    },
+    "footer": {
+      "ideaStatus": "New item will be saved as an idea"
+    }
   },
   "contentDetail": {
     "eyebrow": "Library / Detail"

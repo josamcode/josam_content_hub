@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { EmptyState } from "../../../components/ui/EmptyState";
 import { PlatformBadge } from "./PlatformBadge";
@@ -45,6 +46,8 @@ function ArrowIcon() {
 }
 
 function AttemptRow({ attempt }) {
+  const { t, i18n } = useTranslation(["common", "pages"]);
+  const locale = i18n.resolvedLanguage || i18n.language;
   const titleNode = attempt.contentItemId ? (
     <Link
       to={`/content/${attempt.contentItemId}`}
@@ -61,8 +64,8 @@ function AttemptRow({ attempt }) {
       <div className="min-w-0">
         {titleNode}
         <p className="mt-0.5 text-[11px] text-muted">
-          {formatDateTime(attempt.attemptedAt)} ·{" "}
-          {formatRelative(attempt.attemptedAt)}
+          {formatDateTime(attempt.attemptedAt, locale)} -{" "}
+          {formatRelative(attempt.attemptedAt, locale)}
         </p>
       </div>
       <PlatformBadge platform={attempt.platform} />
@@ -72,7 +75,7 @@ function AttemptRow({ attempt }) {
           to={`/content/${attempt.contentItemId}`}
           className="inline-flex items-center gap-1 text-[11px] font-medium text-ink hover:text-accent"
         >
-          Open <ArrowIcon />
+          {t("open", { ns: "common" })} <ArrowIcon />
         </Link>
       ) : (
         <span className="text-[11px] text-muted">—</span>
@@ -84,7 +87,7 @@ function AttemptRow({ attempt }) {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-[11px] font-medium text-accent hover:underline"
         >
-          View <ExternalIcon />
+          {t("view", { ns: "common" })} <ExternalIcon />
         </a>
       ) : (
         <span className="text-[11px] text-muted">—</span>
@@ -94,11 +97,13 @@ function AttemptRow({ attempt }) {
 }
 
 export function RecentAttemptsList({ attempts = [] }) {
+  const { t } = useTranslation("pages");
+
   if (!attempts.length) {
     return (
       <EmptyState
-        title="No publish attempts yet"
-        description="Once you publish (manually or automatically), recent attempts will show here."
+        title={t("dashboard.empty.noPublishAttempts.title")}
+        description={t("dashboard.empty.noPublishAttempts.description")}
       />
     );
   }

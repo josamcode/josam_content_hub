@@ -2,15 +2,216 @@
   "dashboard": {
     "hello": "مرحبًا",
     "title": "لوحة التحكم",
-    "subtitle": "ماكينة محتواك اليوم."
+    "subtitle": "ماكينة محتواك اليوم.",
+    "error": {
+      "title": "تعذر تحميل لوحة التحكم",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    },
+    "actions": {
+      "openReminders": "فتح التذكيرات",
+      "openWorkflow": "فتح سير العمل",
+      "openWorkflowBoard": "فتح لوحة سير العمل",
+      "openCalendar": "فتح التقويم",
+      "openPublishLogs": "فتح سجل النشر"
+    },
+    "actionCenter": {
+      "title": "مركز الإجراءات",
+      "calmMessage": "لا يوجد شيء عاجل الآن - وقت هادئ للتركيز.",
+      "itemsToHandle": "عناصر تحتاج إجراء: {{count}}",
+      "actions": {
+        "overdue": {
+          "eyebrow": "متأخر",
+          "title": "النشر اليدوي متأخر",
+          "message": "تذكيرات تجاوزت وقتها: {{count}}. ابدأ بها."
+        },
+        "failed": {
+          "eyebrow": "فشل",
+          "title": "منشورات أو جداول فشلت",
+          "message": "هناك شيء لم يُنشر. راجع السجل لمعرفة ما حدث."
+        },
+        "today": {
+          "eyebrow": "اليوم",
+          "title": "تذكيرات اليوم",
+          "message": "تذكيرات مستحقة اليوم: {{count}}."
+        },
+        "readyNotScheduled": {
+          "eyebrow": "جاهز",
+          "title": "جاهز وغير مجدول",
+          "message": "نسخ منصات جاهزة تنتظر موعد نشر."
+        },
+        "draftsMissingText": {
+          "eyebrow": "مسودات",
+          "title": "مسودات تحتاج نصًا",
+          "message": "بعض مسودات المنصات ينقصها عنوان أو كابشن مطلوب."
+        }
+      }
+    },
+    "sections": {
+      "todayReminders": {
+        "title": "تذكيرات اليوم",
+        "description": "أشياء طلبت من نفسك إنجازها اليوم."
+      },
+      "overdue": {
+        "title": "متأخر",
+        "description": "تجاوزت وقتها - ابدأ بتنظيف هذه القائمة."
+      },
+      "needsAttention": {
+        "title": "يحتاج انتباهك",
+        "description": "مسودات ينقصها نص، منشورات جاهزة بلا موعد، ومحاولات نشر فاشلة - أصلحها لتستمر."
+      },
+      "upcomingPosts": {
+        "title": "المنشورات القادمة",
+        "description": "المحتوى التالي في طريقه إلى النشر."
+      },
+      "pipeline": {
+        "eyebrow": "سير الإنتاج",
+        "title": "المحتوى حسب الحالة"
+      },
+      "recentAttempts": {
+        "title": "أحدث محاولات النشر",
+        "description": "آخر إجراءات النشر عبر كل المنصات."
+      }
+    },
+    "empty": {
+      "everythingInOrder": {
+        "title": "كل شيء مرتب",
+        "description": "لا توجد مسودات أو جداول أو تذكيرات تحتاج إصلاحًا الآن."
+      },
+      "nothingOverdue": {
+        "title": "لا يوجد متأخر",
+        "description": "أنت متابع كل شيء - لا شيء تجاوز وقته."
+      },
+      "noRemindersToday": {
+        "title": "لا توجد تذكيرات اليوم",
+        "description": "يوم هادئ. استغله لدفع محتوى إلى الأمام."
+      },
+      "nothingOnRunway": {
+        "title": "لا توجد منشورات قادمة",
+        "description": "جدول منشورًا من مكتبة المحتوى ليظهر هنا."
+      },
+      "noPublishAttempts": {
+        "title": "لا توجد محاولات نشر بعد",
+        "description": "بعد أن تنشر يدويًا أو تلقائيًا، ستظهر أحدث المحاولات هنا."
+      }
+    },
+    "stats": {
+      "ideas": {
+        "label": "الأفكار",
+        "helperWithCount": "إجمالي المحتوى داخل سير العمل: {{count}}",
+        "helperEmpty": "أفكار جديدة تنتظر التطوير."
+      },
+      "ready": {
+        "label": "جاهز",
+        "helperWithCount": "مسودات منصات ما زالت تحتاج عملًا: {{count}}",
+        "helperEmpty": "كل شيء مصقول - لا توجد مسودات تنتظر منك."
+      },
+      "scheduled": {
+        "label": "مجدول",
+        "helperManual": "تحتاج نشرًا يدويًا: {{count}}",
+        "helperEmpty": "في الطابور وعلى التقويم."
+      },
+      "publishedThisMonth": {
+        "label": "منشور هذا الشهر",
+        "trendFailed": "فشل: {{count}}",
+        "trendOnTrack": "على المسار",
+        "helperFailed": "محاولات فاشلة هذا الشهر: {{count}}.",
+        "helperEmpty": "لا توجد محاولات نشر فاشلة هذا الشهر."
+      }
+    },
+    "reminders": {
+      "wasDue": "كان مستحقًا {{time}}",
+      "timeWithRelative": "{{time}} - {{relative}}"
+    },
+    "archivedHidden": "عناصر مؤرشفة مخفية من هذا العرض: {{count}}"
   },
   "contentLibrary": {
-    "title": "مكتبة المحتوى"
+    "eyebrow": "المكتبة",
+    "title": "مكتبة المحتوى",
+    "subtitle": "كل فكرة ومسودة وقطعة مكتملة - في مكان واحد هادئ.",
+    "error": {
+      "title": "تعذر تحميل المحتوى",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    },
+    "filters": {
+      "searchPlaceholder": "ابحث في العنوان أو الافتتاحية أو النص أو الملاحظات",
+      "anyStatus": "أي حالة",
+      "anyCategory": "أي تصنيف",
+      "anyPlatform": "أي منصة",
+      "refreshingResults": "جارٍ تحديث النتائج...",
+      "autoApply": "تُطبّق الفلاتر تلقائيًا"
+    },
+    "empty": {
+      "filteredTitle": "لا توجد نتائج بهذه الفلاتر",
+      "filteredDescription": "وسّع البحث أو امسح فلترًا أو اثنين.",
+      "noContentTitle": "لا يوجد محتوى بعد",
+      "noContentDescription": "ابدأ بفكرة، حتى لو كانت خامًا. يمكنك تحسينها لاحقًا.",
+      "createFirst": "إنشاء أول محتوى"
+    },
+    "cards": {
+      "noPlatforms": "لا توجد منصات محددة",
+      "open": "فتح"
+    },
+    "pagination": {
+      "showing": "عرض {{start}}-{{end}} من {{total}}"
+    }
   },
   "createContent": {
     "eyebrow": "جديد",
     "title": "إنشاء محتوى",
-    "subtitle": "التقط فكرة جديدة — العنوان والتصنيف يكفيان للبدء."
+    "subtitle": "التقط فكرة جديدة - العنوان والتصنيف يكفيان للبدء.",
+    "error": {
+      "title": "تعذر الحفظ",
+      "fallback": "لم نتمكن من إنشاء هذا المحتوى الآن."
+    },
+    "quickIdea": {
+      "eyebrow": "فكرة سريعة",
+      "title": "ما هذه القطعة؟",
+      "description": "العنوان والتصنيف يكفيان للبدء. كل شيء آخر يمكن أن ينمو مع الفكرة.",
+      "titleLabel": "العنوان",
+      "titlePlaceholder": "مثال: كيف أبني SaaS جانبيًا في عطلة أسبوع",
+      "categoryLabel": "التصنيف",
+      "categoryPlaceholder": "اختر التصنيف",
+      "hookLabel": "الافتتاحية",
+      "hookPlaceholder": "الجملة الواحدة التي تخطف الانتباه."
+    },
+    "scriptNotes": {
+      "title": "النص والملاحظات",
+      "description": "اختياري - مخطط، نص كامل، مراجع، روابط.",
+      "scriptLabel": "النص",
+      "scriptPlaceholder": "النص الكامل أو المخطط.",
+      "notesLabel": "الملاحظات",
+      "notesPlaceholder": "روابط بحث، مراجع، نقاط حديث، أو أي شيء مهم."
+    },
+    "targetPlatforms": {
+      "title": "المنصات المستهدفة",
+      "description": "اختر أين سيُنشر هذا المحتوى. كل منصة تحصل على مسودتها.",
+      "label": "المنصات المستهدفة",
+      "selectedCount": "المحدد: {{count}}",
+      "include": "إضافة؟",
+      "hint": "اختياري - يمكنك إضافة المنصات لاحقًا.",
+      "applyNote": "يحدّث المنصات المستهدفة فقط. العنوان والافتتاحية والنص والملاحظات والهاشتاجز تبقى كما كتبتها."
+    },
+    "categoryGuidance": {
+      "title": "توجيه التصنيف",
+      "description": "إعدادات يمكنك الاعتماد عليها أثناء الكتابة.",
+      "emptyDescription": "اختر التصنيف لرؤية الهدف المحفوظ، ونمط الافتتاحية، ونمط الكابشن، والمنصات الافتراضية.",
+      "goal": "الهدف",
+      "hookStyle": "نمط الافتتاحية",
+      "captionStyle": "نمط الكابشن",
+      "defaultHashtags": "الهاشتاجز الافتراضية",
+      "defaultPlatforms": "المنصات الافتراضية"
+    },
+    "whatNext": {
+      "title": "ماذا يحدث بعد ذلك؟",
+      "items": {
+        "contentItem": "يُنشأ Content Item جديد داخل مكتبتك.",
+        "platformPosts": "لكل منصة تختارها، تُنشأ مسودة Platform Post.",
+        "details": "من صفحة التفاصيل يمكنك رفع الوسائط، وضبط الكابشن، والجدولة."
+      }
+    },
+    "footer": {
+      "ideaStatus": "سيُحفظ المحتوى الجديد كفكرة"
+    }
   },
   "contentDetail": {
     "eyebrow": "المكتبة / التفاصيل"

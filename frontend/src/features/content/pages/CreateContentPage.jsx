@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Badge } from "../../../components/ui/Badge";
@@ -38,11 +39,6 @@ const createContentSchema = z.object({
   notes: z.string().max(20000, "Notes are too long").optional(),
   targetPlatforms: z.array(platformEnum).optional(),
 });
-
-const CATEGORY_OPTIONS = [
-  { value: "", label: "Pick a category" },
-  ...CONTENT_CATEGORIES.map((value) => ({ value, label: formatCategory(value) })),
-];
 
 function ArrowLeftIcon() {
   return (
@@ -114,7 +110,7 @@ function CollapsibleCard({
         aria-expanded={isOpen}
         aria-controls={contentId}
         className={cn(
-          "flex w-full items-start justify-between gap-3 px-5 py-4 text-left transition",
+          "flex w-full items-start justify-between gap-3 px-5 py-4 text-start transition",
           "hover:bg-canvas/40",
           isOpen ? "border-b border-border bg-canvas/30" : ""
         )}
@@ -163,16 +159,20 @@ function hasValue(value) {
 }
 
 function GuidanceText({ value }) {
+  const { t } = useTranslation("common");
+
   return hasValue(value) ? (
     <p className="text-sm leading-relaxed text-ink">{value}</p>
   ) : (
-    <p className="text-sm text-muted">Not set</p>
+    <p className="text-sm text-muted">{t("notSet")}</p>
   );
 }
 
 function GuidanceBadges({ values, formatValue = (value) => value }) {
+  const { t } = useTranslation("common");
+
   if (!Array.isArray(values) || values.length === 0) {
-    return <p className="text-sm text-muted">Not set</p>;
+    return <p className="text-sm text-muted">{t("notSet")}</p>;
   }
 
   return (
@@ -198,36 +198,38 @@ function GuidanceItem({ label, children }) {
 }
 
 function CategoryGuidancePanel({ categoryDefault, compact = false }) {
+  const { t } = useTranslation(["pages", "status"]);
+
   if (!categoryDefault) return null;
 
   return (
     <Card padding={compact ? "md" : "lg"}>
       <div className="mb-3 flex flex-col gap-1">
         <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-          Category guidance
+          {t("createContent.categoryGuidance.title", { ns: "pages" })}
         </span>
         <h2 className="font-display text-base leading-tight text-ink">
-          {formatCategory(categoryDefault.category)}
+          {formatCategory(categoryDefault.category, t)}
         </h2>
         <p className="text-xs text-muted">
-          Defaults you can lean on while drafting.
+          {t("createContent.categoryGuidance.description", { ns: "pages" })}
         </p>
       </div>
 
       <div className="flex flex-col gap-3">
-        <GuidanceItem label="Goal">
+        <GuidanceItem label={t("createContent.categoryGuidance.goal", { ns: "pages" })}>
           <GuidanceText value={categoryDefault.defaultGoal} />
         </GuidanceItem>
-        <GuidanceItem label="Hook style">
+        <GuidanceItem label={t("createContent.categoryGuidance.hookStyle", { ns: "pages" })}>
           <GuidanceText value={categoryDefault.defaultHookStyle} />
         </GuidanceItem>
-        <GuidanceItem label="Caption style">
+        <GuidanceItem label={t("createContent.categoryGuidance.captionStyle", { ns: "pages" })}>
           <GuidanceText value={categoryDefault.defaultCaptionStyle} />
         </GuidanceItem>
-        <GuidanceItem label="Default hashtags">
+        <GuidanceItem label={t("createContent.categoryGuidance.defaultHashtags", { ns: "pages" })}>
           <GuidanceBadges values={categoryDefault.defaultHashtags} />
         </GuidanceItem>
-        <GuidanceItem label="Default platforms">
+        <GuidanceItem label={t("createContent.categoryGuidance.defaultPlatforms", { ns: "pages" })}>
           <GuidanceBadges
             values={categoryDefault.defaultPlatforms}
             formatValue={formatPlatform}
@@ -239,23 +241,25 @@ function CategoryGuidancePanel({ categoryDefault, compact = false }) {
 }
 
 function WhatHappensNextCard() {
+  const { t } = useTranslation("pages");
+
   return (
     <Card padding="md" className="bg-canvas/40">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-        What happens next
+        {t("createContent.whatNext.title")}
       </p>
       <ul className="mt-3 flex flex-col gap-2 text-sm text-ink">
         <li className="flex gap-2">
           <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink" />
-          <span>A new <span className="font-medium">Content Item</span> is created in your library.</span>
+          <span>{t("createContent.whatNext.items.contentItem")}</span>
         </li>
         <li className="flex gap-2">
           <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink" />
-          <span>For each selected platform, a draft <span className="font-medium">Platform Post</span> is spun up.</span>
+          <span>{t("createContent.whatNext.items.platformPosts")}</span>
         </li>
         <li className="flex gap-2">
           <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink" />
-          <span>From the details page you can upload media, refine captions, and schedule.</span>
+          <span>{t("createContent.whatNext.items.details")}</span>
         </li>
       </ul>
     </Card>
@@ -263,6 +267,7 @@ function WhatHappensNextCard() {
 }
 
 export function CreateContentPage() {
+  const { t } = useTranslation(["common", "pages", "status"]);
   const navigate = useNavigate();
   const [submitError, setSubmitError] = useState(null);
   const [targetPlatformsTouched, setTargetPlatformsTouched] = useState(false);
@@ -298,6 +303,19 @@ export function CreateContentPage() {
   const categoryDefaults = Array.isArray(categoryDefaultsQuery.data)
     ? categoryDefaultsQuery.data
     : [];
+  const categoryOptions = useMemo(
+    () => [
+      {
+        value: "",
+        label: t("createContent.quickIdea.categoryPlaceholder", { ns: "pages" }),
+      },
+      ...CONTENT_CATEGORIES.map((value) => ({
+        value,
+        label: formatCategory(value, t),
+      })),
+    ],
+    [t]
+  );
   const selectedCategoryDefault = useMemo(
     () =>
       categoryDefaults.find(
@@ -348,7 +366,10 @@ export function CreateContentPage() {
     },
     onError: (error) => {
       setSubmitError(
-        extractErrorMessage(error, "We couldn't create this item just now.")
+        extractErrorMessage(
+          error,
+          t("createContent.error.fallback", { ns: "pages" })
+        )
       );
     },
   });
@@ -370,13 +391,13 @@ export function CreateContentPage() {
       className="flex flex-col gap-6"
     >
       <PageHeader
-        eyebrow="New"
-        title="Create Content"
-        subtitle="Capture a new idea — title and category are all you need to start."
+        eyebrow={t("createContent.eyebrow", { ns: "pages" })}
+        title={t("createContent.title", { ns: "pages" })}
+        subtitle={t("createContent.subtitle", { ns: "pages" })}
         actions={
           <Button as={Link} to="/content" variant="outline" size="sm" type="button">
             <ArrowLeftIcon />
-            Back to library
+            {t("backToLibrary", { ns: "common" })}
           </Button>
         }
       />
@@ -384,7 +405,7 @@ export function CreateContentPage() {
       {submitError && (
         <Card padding="md" className="border-danger/30 bg-danger/5">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            Couldn't save
+            {t("createContent.error.title", { ns: "pages" })}
           </p>
           <p className="mt-1 text-sm text-ink">{submitError}</p>
         </Card>
@@ -394,15 +415,15 @@ export function CreateContentPage() {
         <div className="flex min-w-0 flex-col gap-4">
           <Card padding="lg">
             <SectionHeading
-              eyebrow="Quick idea"
-              title="What is this piece?"
-              description="A title and a category are all you need. Everything else can grow with the idea."
+              eyebrow={t("createContent.quickIdea.eyebrow", { ns: "pages" })}
+              title={t("createContent.quickIdea.title", { ns: "pages" })}
+              description={t("createContent.quickIdea.description", { ns: "pages" })}
             />
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_1fr]">
               <Input
-                label="Title"
-                placeholder="e.g. How I'd architect a side-SaaS in a weekend"
+                label={t("createContent.quickIdea.titleLabel", { ns: "pages" })}
+                placeholder={t("createContent.quickIdea.titlePlaceholder", { ns: "pages" })}
                 error={errors.title?.message}
                 {...register("title")}
               />
@@ -411,9 +432,9 @@ export function CreateContentPage() {
                 name="category"
                 render={({ field }) => (
                   <Select
-                    label="Category"
-                    placeholder="Pick a category"
-                    options={CATEGORY_OPTIONS}
+                    label={t("createContent.quickIdea.categoryLabel", { ns: "pages" })}
+                    placeholder={t("createContent.quickIdea.categoryPlaceholder", { ns: "pages" })}
+                    options={categoryOptions}
                     error={errors.category?.message}
                     {...field}
                   />
@@ -423,8 +444,8 @@ export function CreateContentPage() {
 
             <div className="mt-4">
               <Textarea
-                label="Hook"
-                placeholder="The one-line idea that grabs attention."
+                label={t("createContent.quickIdea.hookLabel", { ns: "pages" })}
+                placeholder={t("createContent.quickIdea.hookPlaceholder", { ns: "pages" })}
                 rows={3}
                 counter={500}
                 value={hookValue}
@@ -444,28 +465,30 @@ export function CreateContentPage() {
           )}
 
           <CollapsibleCard
-            title="Script & notes"
-            description="Optional — outline, full script, references, links."
+            title={t("createContent.scriptNotes.title", { ns: "pages" })}
+            description={t("createContent.scriptNotes.description", { ns: "pages" })}
             defaultOpen={hasValue(watchedScript) || hasValue(watchedNotes)}
             meta={
               scriptNotesCount > 0 ? (
                 <span className="inline-flex items-center rounded-md border border-border bg-canvas px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-muted">
-                  {scriptNotesCount === 2 ? "Both filled" : "Filled"}
+                  {scriptNotesCount === 2
+                    ? t("bothFilled", { ns: "common" })
+                    : t("filled", { ns: "common" })}
                 </span>
               ) : null
             }
           >
             <div className="flex flex-col gap-4">
               <Textarea
-                label="Script"
-                placeholder="The full script or outline."
+                label={t("createContent.scriptNotes.scriptLabel", { ns: "pages" })}
+                placeholder={t("createContent.scriptNotes.scriptPlaceholder", { ns: "pages" })}
                 rows={8}
                 error={errors.script?.message}
                 {...register("script")}
               />
               <Textarea
-                label="Notes"
-                placeholder="Research links, references, talking points, anything sticky."
+                label={t("createContent.scriptNotes.notesLabel", { ns: "pages" })}
+                placeholder={t("createContent.scriptNotes.notesPlaceholder", { ns: "pages" })}
                 rows={5}
                 error={errors.notes?.message}
                 {...register("notes")}
@@ -474,18 +497,21 @@ export function CreateContentPage() {
           </CollapsibleCard>
 
           <CollapsibleCard
-            title="Target platforms"
-            description="Pick where this will live. Each platform gets its own draft."
+            title={t("createContent.targetPlatforms.title", { ns: "pages" })}
+            description={t("createContent.targetPlatforms.description", { ns: "pages" })}
             open={platformsOpen}
             onOpenChange={setPlatformsOpen}
             meta={
               platformsCount > 0 ? (
                 <span className="inline-flex items-center rounded-md border border-border bg-canvas px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-muted">
-                  {platformsCount} selected
+                  {t("createContent.targetPlatforms.selectedCount", {
+                    ns: "pages",
+                    count: platformsCount,
+                  })}
                 </span>
               ) : (
                 <span className="inline-flex items-center rounded-md border border-border bg-canvas px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-muted">
-                  Optional
+                  {t("optional", { ns: "common" })}
                 </span>
               )
             }
@@ -501,7 +527,7 @@ export function CreateContentPage() {
                     field.onChange(nextValue);
                   }}
                   error={errors.targetPlatforms?.message}
-                  hint="Optional — you can add platforms later."
+                  hint={t("createContent.targetPlatforms.hint", { ns: "pages" })}
                 />
               )}
             />
@@ -515,10 +541,10 @@ export function CreateContentPage() {
                   disabled={!hasDefaultPlatforms}
                   className="self-start"
                 >
-                  Apply category defaults
+                  {t("applyCategoryDefaults", { ns: "common" })}
                 </Button>
                 <p className="text-xs text-muted">
-                  Updates target platforms only. Title, hook, script, notes, and hashtags stay as written.
+                  {t("createContent.targetPlatforms.applyNote", { ns: "pages" })}
                 </p>
               </div>
             )}
@@ -533,10 +559,10 @@ export function CreateContentPage() {
           ) : (
             <Card padding="md" className="hidden bg-canvas/40 lg:block">
               <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-                Category guidance
+                {t("createContent.categoryGuidance.title", { ns: "pages" })}
               </p>
               <p className="mt-2 text-sm text-muted">
-                Pick a category to see saved goal, hook style, caption style, and default platforms.
+                {t("createContent.categoryGuidance.emptyDescription", { ns: "pages" })}
               </p>
             </Card>
           )}
@@ -548,7 +574,7 @@ export function CreateContentPage() {
       <div className="sticky bottom-0 -mx-6 mt-2 border-t border-border bg-canvas/95 px-6 py-4 backdrop-blur md:-mx-10 md:px-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-            New item will be saved as an idea
+            {t("createContent.footer.ideaStatus", { ns: "pages" })}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -558,7 +584,7 @@ export function CreateContentPage() {
               size="md"
               type="button"
             >
-              Cancel
+              {t("cancel", { ns: "common" })}
             </Button>
             <Button
               type="submit"
@@ -566,7 +592,9 @@ export function CreateContentPage() {
               size="md"
               loading={submitting}
             >
-              {submitting ? "Saving" : "Save content"}
+              {submitting
+                ? t("saving", { ns: "common" })
+                : t("saveContent", { ns: "common" })}
             </Button>
           </div>
         </div>

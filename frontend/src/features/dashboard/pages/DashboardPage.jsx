@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -24,8 +25,8 @@ function sumValues(record) {
   );
 }
 
-function getRefreshLabel(isFetching) {
-  return isFetching ? "Refreshing" : "Refresh";
+function getRefreshLabel(isFetching, tCommon) {
+  return isFetching ? tCommon("refreshing") : tCommon("refresh");
 }
 
 function SectionLinkAction({ to, children }) {
@@ -37,15 +38,17 @@ function SectionLinkAction({ to, children }) {
 }
 
 function ErrorState({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load dashboard
+        {t("dashboard.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -53,6 +56,7 @@ function ErrorState({ message, onRetry }) {
 }
 
 export function DashboardPage() {
+  const { t } = useTranslation(["common", "pages"]);
   const { user } = useAuth();
   const { data, isLoading, isError, error, isFetching, refetch } =
     useDashboard();
@@ -63,14 +67,18 @@ export function DashboardPage() {
     return (
       <div className="flex flex-col gap-6">
         <PageHeader
-          eyebrow={user?.name ? `Hello, ${user.name.split(" ")[0]}` : "Hello"}
-          title="Dashboard"
-          subtitle="Your content machine today."
+          eyebrow={
+            user?.name
+              ? `${t("dashboard.hello", { ns: "pages" })}, ${user.name.split(" ")[0]}`
+              : t("dashboard.hello", { ns: "pages" })
+          }
+          title={t("dashboard.title", { ns: "pages" })}
+          subtitle={t("dashboard.subtitle", { ns: "pages" })}
         />
         <ErrorState
           message={extractErrorMessage(
             error,
-            "We couldn't reach the API just now."
+            t("dashboard.error.fallback", { ns: "pages" })
           )}
           onRetry={() => refetch()}
         />
@@ -105,9 +113,13 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow={user?.name ? `Hello, ${user.name.split(" ")[0]}` : "Hello"}
-        title="Dashboard"
-        subtitle="Your content machine today."
+        eyebrow={
+          user?.name
+            ? `${t("dashboard.hello", { ns: "pages" })}, ${user.name.split(" ")[0]}`
+            : t("dashboard.hello", { ns: "pages" })
+        }
+        title={t("dashboard.title", { ns: "pages" })}
+        subtitle={t("dashboard.subtitle", { ns: "pages" })}
         actions={
           <Button
             variant="outline"
@@ -115,7 +127,7 @@ export function DashboardPage() {
             onClick={() => refetch()}
             loading={isFetching}
           >
-            {getRefreshLabel(isFetching)}
+            {getRefreshLabel(isFetching, t)}
           </Button>
         }
       />
@@ -124,12 +136,14 @@ export function DashboardPage() {
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <SectionCard
-          title="Today's reminders"
-          description="Things you asked yourself to handle today."
+          title={t("dashboard.sections.todayReminders.title", { ns: "pages" })}
+          description={t("dashboard.sections.todayReminders.description", { ns: "pages" })}
           count={data?.todayReminders?.length}
           countTone={reminders.pendingToday ? "accent" : "neutral"}
           action={
-            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
+            <SectionLinkAction to="/reminders">
+              {t("dashboard.actions.openReminders", { ns: "pages" })}
+            </SectionLinkAction>
           }
         >
           <ReminderList
@@ -139,12 +153,14 @@ export function DashboardPage() {
         </SectionCard>
 
         <SectionCard
-          title="Overdue"
-          description="Slipped past their window — clear these first."
+          title={t("dashboard.sections.overdue.title", { ns: "pages" })}
+          description={t("dashboard.sections.overdue.description", { ns: "pages" })}
           count={data?.overdueReminders?.length}
           countTone={data?.overdueReminders?.length ? "danger" : "neutral"}
           action={
-            <SectionLinkAction to="/reminders">Open reminders</SectionLinkAction>
+            <SectionLinkAction to="/reminders">
+              {t("dashboard.actions.openReminders", { ns: "pages" })}
+            </SectionLinkAction>
           }
           className={
             data?.overdueReminders?.length ? "border-rose-200 bg-rose-50/40" : ""
@@ -158,24 +174,28 @@ export function DashboardPage() {
       </section>
 
       <SectionCard
-        title="Needs attention"
-        description="Drafts missing text, ready posts without a slot, failed publishes — fix these to keep moving."
+        title={t("dashboard.sections.needsAttention.title", { ns: "pages" })}
+        description={t("dashboard.sections.needsAttention.description", { ns: "pages" })}
         count={data?.needsAttention?.length}
         countTone={data?.needsAttention?.length ? "warning" : "neutral"}
         action={
-          <SectionLinkAction to="/workflow">Open workflow</SectionLinkAction>
+          <SectionLinkAction to="/workflow">
+            {t("dashboard.actions.openWorkflow", { ns: "pages" })}
+          </SectionLinkAction>
         }
       >
         <NeedsAttentionList items={data?.needsAttention} />
       </SectionCard>
 
       <SectionCard
-        title="Upcoming posts"
-        description="The next pieces moving toward publish."
+        title={t("dashboard.sections.upcomingPosts.title", { ns: "pages" })}
+        description={t("dashboard.sections.upcomingPosts.description", { ns: "pages" })}
         count={data?.upcomingPosts?.length}
         countTone="neutral"
         action={
-          <SectionLinkAction to="/calendar">Open calendar</SectionLinkAction>
+          <SectionLinkAction to="/calendar">
+            {t("dashboard.actions.openCalendar", { ns: "pages" })}
+          </SectionLinkAction>
         }
       >
         <UpcomingPostsList posts={data?.upcomingPosts} />
@@ -183,41 +203,45 @@ export function DashboardPage() {
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Ideas"
+          label={t("dashboard.stats.ideas.label", { ns: "pages" })}
           value={ideasCount}
           helper={
             totalInPipeline > 0
-              ? `${totalInPipeline} pieces total in the pipeline`
-              : "Fresh sparks waiting to be developed."
+              ? t("dashboard.stats.ideas.helperWithCount", { ns: "pages", count: totalInPipeline })
+              : t("dashboard.stats.ideas.helperEmpty", { ns: "pages" })
           }
         />
         <StatCard
-          label="Ready"
+          label={t("dashboard.stats.ready.label", { ns: "pages" })}
           value={readyCount}
           helper={
             draftPlatformCount > 0
-              ? `${draftPlatformCount} platform drafts still need work`
-              : "All polished — nothing waiting on you to draft."
+              ? t("dashboard.stats.ready.helperWithCount", { ns: "pages", count: draftPlatformCount })
+              : t("dashboard.stats.ready.helperEmpty", { ns: "pages" })
           }
         />
         <StatCard
-          label="Scheduled"
+          label={t("dashboard.stats.scheduled.label", { ns: "pages" })}
           value={scheduledCount}
           helper={
             schedules.manualPending
-              ? `${schedules.manualPending} need manual publishing`
-              : "Queued and on the calendar."
+              ? t("dashboard.stats.scheduled.helperManual", { ns: "pages", count: schedules.manualPending })
+              : t("dashboard.stats.scheduled.helperEmpty", { ns: "pages" })
           }
         />
         <StatCard
           accent
-          label="Published this month"
+          label={t("dashboard.stats.publishedThisMonth.label", { ns: "pages" })}
           value={publishedThisMonth}
-          trend={failedThisMonth > 0 ? `${failedThisMonth} failed` : "On track"}
+          trend={
+            failedThisMonth > 0
+              ? t("dashboard.stats.publishedThisMonth.trendFailed", { ns: "pages", count: failedThisMonth })
+              : t("dashboard.stats.publishedThisMonth.trendOnTrack", { ns: "pages" })
+          }
           helper={
             failedThisMonth > 0
-              ? `${failedThisMonth} attempt${failedThisMonth === 1 ? "" : "s"} failed this month.`
-              : "No failed publish attempts this month."
+              ? t("dashboard.stats.publishedThisMonth.helperFailed", { ns: "pages", count: failedThisMonth })
+              : t("dashboard.stats.publishedThisMonth.helperEmpty", { ns: "pages" })
           }
         />
       </section>
@@ -225,13 +249,13 @@ export function DashboardPage() {
       <PipelineOverview contentCounts={content} />
 
       <SectionCard
-        title="Recent publish attempts"
-        description="Most recent publish actions across every platform."
+        title={t("dashboard.sections.recentAttempts.title", { ns: "pages" })}
+        description={t("dashboard.sections.recentAttempts.description", { ns: "pages" })}
         count={data?.recentPublishAttempts?.length}
         countTone="neutral"
         action={
           <SectionLinkAction to="/publish-logs">
-            Open publish logs
+            {t("dashboard.actions.openPublishLogs", { ns: "pages" })}
           </SectionLinkAction>
         }
       >
@@ -240,7 +264,7 @@ export function DashboardPage() {
 
       {archivedCount > 0 && (
         <p className="text-center text-[11px] uppercase tracking-[0.18em] text-muted">
-          {archivedCount} archived item{archivedCount === 1 ? "" : "s"} hidden from this view
+          {t("dashboard.archivedHidden", { ns: "pages", count: archivedCount })}
         </p>
       )}
     </div>

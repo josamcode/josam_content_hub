@@ -15,5 +15,28 @@
   "done": "تم",
   "cancelled": "ملغي",
   "missed": "فات وقته",
-  "processing": "قيد المعالجة"
+  "processing": "قيد المعالجة",
+  "snoozed": "مؤجل",
+  "dismissed": "تم تجاهله",
+  "success": "ناجح",
+  "manual_completed": "اكتمل يدويًا",
+  "pending_manual": "بانتظار الإجراء اليدوي",
+  "categories": {
+    "programming": "برمجة",
+    "software_engineering": "هندسة البرمجيات",
+    "business_systems": "أنظمة الأعمال",
+    "ara_financial": "Ara Financial",
+    "portfolio_client_acquisition": "المعرض والعملاء",
+    "course_content": "محتوى الدورات",
+    "saas_product_journey": "رحلة SaaS",
+    "personal_brand": "العلامة الشخصية"
+  },
+  "attentionTypes": {
+    "ready_not_scheduled": "جاهز وغير مجدول",
+    "manual_publish_overdue": "نشر يدوي متأخر",
+    "failed_platform_post": "فشل منشور المنصة",
+    "failed_schedule": "فشلت الجدولة",
+    "draft_platform_missing_text": "مسودة ينقصها نص مطلوب",
+    "fallback": "يحتاج انتباهك"
+  }
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -67,6 +68,7 @@ function ChevronIcon({ open }) {
 }
 
 export function PipelineOverview({ contentCounts = {} }) {
+  const { t } = useTranslation(["pages", "status"]);
   const [open, setOpen] = useState(() => {
     if (typeof window === "undefined") return true;
     return window.innerWidth >= 1024;
@@ -80,20 +82,20 @@ export function PipelineOverview({ contentCounts = {} }) {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="pipeline-overview-content"
-          className="group flex flex-1 items-center gap-2 text-left"
+          className="group flex flex-1 items-center gap-2 text-start"
         >
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
-              Production pipeline
+              {t("dashboard.sections.pipeline.eyebrow", { ns: "pages" })}
             </p>
             <h2 className="font-display text-lg leading-tight text-ink">
-              Content by status
+              {t("dashboard.sections.pipeline.title", { ns: "pages" })}
             </h2>
           </div>
           <ChevronIcon open={open} />
         </button>
         <Button as={Link} to="/workflow" variant="outline" size="sm">
-          Open Workflow Board
+          {t("dashboard.actions.openWorkflowBoard", { ns: "pages" })}
           <ArrowIcon />
         </Button>
       </div>
@@ -112,7 +114,7 @@ export function PipelineOverview({ contentCounts = {} }) {
                 className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-3"
               >
                 <span className="text-[11px] uppercase tracking-wide text-muted">
-                  {stage.label}
+                  {t(stage.status, { ns: "status", defaultValue: stage.label })}
                 </span>
                 <span
                   className={cn(

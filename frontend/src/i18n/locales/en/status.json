@@ -15,5 +15,28 @@
   "done": "Done",
   "cancelled": "Cancelled",
   "missed": "Missed",
-  "processing": "Processing"
+  "processing": "Processing",
+  "snoozed": "Snoozed",
+  "dismissed": "Dismissed",
+  "success": "Success",
+  "manual_completed": "Manual completed",
+  "pending_manual": "Pending manual",
+  "categories": {
+    "programming": "Programming",
+    "software_engineering": "Software engineering",
+    "business_systems": "Business systems",
+    "ara_financial": "Ara Financial",
+    "portfolio_client_acquisition": "Portfolio & clients",
+    "course_content": "Course content",
+    "saas_product_journey": "SaaS journey",
+    "personal_brand": "Personal brand"
+  },
+  "attentionTypes": {
+    "ready_not_scheduled": "Ready but not scheduled",
+    "manual_publish_overdue": "Manual publishing overdue",
+    "failed_platform_post": "Platform post failed",
+    "failed_schedule": "Schedule failed",
+    "draft_platform_missing_text": "Draft missing required text",
+    "fallback": "Needs your attention"
+  }
 }

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { EmptyState } from "../../../components/ui/EmptyState";
 import { PlatformBadge } from "./PlatformBadge";
@@ -25,6 +26,8 @@ function ArrowIcon() {
 }
 
 function PostRow({ post }) {
+  const { t, i18n } = useTranslation(["common", "pages"]);
+  const locale = i18n.resolvedLanguage || i18n.language;
   const titleNode = post.contentItemId ? (
     <Link
       to={`/content/${post.contentItemId}`}
@@ -41,7 +44,8 @@ function PostRow({ post }) {
       <div className="min-w-0 flex-1">
         {titleNode}
         <p className="mt-0.5 text-[11px] text-muted">
-          {formatDateTime(post.scheduledAt)} · {formatRelative(post.scheduledAt)}
+          {formatDateTime(post.scheduledAt, locale)} -{" "}
+          {formatRelative(post.scheduledAt, locale)}
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -57,7 +61,7 @@ function PostRow({ post }) {
             to={`/content/${post.contentItemId}`}
             className="inline-flex items-center gap-1 text-[11px] font-medium text-ink hover:text-accent"
           >
-            Open <ArrowIcon />
+            {t("open", { ns: "common" })} <ArrowIcon />
           </Link>
         )}
       </div>
@@ -66,11 +70,13 @@ function PostRow({ post }) {
 }
 
 export function UpcomingPostsList({ posts = [] }) {
+  const { t } = useTranslation("pages");
+
   if (!posts.length) {
     return (
       <EmptyState
-        title="Nothing on the runway"
-        description="Schedule a post from your content library to fill this list."
+        title={t("dashboard.empty.nothingOnRunway.title")}
+        description={t("dashboard.empty.nothingOnRunway.description")}
       />
     );
   }

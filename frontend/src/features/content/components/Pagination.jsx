@@ -1,6 +1,9 @@
+import { useTranslation } from "react-i18next";
+
 import { Button } from "../../../components/ui/Button";
 
 export function Pagination({ page, totalPages, total, limit, onChange, isFetching }) {
+  const { t } = useTranslation(["common", "pages"]);
   const safeTotalPages = Math.max(1, Number(totalPages) || 1);
   const canPrev = page > 1;
   const canNext = page < safeTotalPages;
@@ -12,8 +15,13 @@ export function Pagination({ page, totalPages, total, limit, onChange, isFetchin
     <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
       <p className="text-xs text-muted">
         {total === 0
-          ? "No results"
-          : `Showing ${start}–${end} of ${total.toLocaleString()}`}
+          ? t("noResults", { ns: "common" })
+          : t("contentLibrary.pagination.showing", {
+              ns: "pages",
+              start,
+              end,
+              total: total.toLocaleString(),
+            })}
       </p>
 
       <div className="flex items-center gap-2">
@@ -23,11 +31,14 @@ export function Pagination({ page, totalPages, total, limit, onChange, isFetchin
           disabled={!canPrev || isFetching}
           onClick={() => onChange(page - 1)}
         >
-          Previous
+          {t("previous", { ns: "common" })}
         </Button>
         <span className="rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-ink">
-          Page <strong className="font-semibold">{page}</strong>{" "}
-          <span className="text-muted">of {safeTotalPages}</span>
+          {t("page", { ns: "common" })}{" "}
+          <strong className="font-semibold">{page}</strong>{" "}
+          <span className="text-muted">
+            {t("of", { ns: "common" })} {safeTotalPages}
+          </span>
         </span>
         <Button
           variant="outline"
@@ -35,7 +46,7 @@ export function Pagination({ page, totalPages, total, limit, onChange, isFetchin
           disabled={!canNext || isFetching}
           onClick={() => onChange(page + 1)}
         >
-          Next
+          {t("next", { ns: "common" })}
         </Button>
       </div>
     </div>
