@@ -178,6 +178,9 @@ export function DashboardPage() {
         description={t("dashboard.sections.needsAttention.description", { ns: "pages" })}
         count={data?.needsAttention?.length}
         countTone={data?.needsAttention?.length ? "warning" : "neutral"}
+        collapsible
+        defaultOpen={false}
+        contentId="needs-attention-content"
         action={
           <SectionLinkAction to="/workflow">
             {t("dashboard.actions.openWorkflow", { ns: "pages" })}

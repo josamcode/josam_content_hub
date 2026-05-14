@@ -112,11 +112,7 @@ export function ScheduleForm({
     mode === "edit" ? "Save reschedule" : "Schedule this post";
 
   return (
-    <form
-      onSubmit={handleSubmit(submit)}
-      noValidate
-      className="flex flex-col gap-4"
-    >
+    <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_1fr_1.2fr]">
         <Controller
           control={control}
@@ -198,9 +194,10 @@ export function ScheduleForm({
             </Button>
           )}
           <Button
-            type="submit"
+            type="button"
             variant="primary"
             size="md"
+            onClick={handleSubmit(submit)}
             loading={isSubmitting}
             disabled={isCancelling}
           >
@@ -210,6 +207,6 @@ export function ScheduleForm({
           </Button>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
