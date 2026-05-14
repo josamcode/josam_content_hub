@@ -1,5 +1,5 @@
 import { Button } from "../../../components/ui/Button";
-import { Input } from "../../../components/ui/Input";
+import { DatePicker } from "../../../components/ui/DatePicker";
 import { Select } from "../../../components/ui/Select";
 import { PLATFORMS, formatPlatform, formatStatus } from "../../../lib/format";
 import { ATTEMPT_STATUSES } from "../lib/attemptStatus";
@@ -40,17 +40,17 @@ export function PublishLogFilters({
           onChange={(e) => onChange({ status: e.target.value })}
           options={STATUS_OPTIONS}
         />
-        <Input
+        <DatePicker
           label="From"
-          type="date"
           value={from}
           onChange={(e) => onChange({ from: e.target.value })}
+          max={to || undefined}
         />
-        <Input
+        <DatePicker
           label="To"
-          type="date"
           value={to}
           onChange={(e) => onChange({ to: e.target.value })}
+          min={from || undefined}
         />
       </div>
 

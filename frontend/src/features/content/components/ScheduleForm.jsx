@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Button } from "../../../components/ui/Button";
-import { Input } from "../../../components/ui/Input";
+import { DatePicker } from "../../../components/ui/DatePicker";
 import { Select } from "../../../components/ui/Select";
+import { TimePicker } from "../../../components/ui/TimePicker";
 import {
   buildIsoFromLocalParts,
   getBrowserTimezone,
@@ -59,7 +60,6 @@ export function ScheduleForm({
   const initial = useMemo(() => getInitialValues(schedule), [schedule]);
 
   const {
-    register,
     handleSubmit,
     control,
     reset,
@@ -118,17 +118,27 @@ export function ScheduleForm({
       className="flex flex-col gap-4"
     >
       <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_1fr_1.2fr]">
-        <Input
-          label="Date"
-          type="date"
-          error={errors.date?.message}
-          {...register("date")}
+        <Controller
+          control={control}
+          name="date"
+          render={({ field }) => (
+            <DatePicker
+              label="Date"
+              error={errors.date?.message}
+              {...field}
+            />
+          )}
         />
-        <Input
-          label="Time"
-          type="time"
-          error={errors.time?.message}
-          {...register("time")}
+        <Controller
+          control={control}
+          name="time"
+          render={({ field }) => (
+            <TimePicker
+              label="Time"
+              error={errors.time?.message}
+              {...field}
+            />
+          )}
         />
         <Controller
           control={control}

@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Button } from "../../../components/ui/Button";
-import { Input } from "../../../components/ui/Input";
 import { Select } from "../../../components/ui/Select";
+import { TimePicker } from "../../../components/ui/TimePicker";
 import { extractErrorMessage } from "../../../lib/axios";
 import { getBrowserTimezone, getTimezoneOptions } from "../../../lib/datetime";
 import { PLATFORMS, formatPlatform } from "../../../lib/format";
@@ -78,7 +78,6 @@ export function QueueSlotForm({
   );
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
@@ -156,11 +155,16 @@ export function QueueSlotForm({
             />
           )}
         />
-        <Input
-          label="Time (HH:mm)"
-          type="time"
-          error={errors.timeOfDay?.message}
-          {...register("timeOfDay")}
+        <Controller
+          control={control}
+          name="timeOfDay"
+          render={({ field }) => (
+            <TimePicker
+              label="Time (HH:mm)"
+              error={errors.timeOfDay?.message}
+              {...field}
+            />
+          )}
         />
         <Controller
           control={control}
