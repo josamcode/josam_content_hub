@@ -204,6 +204,53 @@
       "cancelSchedule": "إلغاء الجدولة"
     }
   },
+  "reminders": {
+    "eyebrow": "التنفيذ",
+    "title": "التذكيرات",
+    "subtitle": "مهام النشر اليدوي للمحتوى المجدول.",
+    "refreshing": "جارٍ تحديث التذكيرات...",
+    "filters": {
+      "allPlatforms": "كل المنصات"
+    },
+    "tabs": {
+      "ariaLabel": "نطاقات التذكيرات",
+      "today": "اليوم",
+      "upcoming": "القادمة",
+      "overdue": "المتأخرة",
+      "done": "المكتملة"
+    },
+    "error": {
+      "title": "تعذر تحميل التذكيرات",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    },
+    "empty": {
+      "title": "لا توجد تذكيرات",
+      "description": "جدول منشور منصة يدويًا لإنشاء تذكير."
+    },
+    "actions": {
+      "goToLibrary": "الذهاب إلى المكتبة",
+      "copy": "نسخ",
+      "copied": "تم النسخ",
+      "copyCaption": "نسخ الكابشن",
+      "copyHashtags": "نسخ الهاشتاجز"
+    },
+    "card": {
+      "titleFallback": "تذكير",
+      "postStatus": "المنشور - {{status}}",
+      "from": "من",
+      "caption": "الكابشن",
+      "hashtags": "الهاشتاجز",
+      "markPublishedTitle": "تسجيله كمنشور"
+    },
+    "manualComplete": {
+      "platformUrl": "رابط المنشور",
+      "urlHint": "اختياري - الصق رابط المنشور إذا كان متاحًا.",
+      "submit": "تسجيله كمنشور",
+      "errorTitle": "تعذر تسجيله كمنشور",
+      "errorFallback": "لم نتمكن من تسجيله كمنشور الآن.",
+      "success": "تم تسجيله كمنشور. سيتم نقل هذا التذكير إلى المكتملة..."
+    }
+  },
   "createContent": {
     "eyebrow": "جديد",
     "title": "إنشاء محتوى",

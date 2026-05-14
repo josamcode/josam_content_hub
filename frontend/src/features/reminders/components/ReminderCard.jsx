@@ -1,16 +1,17 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { Badge } from "../../../components/ui/Badge";
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
 import { cn } from "../../../lib/cn";
+import { formatScheduledAtInTimezone } from "../../../lib/datetime";
 import {
   formatPlatform,
   formatRelative,
   formatStatus,
   statusTone,
 } from "../../../lib/format";
-import { formatScheduledAtInTimezone } from "../../../lib/datetime";
 import { CopyTextButton } from "./CopyTextButton";
 import { ManualCompleteForm } from "./ManualCompleteForm";
 
@@ -49,17 +50,16 @@ function PlatformChip({ platform }) {
 }
 
 export function ReminderCard({ reminder }) {
+  const { t, i18n } = useTranslation(["common", "pages", "status"]);
   const platformPost = reminder.platformPost || {};
   const contentItem = reminder.contentItem || {};
   const schedule = reminder.schedule || {};
+  const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
 
   const timezone = schedule.timezone || "Africa/Cairo";
   const isOverdue =
-    reminder.status === "pending" &&
-    new Date(reminder.remindAt) < new Date();
-  const showForm =
-    reminder.status === "pending" &&
-    Boolean(platformPost.id);
+    reminder.status === "pending" && new Date(reminder.remindAt) < new Date();
+  const showForm = reminder.status === "pending" && Boolean(platformPost.id);
 
   const hashtags = Array.isArray(platformPost.hashtags)
     ? platformPost.hashtags
@@ -70,8 +70,8 @@ export function ReminderCard({ reminder }) {
     <Card
       padding="none"
       className={cn(
-        "overflow-hidden border-l-[3px]",
-        isOverdue ? "border-l-rose-500" : "border-l-transparent"
+        "overflow-hidden border-s-[3px]",
+        isOverdue ? "border-s-rose-500" : "border-s-transparent"
       )}
     >
       <div className="flex flex-col gap-4 p-5">
@@ -79,36 +79,39 @@ export function ReminderCard({ reminder }) {
           <div className="flex flex-wrap items-center gap-2">
             <PlatformChip platform={platformPost.platform} />
             <Badge tone={statusTone(reminder.status)}>
-              {formatStatus(reminder.status)}
+              {formatStatus(reminder.status, t)}
             </Badge>
             {platformPost.status && (
               <Badge tone={statusTone(platformPost.status)}>
-                Post · {formatStatus(platformPost.status)}
+                {t("reminders.card.postStatus", {
+                  ns: "pages",
+                  status: formatStatus(platformPost.status, t),
+                })}
               </Badge>
             )}
             {isOverdue && (
               <span className="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-medium text-rose-700">
-                Overdue
+                {t("reminders.tabs.overdue", { ns: "pages" })}
               </span>
             )}
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="text-sm text-ink">
               {formatScheduledAtInTimezone(reminder.remindAt, timezone)}
             </p>
             <p className="text-[11px] text-muted">
-              {timezone} · {formatRelative(reminder.remindAt)}
+              {timezone} - {formatRelative(reminder.remindAt, locale)}
             </p>
           </div>
         </div>
 
         <div className="min-w-0">
           <h3 className="font-display text-xl leading-snug text-ink line-clamp-2">
-            {reminder.title || "Reminder"}
+            {reminder.title || t("reminders.card.titleFallback", { ns: "pages" })}
           </h3>
           {contentItem.title && (
             <p className="mt-1 text-sm text-muted">
-              From{" "}
+              {t("reminders.card.from", { ns: "pages" })}{" "}
               <Link
                 to={`/content/${contentItem.id}`}
                 className="font-medium text-ink hover:underline"
@@ -123,12 +126,12 @@ export function ReminderCard({ reminder }) {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wide text-muted">
-                Caption
+                {t("reminders.card.caption", { ns: "pages" })}
               </span>
               <CopyTextButton
                 value={platformPost.caption}
-                label="Copy caption"
-                copiedLabel="Copied"
+                label={t("reminders.actions.copyCaption", { ns: "pages" })}
+                copiedLabel={t("reminders.actions.copied", { ns: "pages" })}
               />
             </div>
             <p className="whitespace-pre-wrap rounded-lg border border-border bg-canvas/60 p-3 text-sm leading-relaxed text-ink line-clamp-6">
@@ -141,12 +144,12 @@ export function ReminderCard({ reminder }) {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wide text-muted">
-                Hashtags
+                {t("reminders.card.hashtags", { ns: "pages" })}
               </span>
               <CopyTextButton
                 value={hashtagsCopyValue}
-                label="Copy hashtags"
-                copiedLabel="Copied"
+                label={t("reminders.actions.copyHashtags", { ns: "pages" })}
+                copiedLabel={t("reminders.actions.copied", { ns: "pages" })}
               />
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -170,11 +173,11 @@ export function ReminderCard({ reminder }) {
               variant="outline"
               size="sm"
             >
-              Open content
+              {t("openContent", { ns: "common" })}
             </Button>
           ) : (
             <Button variant="outline" size="sm" disabled>
-              Open content
+              {t("openContent", { ns: "common" })}
             </Button>
           )}
         </div>
@@ -182,7 +185,7 @@ export function ReminderCard({ reminder }) {
         {showForm && (
           <div className="rounded-xl border border-border bg-canvas/40 p-4">
             <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              Mark this as published
+              {t("reminders.card.markPublishedTitle", { ns: "pages" })}
             </p>
             <ManualCompleteForm
               platformPostId={platformPost.id}

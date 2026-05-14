@@ -204,6 +204,53 @@
       "cancelSchedule": "Cancel schedule"
     }
   },
+  "reminders": {
+    "eyebrow": "Execute",
+    "title": "Reminders",
+    "subtitle": "Manual publishing tasks for scheduled content.",
+    "refreshing": "Refreshing reminders...",
+    "filters": {
+      "allPlatforms": "All platforms"
+    },
+    "tabs": {
+      "ariaLabel": "Reminder ranges",
+      "today": "Today",
+      "upcoming": "Upcoming",
+      "overdue": "Overdue",
+      "done": "Done"
+    },
+    "error": {
+      "title": "Couldn't load reminders",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "empty": {
+      "title": "No reminders",
+      "description": "Schedule a platform post manually to create a reminder."
+    },
+    "actions": {
+      "goToLibrary": "Go to library",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyCaption": "Copy caption",
+      "copyHashtags": "Copy hashtags"
+    },
+    "card": {
+      "titleFallback": "Reminder",
+      "postStatus": "Post - {{status}}",
+      "from": "From",
+      "caption": "Caption",
+      "hashtags": "Hashtags",
+      "markPublishedTitle": "Mark this as published"
+    },
+    "manualComplete": {
+      "platformUrl": "Platform URL",
+      "urlHint": "Optional - paste the live URL if you have it.",
+      "submit": "Mark as published",
+      "errorTitle": "Couldn't mark as published",
+      "errorFallback": "We couldn't mark this as published just now.",
+      "success": "Marked as published. Moving this reminder to Done..."
+    }
+  },
   "createContent": {
     "eyebrow": "New",
     "title": "Create Content",

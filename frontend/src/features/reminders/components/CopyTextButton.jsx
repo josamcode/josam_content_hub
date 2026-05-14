@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "../../../lib/cn";
 
@@ -41,16 +42,19 @@ function CheckIcon() {
 
 export function CopyTextButton({
   value,
-  label = "Copy",
-  copiedLabel = "Copied",
+  label,
+  copiedLabel,
   disabled,
   className,
 }) {
+  const { t } = useTranslation("pages");
   const [copied, setCopied] = useState(false);
   const timer = useRef(null);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  const displayLabel = label || t("reminders.actions.copy");
+  const displayCopiedLabel = copiedLabel || t("reminders.actions.copied");
   const isEmpty = !value || !String(value).trim();
 
   const handleClick = async () => {
@@ -61,7 +65,7 @@ export function CopyTextButton({
       clearTimeout(timer.current);
       timer.current = setTimeout(() => setCopied(false), 1800);
     } catch {
-      // clipboard access denied — silently ignore
+      // clipboard access denied - silently ignore
     }
   };
 
@@ -79,7 +83,7 @@ export function CopyTextButton({
       )}
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
-      <span>{copied ? copiedLabel : label}</span>
+      <span>{copied ? displayCopiedLabel : displayLabel}</span>
     </button>
   );
 }

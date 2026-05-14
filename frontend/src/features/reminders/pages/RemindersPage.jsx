@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { Button } from "../../../components/ui/Button";
@@ -15,21 +16,18 @@ import { useReminders } from "../hooks/useReminders";
 
 const DEFAULT_RANGE = "today";
 
-const PLATFORM_OPTIONS = [
-  { value: "", label: "All platforms" },
-  ...PLATFORMS.map((value) => ({ value, label: formatPlatform(value) })),
-];
-
 function ErrorBlock({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load reminders
+        {t("reminders.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -37,8 +35,20 @@ function ErrorBlock({ message, onRetry }) {
 }
 
 export function RemindersPage() {
+  const { t } = useTranslation(["common", "pages"]);
   const [range, setRange] = useState(DEFAULT_RANGE);
   const [platform, setPlatform] = useState("");
+
+  const platformOptions = useMemo(
+    () => [
+      {
+        value: "",
+        label: t("reminders.filters.allPlatforms", { ns: "pages" }),
+      },
+      ...PLATFORMS.map((value) => ({ value, label: formatPlatform(value) })),
+    ],
+    [t]
+  );
 
   const { data, isLoading, isError, error, isFetching, refetch } =
     useReminders({
@@ -55,9 +65,9 @@ export function RemindersPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Execute"
-        title="Reminders"
-        subtitle="Manual publishing tasks for scheduled content."
+        eyebrow={t("reminders.eyebrow", { ns: "pages" })}
+        title={t("reminders.title", { ns: "pages" })}
+        subtitle={t("reminders.subtitle", { ns: "pages" })}
       />
 
       <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 md:flex-row md:items-end md:justify-between md:p-5">
@@ -65,10 +75,10 @@ export function RemindersPage() {
         <div className="flex items-center gap-3">
           <div className="min-w-[14rem]">
             <Select
-              label="Platform"
+              label={t("platform", { ns: "common" })}
               value={platform}
               onChange={handlePlatformChange}
-              options={PLATFORM_OPTIONS}
+              options={platformOptions}
             />
           </div>
         </div>
@@ -76,7 +86,7 @@ export function RemindersPage() {
 
       {isFetching && !isLoading && (
         <p className="-mt-4 text-[11px] uppercase tracking-[0.16em] text-muted">
-          Refreshing reminders…
+          {t("reminders.refreshing", { ns: "pages" })}
         </p>
       )}
 
@@ -86,17 +96,17 @@ export function RemindersPage() {
         <ErrorBlock
           message={extractErrorMessage(
             error,
-            "We couldn't reach the API just now."
+            t("reminders.error.fallback", { ns: "pages" })
           )}
           onRetry={() => refetch()}
         />
       ) : reminders.length === 0 ? (
         <EmptyState
-          title="No reminders here."
-          description="Schedule a platform post manually to create a reminder."
+          title={t("reminders.empty.title", { ns: "pages" })}
+          description={t("reminders.empty.description", { ns: "pages" })}
           action={
             <Button as={Link} to="/content" variant="primary" size="md">
-              Go to library
+              {t("reminders.actions.goToLibrary", { ns: "pages" })}
             </Button>
           }
         />
