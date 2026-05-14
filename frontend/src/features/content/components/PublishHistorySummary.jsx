@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { Badge } from "../../../components/ui/Badge";
 import { EmptyState } from "../../../components/ui/EmptyState";
 import {
@@ -29,11 +31,14 @@ function ExternalIcon() {
 }
 
 export function PublishHistorySummary({ attempts = [] }) {
+  const { t, i18n } = useTranslation(["common", "pages", "status"]);
+  const locale = i18n.resolvedLanguage || i18n.language;
+
   if (!attempts.length) {
     return (
       <EmptyState
-        title="No publish attempts yet"
-        description="Manual and automatic publish actions will appear here."
+        title={t("contentDetail.publishHistory.emptyTitle", { ns: "pages" })}
+        description={t("contentDetail.publishHistory.emptyDescription", { ns: "pages" })}
       />
     );
   }
@@ -57,12 +62,12 @@ export function PublishHistorySummary({ attempts = [] }) {
                 ) : null}
               </p>
               <p className="mt-0.5 text-[11px] text-muted">
-                {formatDateTime(attempt.attemptedAt)} ·{" "}
-                {formatRelative(attempt.attemptedAt)}
+                {formatDateTime(attempt.attemptedAt, locale)} ·{" "}
+                {formatRelative(attempt.attemptedAt, locale)}
               </p>
             </div>
             <Badge tone={statusTone(attempt.status)}>
-              {formatStatus(attempt.status)}
+              {formatStatus(attempt.status, t)}
             </Badge>
             {url ? (
               <a
@@ -71,7 +76,7 @@ export function PublishHistorySummary({ attempts = [] }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-[11px] font-medium text-accent hover:underline"
               >
-                View <ExternalIcon />
+                {t("view", { ns: "common" })} <ExternalIcon />
               </a>
             ) : (
               <span className="text-[11px] text-muted">—</span>

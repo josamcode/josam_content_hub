@@ -214,7 +214,75 @@
     }
   },
   "contentDetail": {
-    "eyebrow": "المكتبة / التفاصيل"
+    "eyebrow": "المكتبة / التفاصيل",
+    "titleFallback": "بدون عنوان",
+    "pageTitleFallback": "المحتوى",
+    "notFound": {
+      "eyebrow": "التفاصيل",
+      "title": "المحتوى غير موجود",
+      "subtitle": "هذا المحتوى غير موجود أو لا تملك صلاحية الوصول إليه.",
+      "description": "إذا كنت قد حذفته أو أرشفته للتو، ارجع إلى المكتبة لمتابعة العمل."
+    },
+    "error": {
+      "eyebrow": "التفاصيل",
+      "subtitle": "لم نتمكن من تحميل هذا المحتوى.",
+      "title": "تعذر تحميل المحتوى",
+      "fallback": "حدث خطأ غير متوقع."
+    },
+    "saveError": {
+      "title": "تعذر الحفظ",
+      "fallback": "لم نتمكن من حفظ التعديلات الآن."
+    },
+    "meta": {
+      "created": "أُنشئ {{date}}",
+      "updated": "حُدّث {{date}}"
+    },
+    "summary": {
+      "title": "الملخص",
+      "status": "الحالة",
+      "category": "التصنيف",
+      "platforms": "المنصات",
+      "noneYet": "لا يوجد بعد",
+      "quickLinks": "روابط سريعة",
+      "openCalendar": "فتح التقويم",
+      "openWorkflow": "فتح سير العمل",
+      "backToLibrary": "العودة إلى المكتبة"
+    },
+    "sections": {
+      "basics": {
+        "eyebrow": "البيانات الأساسية",
+        "title": "البيانات الأساسية",
+        "description": "العنوان والتصنيف والحالة هي الإشارات الأساسية لهذا المحتوى.",
+        "titleLabel": "العنوان",
+        "titlePlaceholder": "اكتب عنوانًا مبدئيًا",
+        "hookLabel": "الافتتاحية",
+        "hookPlaceholder": "الجملة الواحدة التي تخطف الانتباه."
+      },
+      "scriptNotes": {
+        "eyebrow": "المحتوى",
+        "title": "السكريبت والملاحظات",
+        "description": "كل ما تكتبه لهذه القطعة.",
+        "scriptLabel": "السكريبت",
+        "scriptPlaceholder": "السكريبت الكامل أو المخطط.",
+        "notesLabel": "الملاحظات",
+        "notesPlaceholder": "روابط بحث، مراجع، أو نقاط حديث."
+      },
+      "platforms": {
+        "eyebrow": "المنصات"
+      },
+      "history": {
+        "eyebrow": "السجل",
+        "title": "سجل النشر",
+        "description": "أحدث محاولات النشر على هذا المحتوى."
+      }
+    },
+    "publishHistory": {
+      "emptyTitle": "لا توجد محاولات نشر بعد",
+      "emptyDescription": "ستظهر هنا إجراءات النشر اليدوية والتلقائية."
+    },
+    "mobile": {
+      "unsaved": "لديك تعديلات غير محفوظة"
+    }
   },
   "guide": {
     "title": "تعلّم JoSam Content Hub"

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Badge } from "../../../components/ui/Badge";
@@ -49,16 +50,6 @@ const updateSchema = z.object({
   script: z.string().max(20000, "Script is too long").optional(),
   notes: z.string().max(20000, "Notes are too long").optional(),
 });
-
-const CATEGORY_OPTIONS = CONTENT_CATEGORIES.map((value) => ({
-  value,
-  label: formatCategory(value),
-}));
-
-const STATUS_OPTIONS = CONTENT_STATUSES.map((value) => ({
-  value,
-  label: formatStatus(value),
-}));
 
 function toDefaultValues(item) {
   return {
@@ -135,15 +126,17 @@ function SectionHeading({ eyebrow, title, description }) {
 }
 
 function HeaderMeta({ item }) {
+  const { t, i18n } = useTranslation(["common", "pages", "status"]);
+  const locale = i18n.resolvedLanguage || i18n.language;
   const platforms = Array.isArray(item.platformPosts)
     ? Array.from(new Set(item.platformPosts.map((p) => p.platform)))
     : [];
 
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
-      <Badge tone={statusTone(item.status)}>{formatStatus(item.status)}</Badge>
+      <Badge tone={statusTone(item.status)}>{formatStatus(item.status, t)}</Badge>
       <span className="rounded-full border border-border bg-canvas px-2 py-0.5 text-[11px] uppercase tracking-wide text-muted">
-        {formatCategory(item.category)}
+        {formatCategory(item.category, t)}
       </span>
       {platforms.map((platform) => (
         <span
@@ -160,11 +153,21 @@ function HeaderMeta({ item }) {
         </span>
       ))}
       <span aria-hidden="true" className="text-muted/40">·</span>
-      <span>Created {formatDate(item.createdAt)}</span>
+      <span>
+        {t("contentDetail.meta.created", {
+          ns: "pages",
+          date: formatDate(item.createdAt, locale),
+        })}
+      </span>
       {item.updatedAt && item.updatedAt !== item.createdAt ? (
         <>
           <span aria-hidden="true" className="text-muted/40">·</span>
-          <span>Updated {formatDateTime(item.updatedAt)}</span>
+          <span>
+            {t("contentDetail.meta.updated", {
+              ns: "pages",
+              date: formatDateTime(item.updatedAt, locale),
+            })}
+          </span>
         </>
       ) : null}
     </div>
@@ -202,6 +205,7 @@ function SummaryRail({
   onSave,
   onRevert,
 }) {
+  const { t } = useTranslation(["common", "pages", "status"]);
   const platformPosts = Array.isArray(item.platformPosts)
     ? item.platformPosts
     : [];
@@ -213,22 +217,24 @@ function SummaryRail({
     <div className="flex flex-col gap-3">
       <Card padding="md">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-          Summary
+          {t("contentDetail.summary.title", { ns: "pages" })}
         </p>
         <div className="mt-3 flex flex-col gap-4">
-          <SummaryRow label="Status">
+          <SummaryRow label={t("contentDetail.summary.status", { ns: "pages" })}>
             <Badge tone={statusTone(watchedStatus || item.status)}>
-              {formatStatus(watchedStatus || item.status)}
+              {formatStatus(watchedStatus || item.status, t)}
             </Badge>
           </SummaryRow>
-          <SummaryRow label="Category">
+          <SummaryRow label={t("contentDetail.summary.category", { ns: "pages" })}>
             <span className="text-sm text-ink">
-              {formatCategory(watchedCategory || item.category)}
+              {formatCategory(watchedCategory || item.category, t)}
             </span>
           </SummaryRow>
-          <SummaryRow label="Platforms">
+          <SummaryRow label={t("contentDetail.summary.platforms", { ns: "pages" })}>
             {uniquePlatforms.length === 0 ? (
-              <span className="text-sm text-muted">None yet</span>
+              <span className="text-sm text-muted">
+                {t("contentDetail.summary.noneYet", { ns: "pages" })}
+              </span>
             ) : (
               <div className="flex flex-wrap gap-1.5">
                 {uniquePlatforms.map((platform) => {
@@ -255,7 +261,7 @@ function SummaryRail({
                               "bg-canvas text-muted border border-border"
                           )}
                         >
-                          {formatStatus(post.status)}
+                          {formatStatus(post.status, t)}
                         </span>
                       )}
                     </span>
@@ -264,25 +270,25 @@ function SummaryRail({
               </div>
             )}
           </SummaryRow>
-          <SummaryRow label="Quick links">
+          <SummaryRow label={t("contentDetail.summary.quickLinks", { ns: "pages" })}>
             <div className="flex flex-col gap-1">
               <Link
                 to="/calendar"
                 className="text-sm text-accent hover:underline"
               >
-                Open calendar →
+                {t("contentDetail.summary.openCalendar", { ns: "pages" })} →
               </Link>
               <Link
                 to="/workflow"
                 className="text-sm text-accent hover:underline"
               >
-                Open workflow →
+                {t("contentDetail.summary.openWorkflow", { ns: "pages" })} →
               </Link>
               <Link
                 to="/content"
                 className="text-sm text-accent hover:underline"
               >
-                Back to library →
+                {t("contentDetail.summary.backToLibrary", { ns: "pages" })} →
               </Link>
             </div>
           </SummaryRow>
@@ -297,7 +303,9 @@ function SummaryRail({
         )}
       >
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-          {isDirty ? "Unsaved changes" : "All changes saved"}
+          {isDirty
+            ? t("unsavedChanges", { ns: "common" })
+            : t("allChangesSaved", { ns: "common" })}
         </p>
         <div className="mt-3 flex flex-col gap-2">
           <Button
@@ -308,7 +316,9 @@ function SummaryRail({
             loading={submitting}
             disabled={!isDirty || submitting}
           >
-            {submitting ? "Saving" : "Save changes"}
+            {submitting
+              ? t("saving", { ns: "common" })
+              : t("saveChanges", { ns: "common" })}
           </Button>
           <Button
             type="button"
@@ -317,7 +327,7 @@ function SummaryRail({
             onClick={onRevert}
             disabled={!isDirty || submitting}
           >
-            Revert
+            {t("revert", { ns: "common" })}
           </Button>
         </div>
       </Card>
@@ -326,23 +336,24 @@ function SummaryRail({
 }
 
 function NotFoundState() {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Detail"
-        title="Content not found"
-        subtitle="This item doesn't exist or you don't have access to it."
+        eyebrow={t("contentDetail.notFound.eyebrow", { ns: "pages" })}
+        title={t("contentDetail.notFound.title", { ns: "pages" })}
+        subtitle={t("contentDetail.notFound.subtitle", { ns: "pages" })}
         actions={
           <Button as={Link} to="/content" variant="outline" size="sm">
             <ArrowLeftIcon />
-            Back to library
+            {t("backToLibrary", { ns: "common" })}
           </Button>
         }
       />
       <Card padding="lg">
         <p className="text-sm text-muted">
-          If you just deleted or archived this item, head back to the library
-          to keep working.
+          {t("contentDetail.notFound.description", { ns: "pages" })}
         </p>
       </Card>
     </div>
@@ -350,15 +361,17 @@ function NotFoundState() {
 }
 
 function ErrorBlock({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load content
+        {t("contentDetail.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -366,6 +379,7 @@ function ErrorBlock({ message, onRetry }) {
 }
 
 export function ContentDetailPage() {
+  const { t } = useTranslation(["common", "pages", "status"]);
   const { id } = useParams();
   const { data, isLoading, isError, error, isFetching, refetch } =
     useContentItem(id);
@@ -374,6 +388,22 @@ export function ContentDetailPage() {
   const [savedAt, setSavedAt] = useState(null);
 
   const original = useMemo(() => toDefaultValues(data), [data]);
+  const categoryOptions = useMemo(
+    () =>
+      CONTENT_CATEGORIES.map((value) => ({
+        value,
+        label: formatCategory(value, t),
+      })),
+    [t]
+  );
+  const statusOptions = useMemo(
+    () =>
+      CONTENT_STATUSES.map((value) => ({
+        value,
+        label: formatStatus(value, t),
+      })),
+    [t]
+  );
 
   const {
     register,
@@ -403,7 +433,10 @@ export function ContentDetailPage() {
     },
     onError: (err) => {
       setSubmitError(
-        extractErrorMessage(err, "We couldn't save your changes just now.")
+        extractErrorMessage(
+          err,
+          t("contentDetail.saveError.fallback", { ns: "pages" })
+        )
       );
     },
   });
@@ -434,18 +467,21 @@ export function ContentDetailPage() {
     return (
       <div className="flex flex-col gap-8">
         <PageHeader
-          eyebrow="Detail"
-          title="Content"
-          subtitle="We couldn't load this item."
+          eyebrow={t("contentDetail.error.eyebrow", { ns: "pages" })}
+          title={t("contentDetail.pageTitleFallback", { ns: "pages" })}
+          subtitle={t("contentDetail.error.subtitle", { ns: "pages" })}
           actions={
             <Button as={Link} to="/content" variant="outline" size="sm">
               <ArrowLeftIcon />
-              Back to library
+              {t("backToLibrary", { ns: "common" })}
             </Button>
           }
         />
         <ErrorBlock
-          message={extractErrorMessage(error, "Unexpected error.")}
+          message={extractErrorMessage(
+            error,
+            t("contentDetail.error.fallback", { ns: "pages" })
+          )}
           onRetry={() => refetch()}
         />
       </div>
@@ -461,8 +497,8 @@ export function ContentDetailPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        eyebrow="Library / Detail"
-        title={data.title || "Untitled"}
+        eyebrow={t("contentDetail.eyebrow", { ns: "pages" })}
+        title={data.title || t("contentDetail.titleFallback", { ns: "pages" })}
         actions={
           <div className="flex items-center gap-2">
             <Button
@@ -473,11 +509,11 @@ export function ContentDetailPage() {
               type="button"
             >
               <ArrowLeftIcon />
-              Back
+              {t("back", { ns: "common" })}
             </Button>
             {isFetching && (
               <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
-                Refreshing
+                {t("refreshing", { ns: "common" })}
               </span>
             )}
           </div>
@@ -492,14 +528,14 @@ export function ContentDetailPage() {
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white">
             <CheckIcon />
           </span>
-          Changes saved.
+          {t("changesSaved", { ns: "common" })}
         </div>
       )}
 
       {submitError && (
         <Card padding="md" className="border-danger/30 bg-danger/5">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            Couldn't save
+            {t("contentDetail.saveError.title", { ns: "pages" })}
           </p>
           <p className="mt-1 text-sm text-ink">{submitError}</p>
         </Card>
@@ -509,15 +545,15 @@ export function ContentDetailPage() {
         <div className="flex min-w-0 flex-col gap-6">
           <Card padding="lg">
             <SectionHeading
-              eyebrow="Main info"
-              title="The basics"
-              description="Title, category and status are the core signals for this item."
+              eyebrow={t("contentDetail.sections.basics.eyebrow", { ns: "pages" })}
+              title={t("contentDetail.sections.basics.title", { ns: "pages" })}
+              description={t("contentDetail.sections.basics.description", { ns: "pages" })}
             />
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_1fr_1fr]">
               <Input
-                label="Title"
-                placeholder="Give it a working title"
+                label={t("contentDetail.sections.basics.titleLabel", { ns: "pages" })}
+                placeholder={t("contentDetail.sections.basics.titlePlaceholder", { ns: "pages" })}
                 error={errors.title?.message}
                 {...register("title")}
               />
@@ -526,8 +562,8 @@ export function ContentDetailPage() {
                 name="category"
                 render={({ field }) => (
                   <Select
-                    label="Category"
-                    options={CATEGORY_OPTIONS}
+                    label={t("category", { ns: "common" })}
+                    options={categoryOptions}
                     error={errors.category?.message}
                     {...field}
                   />
@@ -538,8 +574,8 @@ export function ContentDetailPage() {
                 name="status"
                 render={({ field }) => (
                   <Select
-                    label="Status"
-                    options={STATUS_OPTIONS}
+                    label={t("status", { ns: "common" })}
+                    options={statusOptions}
                     error={errors.status?.message}
                     {...field}
                   />
@@ -549,8 +585,8 @@ export function ContentDetailPage() {
 
             <div className="mt-4">
               <Textarea
-                label="Hook"
-                placeholder="The one-line idea that grabs attention."
+                label={t("contentDetail.sections.basics.hookLabel", { ns: "pages" })}
+                placeholder={t("contentDetail.sections.basics.hookPlaceholder", { ns: "pages" })}
                 rows={3}
                 counter={500}
                 value={hookValue}
@@ -562,21 +598,21 @@ export function ContentDetailPage() {
 
           <Card padding="lg">
             <SectionHeading
-              eyebrow="Body"
-              title="Script & notes"
-              description="Everything you're writing toward this piece."
+              eyebrow={t("contentDetail.sections.scriptNotes.eyebrow", { ns: "pages" })}
+              title={t("contentDetail.sections.scriptNotes.title", { ns: "pages" })}
+              description={t("contentDetail.sections.scriptNotes.description", { ns: "pages" })}
             />
             <div className="flex flex-col gap-4">
               <Textarea
-                label="Script"
-                placeholder="The full script or outline."
+                label={t("contentDetail.sections.scriptNotes.scriptLabel", { ns: "pages" })}
+                placeholder={t("contentDetail.sections.scriptNotes.scriptPlaceholder", { ns: "pages" })}
                 rows={10}
                 error={errors.script?.message}
                 {...register("script")}
               />
               <Textarea
-                label="Notes"
-                placeholder="Research links, references, talking points."
+                label={t("contentDetail.sections.scriptNotes.notesLabel", { ns: "pages" })}
+                placeholder={t("contentDetail.sections.scriptNotes.notesPlaceholder", { ns: "pages" })}
                 rows={5}
                 error={errors.notes?.message}
                 {...register("notes")}
@@ -589,7 +625,7 @@ export function ContentDetailPage() {
           <section>
             <div className="mb-4 flex flex-col gap-1">
               <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-                Platforms
+                {t("contentDetail.sections.platforms.eyebrow", { ns: "pages" })}
               </span>
               <h2 className="font-display text-xl leading-tight text-ink">
                 Platform composer
@@ -604,10 +640,10 @@ export function ContentDetailPage() {
 
           {hasHistory && (
             <Card padding="lg">
-              <SectionHeading
-                eyebrow="History"
-                title="Publish history"
-                description="Recent publish attempts on this piece."
+            <SectionHeading
+                eyebrow={t("contentDetail.sections.history.eyebrow", { ns: "pages" })}
+                title={t("contentDetail.sections.history.title", { ns: "pages" })}
+                description={t("contentDetail.sections.history.description", { ns: "pages" })}
               />
               <PublishHistorySummary attempts={data.publishAttempts} />
             </Card>
@@ -638,7 +674,7 @@ export function ContentDetailPage() {
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-            You have unsaved changes
+            {t("contentDetail.mobile.unsaved", { ns: "pages" })}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -648,7 +684,7 @@ export function ContentDetailPage() {
               onClick={onRevert}
               disabled={submitting}
             >
-              Revert
+              {t("revert", { ns: "common" })}
             </Button>
             <Button
               type="button"
@@ -657,7 +693,9 @@ export function ContentDetailPage() {
               loading={submitting}
               onClick={handleSubmit(onSubmit)}
             >
-              {submitting ? "Saving" : "Save changes"}
+              {submitting
+                ? t("saving", { ns: "common" })
+                : t("saveChanges", { ns: "common" })}
             </Button>
           </div>
         </div>

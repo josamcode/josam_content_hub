@@ -214,7 +214,75 @@
     }
   },
   "contentDetail": {
-    "eyebrow": "Library / Detail"
+    "eyebrow": "Library / Detail",
+    "titleFallback": "Untitled",
+    "pageTitleFallback": "Content",
+    "notFound": {
+      "eyebrow": "Detail",
+      "title": "Content not found",
+      "subtitle": "This item doesn't exist or you don't have access to it.",
+      "description": "If you just deleted or archived this item, head back to the library to keep working."
+    },
+    "error": {
+      "eyebrow": "Detail",
+      "subtitle": "We couldn't load this item.",
+      "title": "Couldn't load content",
+      "fallback": "Unexpected error."
+    },
+    "saveError": {
+      "title": "Couldn't save",
+      "fallback": "We couldn't save your changes just now."
+    },
+    "meta": {
+      "created": "Created {{date}}",
+      "updated": "Updated {{date}}"
+    },
+    "summary": {
+      "title": "Summary",
+      "status": "Status",
+      "category": "Category",
+      "platforms": "Platforms",
+      "noneYet": "None yet",
+      "quickLinks": "Quick links",
+      "openCalendar": "Open calendar",
+      "openWorkflow": "Open workflow",
+      "backToLibrary": "Back to library"
+    },
+    "sections": {
+      "basics": {
+        "eyebrow": "Main info",
+        "title": "The basics",
+        "description": "Title, category and status are the core signals for this item.",
+        "titleLabel": "Title",
+        "titlePlaceholder": "Give it a working title",
+        "hookLabel": "Hook",
+        "hookPlaceholder": "The one-line idea that grabs attention."
+      },
+      "scriptNotes": {
+        "eyebrow": "Body",
+        "title": "Script & notes",
+        "description": "Everything you're writing toward this piece.",
+        "scriptLabel": "Script",
+        "scriptPlaceholder": "The full script or outline.",
+        "notesLabel": "Notes",
+        "notesPlaceholder": "Research links, references, talking points."
+      },
+      "platforms": {
+        "eyebrow": "Platforms"
+      },
+      "history": {
+        "eyebrow": "History",
+        "title": "Publish history",
+        "description": "Recent publish attempts on this piece."
+      }
+    },
+    "publishHistory": {
+      "emptyTitle": "No publish attempts yet",
+      "emptyDescription": "Manual and automatic publish actions will appear here."
+    },
+    "mobile": {
+      "unsaved": "You have unsaved changes"
+    }
   },
   "guide": {
     "title": "Learn JoSam Content Hub"
