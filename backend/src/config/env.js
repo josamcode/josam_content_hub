@@ -4,6 +4,15 @@ const { z } = require("zod");
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
+const developmentAllowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "http://127.0.0.1:5175",
+];
+
 const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
@@ -20,6 +29,8 @@ const envSchema = z.object({
     .string()
     .min(1)
     .default("http://localhost:5000/uploads"),
+  FRONTEND_URL: z.string().url().optional(),
+  ALLOWED_ORIGINS: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -32,6 +43,46 @@ if (!parsedEnv.success) {
   throw new Error(`Invalid environment variables: ${message}`);
 }
 
+function parseAllowedOrigins(value) {
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
+function validateAllowedOrigins(origins, source) {
+  for (const origin of origins) {
+    if (origin === "*") {
+      throw new Error(`${source} must not include wildcard origins`);
+    }
+
+    try {
+      new URL(origin);
+    } catch {
+      throw new Error(`${source} includes an invalid origin: ${origin}`);
+    }
+  }
+}
+
+function resolveAllowedOrigins(env) {
+  const origins = parseAllowedOrigins(env.ALLOWED_ORIGINS);
+  if (env.FRONTEND_URL) origins.push(env.FRONTEND_URL);
+
+  if (origins.length > 0) {
+    validateAllowedOrigins(origins, "ALLOWED_ORIGINS");
+    return Array.from(new Set(origins));
+  }
+
+  if (env.NODE_ENV === "production") {
+    throw new Error("ALLOWED_ORIGINS or FRONTEND_URL is required in production");
+  }
+
+  return developmentAllowedOrigins;
+}
+
+const allowedOrigins = resolveAllowedOrigins(parsedEnv.data);
+
 module.exports = {
   nodeEnv: parsedEnv.data.NODE_ENV,
   port: parsedEnv.data.PORT,
@@ -43,5 +94,7 @@ module.exports = {
   seedUserPassword: parsedEnv.data.SEED_USER_PASSWORD,
   uploadDir: parsedEnv.data.UPLOAD_DIR,
   publicUploadBaseUrl: parsedEnv.data.PUBLIC_UPLOAD_BASE_URL,
+  frontendUrl: parsedEnv.data.FRONTEND_URL,
+  allowedOrigins,
   isProduction: parsedEnv.data.NODE_ENV === "production",
 };
