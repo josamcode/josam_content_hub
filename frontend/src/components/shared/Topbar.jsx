@@ -86,10 +86,10 @@ export function Topbar() {
           <span className="hidden sm:inline">{t("newContent")}</span>
         </Button>
 
-        <span className="hidden items-center gap-2 rounded-full border border-border bg-canvas px-3 py-1 text-[11px] text-muted lg:inline-flex">
+        {/* <span className="hidden items-center gap-2 rounded-full border border-border bg-canvas px-3 py-1 text-[11px] text-muted lg:inline-flex">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
           {t("allSystemsCalm")}
-        </span>
+        </span> */}
 
         <LanguageSwitcher className="hidden sm:inline-flex" />
 

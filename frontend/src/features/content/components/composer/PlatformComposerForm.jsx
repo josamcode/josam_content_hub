@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { Trans, useTranslation } from "react-i18next";
 
 import { Badge } from "../../../../components/ui/Badge";
 import { Button } from "../../../../components/ui/Button";
@@ -39,11 +40,6 @@ const ACTIVE_SCHEDULE_STATUSES = new Set([
   "manual_pending",
   "processing",
 ]);
-
-const STATUS_OPTIONS = PLATFORM_POST_STATUSES.map((value) => ({
-  value,
-  label: formatStatus(value),
-}));
 
 function toDefaultValues(post, fields) {
   const defaults = { status: post.status || "draft", platformPostUrl: post.platformPostUrl || "" };
@@ -170,7 +166,7 @@ function AccordionSection({
         aria-expanded={isOpen}
         aria-controls={contentId}
         className={cn(
-          "flex w-full items-start justify-between gap-3 px-4 py-3 text-left transition",
+          "flex w-full items-start justify-between gap-3 px-4 py-3 text-start transition",
           "hover:bg-canvas/40",
           isOpen ? "border-b border-border bg-canvas/40" : "border-b border-transparent"
         )}
@@ -198,7 +194,16 @@ function AccordionSection({
 }
 
 export function PlatformComposerForm({ post, contentItemId, fields, category }) {
+  const { t } = useTranslation(["common", "pages", "status"]);
   const original = useMemo(() => toDefaultValues(post, fields), [post, fields]);
+  const statusOptions = useMemo(
+    () =>
+      PLATFORM_POST_STATUSES.map((value) => ({
+        value,
+        label: formatStatus(value, t),
+      })),
+    [t]
+  );
 
   const hashtagsField = useMemo(
     () =>
@@ -312,7 +317,10 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
         } else {
           setValidation(null);
           setSubmitError(
-            extractErrorMessage(error, "We couldn't save this just now.")
+            extractErrorMessage(
+              error,
+              t("contentDetail.saveError.fallback", { ns: "pages" })
+            )
           );
         }
       },
@@ -419,9 +427,12 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
     <form onSubmit={handleSubmit(handleSave)} noValidate className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Badge tone={statusTone(post.status)}>{formatStatus(post.status)}</Badge>
+          <Badge tone={statusTone(post.status)}>{formatStatus(post.status, t)}</Badge>
           <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
-            {formatPlatform(post.platform)} version
+            {t("contentDetail.composer.versionLabel", {
+              ns: "pages",
+              platform: formatPlatform(post.platform),
+            })}
           </span>
         </div>
 
@@ -429,7 +440,7 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
           {savedAt && (
             <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
               <CheckIcon />
-              Saved
+              {t("saved", { ns: "common" })}
             </span>
           )}
           <Button
@@ -439,7 +450,9 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
             onClick={handleValidate}
             loading={validating}
           >
-            {validating ? "Validating" : "Validate"}
+            {validating
+              ? t("validating", { ns: "common" })
+              : t("validate", { ns: "common" })}
           </Button>
           <Button
             type="button"
@@ -448,7 +461,7 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
             onClick={handleMarkReady}
             disabled={submitting || post.status === "ready"}
           >
-            Mark as ready
+            {t("markAsReady", { ns: "common" })}
           </Button>
         </div>
       </div>
@@ -456,24 +469,30 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
       {submitError && (
         <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-ink">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            Couldn't save
+            {t("contentDetail.composer.saveErrorTitle", { ns: "pages" })}
           </p>
           <p className="mt-1">{submitError}</p>
         </div>
       )}
 
       <AccordionSection
-        title="Smart defaults & category guidance"
+        title={t("contentDetail.composer.accordions.defaults.title", {
+          ns: "pages",
+        })}
         subtitle={
           category
-            ? "Apply saved platform defaults or use category-level guidance."
-            : "Apply saved platform defaults."
+            ? t("contentDetail.composer.accordions.defaults.subtitleWithCategory", {
+                ns: "pages",
+              })
+            : t("contentDetail.composer.accordions.defaults.subtitleDefaultsOnly", {
+                ns: "pages",
+              })
         }
         defaultOpen={false}
         meta={
           defaultsAppliedRecently ? (
             <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-emerald-700">
-              Applied
+              {t("applied", { ns: "common" })}
             </span>
           ) : null
         }
@@ -512,8 +531,18 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
       </AccordionSection>
 
       <AccordionSection
-        title="Compose"
-        subtitle={`Caption, ${supportsHashtags ? "hashtags, " : ""}URL and status for the ${formatPlatform(post.platform)} version.`}
+        title={t("contentDetail.composer.accordions.compose.title", {
+          ns: "pages",
+        })}
+        subtitle={t("contentDetail.composer.accordions.compose.subtitle", {
+          ns: "pages",
+          hashtagsPart: supportsHashtags
+            ? t("contentDetail.composer.accordions.compose.hashtagsPart", {
+                ns: "pages",
+              })
+            : "",
+          platform: formatPlatform(post.platform),
+        })}
         defaultOpen={true}
       >
         <div className="flex flex-col gap-4">
@@ -602,8 +631,8 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
               name="status"
               render={({ field: ctrl }) => (
                 <Select
-                  label="Status"
-                  options={STATUS_OPTIONS}
+                  label={t("status", { ns: "common" })}
+                  options={statusOptions}
                   {...ctrl}
                 />
               )}
@@ -613,13 +642,21 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
       </AccordionSection>
 
       <AccordionSection
-        title="Validation"
+        title={t("contentDetail.composer.accordions.validation.title", {
+          ns: "pages",
+        })}
         subtitle={
           hasValidation
             ? validation?.valid
-              ? "Looks good."
-              : "A few things need attention."
-            : "Run platform validation before marking ready."
+              ? t("contentDetail.composer.accordions.validation.subtitleValid", {
+                  ns: "pages",
+                })
+              : t("contentDetail.composer.accordions.validation.subtitleNeedsAttention", {
+                  ns: "pages",
+                })
+            : t("contentDetail.composer.accordions.validation.subtitleEmpty", {
+                ns: "pages",
+              })
         }
         open={validationOpen}
         onOpenChange={setValidationOpen}
@@ -636,10 +673,16 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
               )}
             >
               {validation?.valid
-                ? "Valid"
+                ? t("contentDetail.composer.accordions.validation.valid", {
+                    ns: "pages",
+                  })
                 : validationSource === "patch"
-                  ? "Blocked"
-                  : "Warnings"}
+                  ? t("contentDetail.composer.accordions.validation.blocked", {
+                      ns: "pages",
+                    })
+                  : t("contentDetail.composer.accordions.validation.warnings", {
+                      ns: "pages",
+                    })}
             </span>
           ) : null
         }
@@ -648,24 +691,36 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
           <ValidationPanel result={validation} source={validationSource} />
         ) : (
           <p className="text-sm text-muted">
-            No validation run yet. Click <span className="font-medium text-ink">Validate</span> above to check this version against platform rules.
+            <Trans
+              i18nKey="contentDetail.composer.accordions.validation.empty"
+              ns="pages"
+              components={{
+                strong: <span className="font-medium text-ink" />,
+              }}
+            />
           </p>
         )}
       </AccordionSection>
 
       <AccordionSection
-        title="Schedule"
+        title={t("contentDetail.composer.accordions.schedule.title", {
+          ns: "pages",
+        })}
         subtitle={
           hasActiveSchedule
-            ? "This post is currently scheduled."
-            : "Pick a time to publish or remind you."
+            ? t("contentDetail.composer.accordions.schedule.subtitleActive", {
+                ns: "pages",
+              })
+            : t("contentDetail.composer.accordions.schedule.subtitleEmpty", {
+                ns: "pages",
+              })
         }
         open={scheduleOpen}
         onOpenChange={setScheduleOpen}
         meta={
           hasActiveSchedule ? (
             <span className="inline-flex items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-sky-700">
-              {formatStatus(post.status)}
+              {formatStatus(post.status, t)}
             </span>
           ) : null
         }
@@ -680,7 +735,9 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
         )}
       >
         <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-          {isDirty ? "You have unsaved changes" : "No unsaved changes"}
+          {isDirty
+            ? t("contentDetail.composer.footer.unsaved", { ns: "pages" })
+            : t("noUnsavedChanges", { ns: "common" })}
         </p>
         <div className="flex items-center gap-2">
           <Button
@@ -690,7 +747,7 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
             onClick={handleRevert}
             disabled={!isDirty || submitting}
           >
-            Revert
+            {t("revert", { ns: "common" })}
           </Button>
           <Button
             type="submit"
@@ -699,7 +756,7 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
             loading={submitting}
             disabled={!isDirty}
           >
-            {submitting ? "Saving" : "Save"}
+            {submitting ? t("saving", { ns: "common" }) : t("save", { ns: "common" })}
           </Button>
         </div>
       </div>
@@ -718,8 +775,9 @@ function DefaultsPanel({
   onConfirmOverwrite,
   onCancelOverwrite,
 }) {
+  const { t } = useTranslation(["common", "pages"]);
   const disabledReason = isDirty
-    ? "Save or revert unsaved changes before applying defaults."
+    ? t("contentDetail.composer.defaults.disabledReason", { ns: "pages" })
     : null;
 
   return (
@@ -727,12 +785,10 @@ function DefaultsPanel({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-            Platform defaults
+            {t("contentDetail.composer.defaults.title", { ns: "pages" })}
           </p>
           <p className="mt-0.5 text-sm text-ink">
-            Use saved defaults for{" "}
-            <span className="font-medium">this platform</span> (title, caption,
-            description, tags, hashtags).
+            {t("contentDetail.composer.defaults.description", { ns: "pages" })}
           </p>
           {disabledReason && (
             <p className="mt-1 text-xs text-muted">{disabledReason}</p>
@@ -750,7 +806,9 @@ function DefaultsPanel({
               disabled={applying || isDirty}
               title={disabledReason || undefined}
             >
-              {applying ? "Applying" : "Fill empty fields"}
+              {applying
+                ? t("applying", { ns: "common" })
+                : t("contentDetail.composer.defaults.fillEmpty", { ns: "pages" })}
             </Button>
             <Button
               type="button"
@@ -760,7 +818,9 @@ function DefaultsPanel({
               disabled={applying || isDirty}
               title={disabledReason || undefined}
             >
-              Overwrite with defaults
+              {t("contentDetail.composer.defaults.overwriteWithDefaults", {
+                ns: "pages",
+              })}
             </Button>
           </div>
         ) : (
@@ -772,7 +832,7 @@ function DefaultsPanel({
               onClick={onCancelOverwrite}
               disabled={applying}
             >
-              Cancel
+              {t("cancel", { ns: "common" })}
             </Button>
             <Button
               type="button"
@@ -782,7 +842,9 @@ function DefaultsPanel({
               loading={applying}
               disabled={applying}
             >
-              {applying ? "Overwriting" : "Overwrite"}
+              {applying
+                ? t("overwriting", { ns: "common" })
+                : t("overwrite", { ns: "common" })}
             </Button>
           </div>
         )}
@@ -799,7 +861,7 @@ function DefaultsPanel({
       {error && (
         <div className="mt-3 rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            Couldn't apply defaults
+            {t("contentDetail.composer.defaults.applyErrorTitle", { ns: "pages" })}
           </p>
           <p className="mt-1">{error}</p>
         </div>
@@ -807,7 +869,7 @@ function DefaultsPanel({
 
       {appliedAt && !error && (
         <p className="mt-3 inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
-          Platform defaults applied.
+          {t("contentDetail.composer.defaults.appliedMessage", { ns: "pages" })}
         </p>
       )}
     </div>

@@ -282,6 +282,49 @@
     },
     "mobile": {
       "unsaved": "لديك تعديلات غير محفوظة"
+    },
+    "composer": {
+      "versionLabel": "نسخة {{platform}}",
+      "saveErrorTitle": "تعذر الحفظ",
+      "accordions": {
+        "defaults": {
+          "title": "الإعدادات الذكية وإرشادات التصنيف",
+          "subtitleWithCategory": "طبّق إعدادات المنصة المحفوظة أو استخدم إرشادات التصنيف.",
+          "subtitleDefaultsOnly": "طبّق إعدادات المنصة المحفوظة."
+        },
+        "compose": {
+          "title": "كتابة المحتوى",
+          "subtitle": "الكابشن، {{hashtagsPart}}الرابط والحالة لنسخة {{platform}}.",
+          "hashtagsPart": "الهاشتاجز، "
+        },
+        "validation": {
+          "title": "التحقق",
+          "subtitleValid": "كل شيء جيد.",
+          "subtitleNeedsAttention": "هناك بعض الأشياء التي تحتاج انتباهك.",
+          "subtitleEmpty": "شغّل التحقق قبل جعله جاهزًا.",
+          "valid": "صالح",
+          "blocked": "محظور",
+          "warnings": "تحذيرات",
+          "empty": "لم يتم تشغيل التحقق بعد. اضغط <strong>تحقق</strong> بالأعلى لفحص هذه النسخة وفق قواعد المنصة."
+        },
+        "schedule": {
+          "title": "الجدولة",
+          "subtitleActive": "هذا المنشور مجدول حاليًا.",
+          "subtitleEmpty": "اختر موعدًا للنشر أو للتذكير."
+        }
+      },
+      "defaults": {
+        "title": "إعدادات المنصة",
+        "description": "استخدم إعدادات هذه المنصة المحفوظة (العنوان، الكابشن، الوصف، الوسوم، الهاشتاجز).",
+        "disabledReason": "احفظ أو تراجع عن التعديلات غير المحفوظة قبل تطبيق الإعدادات.",
+        "fillEmpty": "املأ الحقول الفارغة",
+        "overwriteWithDefaults": "استبدل بالإعدادات الافتراضية",
+        "applyErrorTitle": "تعذر تطبيق الإعدادات الافتراضية",
+        "appliedMessage": "تم تطبيق إعدادات المنصة."
+      },
+      "footer": {
+        "unsaved": "لديك تعديلات غير محفوظة"
+      }
     }
   },
   "guide": {

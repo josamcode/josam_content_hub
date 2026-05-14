@@ -282,6 +282,49 @@
     },
     "mobile": {
       "unsaved": "You have unsaved changes"
+    },
+    "composer": {
+      "versionLabel": "{{platform}} version",
+      "saveErrorTitle": "Couldn't save",
+      "accordions": {
+        "defaults": {
+          "title": "Smart defaults & category guidance",
+          "subtitleWithCategory": "Apply saved platform defaults or use category-level guidance.",
+          "subtitleDefaultsOnly": "Apply saved platform defaults."
+        },
+        "compose": {
+          "title": "Compose",
+          "subtitle": "Caption, {{hashtagsPart}}URL and status for the {{platform}} version.",
+          "hashtagsPart": "hashtags, "
+        },
+        "validation": {
+          "title": "Validation",
+          "subtitleValid": "Looks good.",
+          "subtitleNeedsAttention": "A few things need attention.",
+          "subtitleEmpty": "Run platform validation before marking ready.",
+          "valid": "Valid",
+          "blocked": "Blocked",
+          "warnings": "Warnings",
+          "empty": "No validation run yet. Click <strong>Validate</strong> above to check this version against platform rules."
+        },
+        "schedule": {
+          "title": "Schedule",
+          "subtitleActive": "This post is currently scheduled.",
+          "subtitleEmpty": "Pick a time to publish or remind you."
+        }
+      },
+      "defaults": {
+        "title": "Platform defaults",
+        "description": "Use saved defaults for this platform (title, caption, description, tags, hashtags).",
+        "disabledReason": "Save or revert unsaved changes before applying defaults.",
+        "fillEmpty": "Fill empty fields",
+        "overwriteWithDefaults": "Overwrite with defaults",
+        "applyErrorTitle": "Couldn't apply defaults",
+        "appliedMessage": "Platform defaults applied."
+      },
+      "footer": {
+        "unsaved": "You have unsaved changes"
+      }
     }
   },
   "guide": {
