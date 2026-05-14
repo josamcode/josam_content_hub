@@ -200,6 +200,122 @@ git log --oneline -10
 - Uploads are public in the MVP.
 - Cloud storage is not implemented yet.
 
+## Staging Deployment Runbook
+
+### Deployment Overview
+
+The staging environment has four deployable/runtime parts:
+
+- Backend API: Node.js/Express app served by `backend/src/server.js`.
+- Frontend static app: Vite production build served from `frontend/dist`.
+- PostgreSQL database: Prisma-managed schema and application data.
+- Persistent uploads storage: local disk path mounted at `UPLOAD_DIR`.
+
+### Backend Required Env Vars
+
+Set these variables for the backend staging service:
+
+```text
+NODE_ENV=production
+PORT=5000
+DATABASE_URL=postgresql://...
+JWT_SECRET=...
+JWT_EXPIRES_IN=7d
+SEED_USER_NAME=...
+SEED_USER_EMAIL=...
+SEED_USER_PASSWORD=...
+UPLOAD_DIR=/persistent/uploads
+PUBLIC_UPLOAD_BASE_URL=https://api.example.com/uploads
+FRONTEND_URL=https://app.example.com
+ALLOWED_ORIGINS=https://app.example.com
+```
+
+### Frontend Required Env Vars
+
+Set the API URL when building the frontend:
+
+```text
+VITE_API_BASE_URL=https://api.example.com/api/v1
+```
+
+### Backend Deployment Commands
+
+```bash
+cd backend
+npm ci
+npx prisma generate
+npx prisma migrate deploy
+npm run prisma:seed
+npm start
+```
+
+Important: `npm run prisma:seed` is for first staging bootstrap only. Do not run it every deployment unless intentional.
+
+### Frontend Deployment Commands
+
+```bash
+cd frontend
+npm ci
+VITE_API_BASE_URL=https://api.example.com/api/v1 npm run build
+```
+
+Serve `frontend/dist` with SPA fallback to `index.html` because the app uses `BrowserRouter`.
+
+### Upload Persistence
+
+- Uploads are local disk files under `UPLOAD_DIR`.
+- `UPLOAD_DIR` must be a persistent volume or storage mount.
+- Ephemeral hosting filesystems will lose uploaded media.
+- Current media URLs are relative `/uploads/...` paths, and the frontend derives the media origin from `VITE_API_BASE_URL`.
+- CDN or object storage requires a later code/storage change.
+
+### CORS
+
+- Production requires `FRONTEND_URL` or `ALLOWED_ORIGINS`.
+- Set `ALLOWED_ORIGINS` to the frontend domain.
+- Do not use wildcard origins in production.
+
+### Health Check
+
+```text
+GET /api/v1/health
+```
+
+### Smoke Test
+
+```bash
+cd backend
+SMOKE_API_BASE_URL=https://api.example.com/api/v1
+SMOKE_USER_EMAIL=...
+SMOKE_USER_PASSWORD=...
+npm run smoke:test
+```
+
+Note: the smoke test mutates staging data and uploads files.
+
+### Known Staging Risks
+
+- Local uploads require persistent disk.
+- Multiple backend instances each start the missed-reminder worker.
+- Prisma CLI is currently in `devDependencies`, so the deploy pipeline must install dev dependencies for migrate/generate or change deployment strategy later.
+- Vite large chunk warning is non-blocking.
+- `.claude/settings.json` should not be committed accidentally.
+
+### Recommended Deployment Order
+
+1. Provision PostgreSQL.
+2. Provision persistent uploads.
+3. Configure backend env.
+4. Install backend deps.
+5. Run `npx prisma generate`.
+6. Run `npx prisma migrate deploy`.
+7. Seed once.
+8. Start backend.
+9. Verify health.
+10. Build frontend with `VITE_API_BASE_URL`.
+11. Deploy frontend with SPA fallback.
+12. Run smoke test.
+
 ## Known Limitations
 
 - No auto publishing yet.
