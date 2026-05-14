@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { Badge } from "../../../components/ui/Badge";
 import { cn } from "../../../lib/cn";
 import { formatScheduledAtInTimezone } from "../../../lib/datetime";
@@ -50,6 +52,8 @@ function BellIcon() {
 }
 
 export function ScheduleSummary({ schedule, className }) {
+  const { t, i18n } = useTranslation(["pages", "status"]);
+
   if (!schedule) return null;
 
   const expectsReminder =
@@ -58,6 +62,19 @@ export function ScheduleSummary({ schedule, className }) {
       : REMINDER_MODES.has(schedule.publishMode);
 
   const reminderStatus = schedule.reminder?.status;
+  const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
+  const publishModeLabel = t(
+    `contentDetail.composer.scheduleSummary.publishModes.${schedule.publishMode || "manual"}`,
+    {
+      ns: "pages",
+      defaultValue: schedule.publishMode || "manual",
+    }
+  );
+  const reminderStatusLabel = reminderStatus
+    ? formatStatus(reminderStatus, t).toLowerCase()
+    : t("contentDetail.composer.scheduleSummary.reminderScheduled", {
+        ns: "pages",
+      });
 
   return (
     <div
@@ -82,24 +99,30 @@ export function ScheduleSummary({ schedule, className }) {
               )}
             </p>
             <Badge tone={statusTone(schedule.status)}>
-              {formatStatus(schedule.status)}
+              {formatStatus(schedule.status, t)}
             </Badge>
           </div>
           <p className="mt-1 text-xs text-muted">
-            {schedule.timezone} · {formatRelative(schedule.scheduledAt)}
-            {schedule.platform ? ` · ${formatPlatform(schedule.platform)}` : ""}
+            {schedule.timezone} - {formatRelative(schedule.scheduledAt, locale)}
+            {schedule.platform ? ` - ${formatPlatform(schedule.platform)}` : ""}
           </p>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] uppercase tracking-wide text-muted">
-          Publish mode · {schedule.publishMode || "manual"}
+          {t("contentDetail.composer.scheduleSummary.publishMode", {
+            ns: "pages",
+            mode: publishModeLabel,
+          })}
         </span>
         {expectsReminder && (
           <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] text-amber-800">
             <BellIcon />
-            Reminder {reminderStatus ? formatStatus(reminderStatus).toLowerCase() : "scheduled"}
+            {t("contentDetail.composer.scheduleSummary.reminder", {
+              ns: "pages",
+              status: reminderStatusLabel,
+            })}
           </span>
         )}
       </div>

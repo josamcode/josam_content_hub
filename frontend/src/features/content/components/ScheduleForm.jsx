@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -13,12 +14,6 @@ import {
   getTimezoneOptions,
   isoToLocalParts,
 } from "../../../lib/datetime";
-
-const PUBLISH_MODE_OPTIONS = [
-  { value: "manual", label: "Manual — I'll publish it myself when reminded" },
-  { value: "reminder", label: "Reminder — just remind me, no auto-publish" },
-  { value: "auto", label: "Auto (when supported)" },
-];
 
 const formSchema = z.object({
   date: z.string().min(1, "Pick a date"),
@@ -57,6 +52,7 @@ export function ScheduleForm({
   submitLabel,
   cancelLabel = "Cancel",
 }) {
+  const { t } = useTranslation(["common", "pages"]);
   const initial = useMemo(() => getInitialValues(schedule), [schedule]);
 
   const {
@@ -87,6 +83,31 @@ export function ScheduleForm({
     [extraTimezones]
   );
 
+  const publishModeOptions = useMemo(
+    () => [
+      {
+        value: "manual",
+        label: t("contentDetail.composer.scheduleForm.publishModes.manual", {
+          ns: "pages",
+        }),
+      },
+      {
+        value: "reminder",
+        label: t(
+          "contentDetail.composer.scheduleForm.publishModes.reminder",
+          { ns: "pages" }
+        ),
+      },
+      {
+        value: "auto",
+        label: t("contentDetail.composer.scheduleForm.publishModes.auto", {
+          ns: "pages",
+        }),
+      },
+    ],
+    [t]
+  );
+
   const watchedPublishMode = useMemo(
     () => initial.publishMode,
     [initial.publishMode]
@@ -109,7 +130,33 @@ export function ScheduleForm({
   };
 
   const defaultSubmitLabel =
-    mode === "edit" ? "Save reschedule" : "Schedule this post";
+    mode === "edit"
+      ? t("contentDetail.composer.scheduleForm.actions.saveReschedule", {
+          ns: "pages",
+        })
+      : t("contentDetail.composer.scheduleForm.actions.schedulePost", {
+          ns: "pages",
+        });
+
+  const displaySubmitLabel =
+    submitLabel === "Save reschedule"
+      ? t("contentDetail.composer.scheduleForm.actions.saveReschedule", {
+          ns: "pages",
+        })
+      : submitLabel === "Schedule this post"
+        ? t("contentDetail.composer.scheduleForm.actions.schedulePost", {
+            ns: "pages",
+          })
+        : submitLabel || defaultSubmitLabel;
+
+  const displayCancelLabel =
+    cancelLabel === "Discard"
+      ? t("contentDetail.composer.scheduleForm.actions.discard", {
+          ns: "pages",
+        })
+      : cancelLabel === "Cancel"
+        ? t("cancel", { ns: "common" })
+        : cancelLabel;
 
   return (
     <div className="flex flex-col gap-4">
@@ -119,7 +166,9 @@ export function ScheduleForm({
           name="date"
           render={({ field }) => (
             <DatePicker
-              label="Date"
+              label={t("contentDetail.composer.scheduleForm.labels.date", {
+                ns: "pages",
+              })}
               error={errors.date?.message}
               {...field}
             />
@@ -130,7 +179,9 @@ export function ScheduleForm({
           name="time"
           render={({ field }) => (
             <TimePicker
-              label="Time"
+              label={t("contentDetail.composer.scheduleForm.labels.time", {
+                ns: "pages",
+              })}
               error={errors.time?.message}
               {...field}
             />
@@ -141,7 +192,9 @@ export function ScheduleForm({
           name="timezone"
           render={({ field }) => (
             <Select
-              label="Timezone"
+              label={t("contentDetail.composer.scheduleForm.labels.timezone", {
+                ns: "pages",
+              })}
               options={timezoneOptions}
               error={errors.timezone?.message}
               {...field}
@@ -156,9 +209,14 @@ export function ScheduleForm({
         defaultValue={watchedPublishMode}
         render={({ field }) => (
           <Select
-            label="Publish mode"
-            options={PUBLISH_MODE_OPTIONS}
-            hint="Manual reminder will be created for this scheduled time."
+            label={t(
+              "contentDetail.composer.scheduleForm.labels.publishMode",
+              { ns: "pages" }
+            )}
+            options={publishModeOptions}
+            hint={t("contentDetail.composer.scheduleForm.publishModeHint", {
+              ns: "pages",
+            })}
             error={errors.publishMode?.message}
             {...field}
           />
@@ -167,7 +225,13 @@ export function ScheduleForm({
 
       <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
         <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-          {mode === "edit" ? "Reschedule mode" : "Pick a slot to schedule"}
+          {mode === "edit"
+            ? t("contentDetail.composer.scheduleForm.mode.reschedule", {
+                ns: "pages",
+              })
+            : t("contentDetail.composer.scheduleForm.mode.create", {
+                ns: "pages",
+              })}
         </p>
         <div className="flex flex-wrap items-center gap-2">
           {mode === "edit" && onDelete && (
@@ -179,7 +243,14 @@ export function ScheduleForm({
               loading={isCancelling}
               disabled={isSubmitting}
             >
-              {isCancelling ? "Cancelling" : "Cancel schedule"}
+              {isCancelling
+                ? t("contentDetail.composer.scheduleForm.actions.cancelling", {
+                    ns: "pages",
+                  })
+                : t(
+                    "contentDetail.composer.scheduleForm.actions.cancelSchedule",
+                    { ns: "pages" }
+                  )}
             </Button>
           )}
           {onCancel && (
@@ -190,7 +261,7 @@ export function ScheduleForm({
               onClick={onCancel}
               disabled={isSubmitting || isCancelling}
             >
-              {cancelLabel}
+              {displayCancelLabel}
             </Button>
           )}
           <Button
@@ -201,9 +272,7 @@ export function ScheduleForm({
             loading={isSubmitting}
             disabled={isCancelling}
           >
-            {isSubmitting
-              ? "Saving"
-              : submitLabel || defaultSubmitLabel}
+            {isSubmitting ? t("saving", { ns: "common" }) : displaySubmitLabel}
           </Button>
         </div>
       </div>
