@@ -1,6 +1,7 @@
 const express = require("express");
 
 const authRoutes = require("../modules/auth/auth.routes");
+const categoryDefaultRoutes = require("../modules/category-defaults/categoryDefault.routes");
 const contentRoutes = require("../modules/content/content.routes");
 const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
 const healthRoutes = require("./health.routes");
@@ -15,6 +16,7 @@ const scheduleRoutes = require("../modules/schedules/schedule.routes");
 const router = express.Router();
 
 router.use("/auth", authRoutes);
+router.use("/category-defaults", categoryDefaultRoutes);
 router.use("/content-items", contentRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/", mediaRoutes);

@@ -6,6 +6,10 @@ const {
   PLATFORM_ORDER,
   PLATFORM_DEFAULTS,
 } = require("../src/modules/platform-settings/platformSetting.service");
+const {
+  CONTENT_CATEGORY_ORDER,
+  CATEGORY_DEFAULTS,
+} = require("../src/modules/category-defaults/categoryDefault.service");
 
 async function main() {
   const passwordHash = await bcrypt.hash(env.seedUserPassword, 12);
@@ -45,6 +49,27 @@ async function main() {
   }
 
   console.log(`Seeded platform settings for: ${env.seedUserEmail}`);
+
+  for (const category of CONTENT_CATEGORY_ORDER) {
+    const defaults = CATEGORY_DEFAULTS[category];
+
+    await prisma.contentCategoryDefault.upsert({
+      where: {
+        userId_category: {
+          userId: user.id,
+          category,
+        },
+      },
+      update: {},
+      create: {
+        userId: user.id,
+        category,
+        ...defaults,
+      },
+    });
+  }
+
+  console.log(`Seeded content category defaults for: ${env.seedUserEmail}`);
 }
 
 main()

@@ -86,15 +86,16 @@ enum MediaAssetType {
 }
 
 model User {
-  id               String            @id @default(cuid())
-  name             String
-  email            String            @unique
-  passwordHash     String            @map("password_hash")
-  contentItems     ContentItem[]
-  queueSlots       QueueSlot[]
-  platformSettings PlatformSetting[]
-  createdAt        DateTime          @default(now()) @map("created_at")
-  updatedAt        DateTime          @updatedAt @map("updated_at")
+  id                      String                   @id @default(cuid())
+  name                    String
+  email                   String                   @unique
+  passwordHash            String                   @map("password_hash")
+  contentItems            ContentItem[]
+  queueSlots              QueueSlot[]
+  platformSettings        PlatformSetting[]
+  contentCategoryDefaults ContentCategoryDefault[]
+  createdAt               DateTime                 @default(now()) @map("created_at")
+  updatedAt               DateTime                 @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -234,6 +235,28 @@ model PlatformSetting {
   @@index([platform])
   @@index([isEnabled])
   @@map("platform_settings")
+}
+
+model ContentCategoryDefault {
+  id                  String          @id @default(cuid())
+  userId              String          @map("user_id")
+  category            ContentCategory
+  defaultGoal         String?         @map("default_goal")
+  defaultHookStyle    String?         @map("default_hook_style")
+  defaultCaptionStyle String?         @map("default_caption_style")
+  defaultHashtags     String[]        @default([]) @map("default_hashtags")
+  defaultPlatforms    Platform[]      @default([]) @map("default_platforms")
+  notes               String?
+  isActive            Boolean         @default(true) @map("is_active")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+  user                User            @relation(fields: [userId], references: [id])
+
+  @@unique([userId, category])
+  @@index([userId])
+  @@index([category])
+  @@index([isActive])
+  @@map("content_category_defaults")
 }
 
 model MediaAsset {
