@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +16,9 @@ import {
   CONTENT_CATEGORIES,
   PLATFORMS,
   formatCategory,
+  formatPlatform,
 } from "../../../lib/format";
+import { useCategoryDefaults } from "../../categoryDefaults/hooks/useCategoryDefaults";
 import { PlatformPicker } from "../components/PlatformPicker";
 import { useCreateContentItem } from "../hooks/useCreateContentItem";
 
@@ -76,14 +78,93 @@ function SectionHeading({ eyebrow, title, description }) {
   );
 }
 
+function hasValue(value) {
+  if (Array.isArray(value)) return value.length > 0;
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function GuidanceText({ value }) {
+  return hasValue(value) ? (
+    <p className="text-sm leading-relaxed text-ink">{value}</p>
+  ) : (
+    <p className="text-sm text-muted">Not set</p>
+  );
+}
+
+function GuidanceBadges({ values, formatValue = (value) => value }) {
+  if (!Array.isArray(values) || values.length === 0) {
+    return <p className="text-sm text-muted">Not set</p>;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {values.map((value) => (
+        <Badge key={value} tone="neutral">
+          {formatValue(value)}
+        </Badge>
+      ))}
+    </div>
+  );
+}
+
+function GuidanceItem({ label, children }) {
+  return (
+    <div className="border-t border-border pt-3 first:border-t-0 first:pt-0">
+      <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function CategoryGuidancePanel({ categoryDefault }) {
+  if (!categoryDefault) return null;
+
+  return (
+    <Card padding="lg">
+      <SectionHeading
+        eyebrow="Category guidance"
+        title={formatCategory(categoryDefault.category)}
+        description="Use these defaults as direction while drafting."
+      />
+
+      <div className="flex flex-col gap-3">
+        <GuidanceItem label="Goal">
+          <GuidanceText value={categoryDefault.defaultGoal} />
+        </GuidanceItem>
+        <GuidanceItem label="Hook style">
+          <GuidanceText value={categoryDefault.defaultHookStyle} />
+        </GuidanceItem>
+        <GuidanceItem label="Caption style">
+          <GuidanceText value={categoryDefault.defaultCaptionStyle} />
+        </GuidanceItem>
+        <GuidanceItem label="Default hashtags">
+          <GuidanceBadges values={categoryDefault.defaultHashtags} />
+        </GuidanceItem>
+        <GuidanceItem label="Default platforms">
+          <GuidanceBadges
+            values={categoryDefault.defaultPlatforms}
+            formatValue={formatPlatform}
+          />
+        </GuidanceItem>
+      </div>
+    </Card>
+  );
+}
+
 export function CreateContentPage() {
   const navigate = useNavigate();
   const [submitError, setSubmitError] = useState(null);
+  const [targetPlatformsTouched, setTargetPlatformsTouched] = useState(false);
+  const categoryDefaultsQuery = useCategoryDefaults();
 
   const {
     register,
     handleSubmit,
     control,
+    getValues,
+    setValue,
     watch,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -99,6 +180,48 @@ export function CreateContentPage() {
   });
 
   const hookValue = watch("hook") || "";
+  const selectedCategory = watch("category");
+  const categoryDefaults = Array.isArray(categoryDefaultsQuery.data)
+    ? categoryDefaultsQuery.data
+    : [];
+  const selectedCategoryDefault = useMemo(
+    () =>
+      categoryDefaults.find(
+        (categoryDefault) => categoryDefault.category === selectedCategory
+      ) || null,
+    [categoryDefaults, selectedCategory]
+  );
+  const hasDefaultPlatforms =
+    Array.isArray(selectedCategoryDefault?.defaultPlatforms) &&
+    selectedCategoryDefault.defaultPlatforms.length > 0;
+
+  useEffect(() => {
+    if (!selectedCategoryDefault || targetPlatformsTouched) return;
+
+    const currentPlatforms = getValues("targetPlatforms") || [];
+    if (currentPlatforms.length > 0 || !hasDefaultPlatforms) return;
+
+    setValue("targetPlatforms", selectedCategoryDefault.defaultPlatforms, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }, [
+    getValues,
+    hasDefaultPlatforms,
+    selectedCategoryDefault,
+    setValue,
+    targetPlatformsTouched,
+  ]);
+
+  const applyCategoryDefaultPlatforms = () => {
+    if (!hasDefaultPlatforms) return;
+
+    setTargetPlatformsTouched(true);
+    setValue("targetPlatforms", selectedCategoryDefault.defaultPlatforms, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
 
   const mutation = useCreateContentItem({
     onSuccess: (data) => {
@@ -193,6 +316,8 @@ export function CreateContentPage() {
             </div>
           </Card>
 
+          <CategoryGuidancePanel categoryDefault={selectedCategoryDefault} />
+
           <Card padding="lg">
             <SectionHeading
               eyebrow="Body"
@@ -232,12 +357,32 @@ export function CreateContentPage() {
               render={({ field }) => (
                 <PlatformPicker
                   value={field.value || []}
-                  onChange={field.onChange}
+                  onChange={(nextValue) => {
+                    setTargetPlatformsTouched(true);
+                    field.onChange(nextValue);
+                  }}
                   error={errors.targetPlatforms?.message}
                   hint="Optional — you can add platforms later."
                 />
               )}
             />
+            {selectedCategoryDefault && (
+              <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={applyCategoryDefaultPlatforms}
+                  disabled={!hasDefaultPlatforms}
+                  className="self-start"
+                >
+                  Apply category defaults
+                </Button>
+                <p className="text-xs text-muted">
+                  Updates target platforms only. Title, hook, script, notes, and hashtags stay as written.
+                </p>
+              </div>
+            )}
           </Card>
 
           <Card padding="lg" className="bg-ink text-canvas">
