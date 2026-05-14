@@ -25,12 +25,13 @@ const YOUTUBE_FIELDS = [
   },
 ];
 
-export function YouTubePostForm({ post, contentItemId }) {
+export function YouTubePostForm({ post, contentItemId, category }) {
   return (
     <PlatformComposerForm
       post={post}
       contentItemId={contentItemId}
       fields={YOUTUBE_FIELDS}
+      category={category}
     />
   );
 }

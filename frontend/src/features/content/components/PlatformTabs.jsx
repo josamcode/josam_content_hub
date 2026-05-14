@@ -60,7 +60,7 @@ function TabsSkeleton() {
   );
 }
 
-export function PlatformTabs({ contentItemId, initialPlatform }) {
+export function PlatformTabs({ contentItemId, initialPlatform, category }) {
   const { data, isLoading, isError, error, refetch } = usePlatformPosts(contentItemId);
   const [activePlatform, setActivePlatform] = useState(initialPlatform || null);
 
@@ -167,6 +167,7 @@ export function PlatformTabs({ contentItemId, initialPlatform }) {
             key={activePost.id}
             post={activePost}
             contentItemId={contentItemId}
+            category={category}
           />
         ) : (
           <p className="text-sm text-muted">

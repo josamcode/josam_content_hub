@@ -439,7 +439,7 @@ export function ContentDetailPage() {
             and mark a version as ready when it's set.
           </p>
         </div>
-        <PlatformTabs contentItemId={data.id} />
+        <PlatformTabs contentItemId={data.id} category={data.category} />
       </section>
 
       {Array.isArray(data.publishAttempts) && data.publishAttempts.length > 0 && (

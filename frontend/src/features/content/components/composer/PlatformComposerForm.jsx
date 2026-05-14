@@ -17,8 +17,10 @@ import { useSchedulePlatformPost } from "../../hooks/useSchedulePlatformPost";
 import { useScheduleForPlatformPost } from "../../hooks/useScheduleForPlatformPost";
 import { useUpdatePlatformPost } from "../../hooks/useUpdatePlatformPost";
 import { useValidatePlatformPost } from "../../hooks/useValidatePlatformPost";
+import { useCategoryDefaults } from "../../../categoryDefaults/hooks/useCategoryDefaults";
 import { ScheduleForm } from "../ScheduleForm";
 import { ScheduleSummary } from "../ScheduleSummary";
+import { CategoryGuidancePanel } from "./CategoryGuidancePanel";
 import { CopyButton } from "./CopyButton";
 import { ValidationPanel } from "./ValidationPanel";
 
@@ -111,8 +113,17 @@ function CheckIcon() {
   );
 }
 
-export function PlatformComposerForm({ post, contentItemId, fields }) {
+export function PlatformComposerForm({ post, contentItemId, fields, category }) {
   const original = useMemo(() => toDefaultValues(post, fields), [post, fields]);
+
+  const hashtagsField = useMemo(
+    () =>
+      fields.find(
+        (field) => field.name === "hashtags" && field.kind === "tags"
+      ) || null,
+    [fields]
+  );
+  const supportsHashtags = Boolean(hashtagsField);
 
   const {
     register,
@@ -138,6 +149,53 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
   const [defaultsError, setDefaultsError] = useState(null);
   const [defaultsAppliedAt, setDefaultsAppliedAt] = useState(null);
   const [confirmingOverwrite, setConfirmingOverwrite] = useState(false);
+  const [confirmingReplaceHashtags, setConfirmingReplaceHashtags] =
+    useState(false);
+
+  const categoryDefaultsQuery = useCategoryDefaults();
+  const categoryEntry = useMemo(() => {
+    if (!Array.isArray(categoryDefaultsQuery.data) || !category) return null;
+    return (
+      categoryDefaultsQuery.data.find((item) => item.category === category) ||
+      null
+    );
+  }, [categoryDefaultsQuery.data, category]);
+
+  const watchedHashtags = supportsHashtags
+    ? watch(hashtagsField.name)
+    : undefined;
+  const currentHashtagsCount = Array.isArray(watchedHashtags)
+    ? watchedHashtags.length
+    : 0;
+
+  function applyCategoryHashtags() {
+    if (!supportsHashtags || !categoryEntry) return;
+    const next = Array.isArray(categoryEntry.defaultHashtags)
+      ? [...categoryEntry.defaultHashtags]
+      : [];
+    setValue(hashtagsField.name, next, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  }
+
+  const handleFillCategoryHashtags = () => {
+    if (currentHashtagsCount > 0) return;
+    applyCategoryHashtags();
+  };
+
+  const handleStartReplaceHashtags = () => {
+    setConfirmingReplaceHashtags(true);
+  };
+
+  const handleCancelReplaceHashtags = () => {
+    setConfirmingReplaceHashtags(false);
+  };
+
+  const handleConfirmReplaceHashtags = () => {
+    applyCategoryHashtags();
+    setConfirmingReplaceHashtags(false);
+  };
 
   useEffect(() => {
     if (!savedAt) return;
@@ -317,6 +375,21 @@ export function PlatformComposerForm({ post, contentItemId, fields }) {
         onConfirmOverwrite={() => handleApplyDefaults({ overwrite: true })}
         onCancelOverwrite={handleCancelOverwrite}
       />
+
+      {category && (
+        <CategoryGuidancePanel
+          category={category}
+          platform={post.platform}
+          supportsHashtags={supportsHashtags}
+          hashtagsCount={currentHashtagsCount}
+          confirmingReplace={confirmingReplaceHashtags}
+          applying={false}
+          onFill={handleFillCategoryHashtags}
+          onStartReplace={handleStartReplaceHashtags}
+          onConfirmReplace={handleConfirmReplaceHashtags}
+          onCancelReplace={handleCancelReplaceHashtags}
+        />
+      )}
 
       <ValidationPanel result={validation} source={validationSource} />
 

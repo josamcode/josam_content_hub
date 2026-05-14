@@ -20,12 +20,13 @@ const TIKTOK_FIELDS = [
   },
 ];
 
-export function TikTokPostForm({ post, contentItemId }) {
+export function TikTokPostForm({ post, contentItemId, category }) {
   return (
     <PlatformComposerForm
       post={post}
       contentItemId={contentItemId}
       fields={TIKTOK_FIELDS}
+      category={category}
     />
   );
 }

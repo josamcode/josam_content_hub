@@ -20,12 +20,13 @@ const FACEBOOK_FIELDS = [
   },
 ];
 
-export function FacebookPostForm({ post, contentItemId }) {
+export function FacebookPostForm({ post, contentItemId, category }) {
   return (
     <PlatformComposerForm
       post={post}
       contentItemId={contentItemId}
       fields={FACEBOOK_FIELDS}
+      category={category}
     />
   );
 }

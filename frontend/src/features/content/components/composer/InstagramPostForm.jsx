@@ -21,12 +21,13 @@ const INSTAGRAM_FIELDS = [
   },
 ];
 
-export function InstagramPostForm({ post, contentItemId }) {
+export function InstagramPostForm({ post, contentItemId, category }) {
   return (
     <PlatformComposerForm
       post={post}
       contentItemId={contentItemId}
       fields={INSTAGRAM_FIELDS}
+      category={category}
     />
   );
 }
