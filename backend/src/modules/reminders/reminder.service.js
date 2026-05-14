@@ -110,7 +110,9 @@ function buildReminderWhere(userId, query) {
   }
 
   if (query.range === "overdue") {
-    where.status = "pending";
+    where.status = {
+      in: ["pending", "missed"],
+    };
     where.remindAt = {
       lt: new Date(),
     };

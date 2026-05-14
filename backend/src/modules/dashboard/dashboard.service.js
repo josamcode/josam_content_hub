@@ -421,7 +421,9 @@ async function getDashboard(userId, query) {
     prisma.reminder.count({
       where: {
         ...userReminderWhere,
-        status: "pending",
+        status: {
+          in: ["pending", "missed"],
+        },
         remindAt: {
           lt: now,
         },
@@ -493,7 +495,9 @@ async function getDashboard(userId, query) {
     prisma.reminder.findMany({
       where: {
         ...userReminderWhere,
-        status: "pending",
+        status: {
+          in: ["pending", "missed"],
+        },
         remindAt: {
           lt: now,
         },
@@ -628,6 +632,7 @@ function reminderInclude() {
             platform: true,
             contentItem: {
               select: {
+                id: true,
                 title: true,
               },
             },
