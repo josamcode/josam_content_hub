@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "../../../lib/cn";
-import { GUIDE_CONTENT } from "../lib/guideContent";
+import { GUIDE_CONTENT, LANGS } from "../lib/guideContent";
 import { GuideHero } from "../components/GuideHero";
 import { QuickTour } from "../components/QuickTour";
 import { WorkflowMap } from "../components/WorkflowMap";
@@ -28,7 +29,11 @@ const SECTION_KEYS = [
 ];
 
 export function GuidePage() {
-  const [lang, setLang] = useState("en");
+  const { i18n } = useTranslation();
+  const initialLang = LANGS.includes(i18n.resolvedLanguage)
+    ? i18n.resolvedLanguage
+    : "en";
+  const [lang, setLang] = useState(initialLang);
   const tourRef = useRef(null);
   const sectionRefs = useRef({});
 

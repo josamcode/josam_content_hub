@@ -1,0 +1,20 @@
+{
+  "dashboard": "لوحة التحكم",
+  "contentLibrary": "مكتبة المحتوى",
+  "workflow": "سير العمل",
+  "calendar": "التقويم",
+  "reminders": "التذكيرات",
+  "queueSettings": "إعدادات الطابور",
+  "platformSettings": "إعدادات المنصات",
+  "categoryDefaults": "الإعدادات الافتراضية للتصنيفات",
+  "publishLogs": "سجل النشر",
+  "guide": "الدليل",
+  "more": "المزيد",
+  "quickJump": "تنقل سريع",
+  "soon": "قريبًا",
+  "groups": {
+    "workspace": "مساحة العمل",
+    "configuration": "الإعدادات",
+    "support": "المساعدة"
+  }
+}

@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../ui/Button";
 import { cn } from "../../lib/cn";
 import { useAuth } from "../../features/auth/hooks/useAuth";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 function PlusIcon() {
   return (
@@ -36,6 +38,7 @@ function getInitials(name = "") {
 }
 
 export function Topbar() {
+  const { t } = useTranslation("common");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -57,16 +60,18 @@ export function Topbar() {
     navigate("/login", { replace: true });
   };
 
+  const studioLabel = user?.name
+    ? t("studio", { name: user.name })
+    : t("defaultStudio");
+
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center justify-between gap-4 border-b border-border bg-surface/80 px-6 backdrop-blur-md">
       <div className="flex items-center gap-3">
         <span className="hidden text-[11px] uppercase tracking-[0.18em] text-muted md:inline">
-          Workspace
+          {t("workspace")}
         </span>
         <span className="hidden h-3 w-px bg-border md:inline" />
-        <span className="text-sm text-ink">
-          {user?.name ? `${user.name}'s studio` : "JoSam's Studio"}
-        </span>
+        <span className="text-sm text-ink">{studioLabel}</span>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
@@ -75,21 +80,23 @@ export function Topbar() {
           to="/content/new"
           variant="primary"
           size="sm"
-          aria-label="Create new content"
+          aria-label={t("createNewContent")}
         >
           <PlusIcon />
-          <span className="hidden sm:inline">New Content</span>
+          <span className="hidden sm:inline">{t("newContent")}</span>
         </Button>
 
         <span className="hidden items-center gap-2 rounded-full border border-border bg-canvas px-3 py-1 text-[11px] text-muted lg:inline-flex">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          All systems calm
+          {t("allSystemsCalm")}
         </span>
+
+        <LanguageSwitcher className="hidden sm:inline-flex" />
 
         <div ref={menuRef} className="relative">
           <button
             type="button"
-            aria-label="Open account menu"
+            aria-label={t("openAccountMenu")}
             aria-expanded={menuOpen}
             aria-haspopup="menu"
             onClick={() => setMenuOpen((v) => !v)}
@@ -101,21 +108,24 @@ export function Topbar() {
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ink text-[11px] font-medium text-canvas">
               {getInitials(user?.name)}
             </span>
-            <span className="hidden pr-1 text-ink sm:inline">
-              {user?.name || "Account"}
+            <span className="hidden pe-1 text-ink sm:inline">
+              {user?.name || t("account")}
             </span>
           </button>
 
           {menuOpen && (
             <div
-              className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
+              className="absolute inset-e-0 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
               role="menu"
             >
               <div className="border-b border-border px-3 py-2.5">
                 <p className="truncate text-sm text-ink">{user?.name}</p>
                 <p className="truncate text-xs text-muted">{user?.email}</p>
               </div>
-              <div className="p-2">
+              <div className="flex flex-col gap-2 p-2">
+                <div className="sm:hidden">
+                  <LanguageSwitcher />
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -123,7 +133,7 @@ export function Topbar() {
                   onClick={handleLogout}
                   role="menuitem"
                 >
-                  Sign out
+                  {t("signOut")}
                 </Button>
               </div>
             </div>

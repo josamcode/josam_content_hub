@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "hello": "Hello",
+    "title": "Dashboard",
+    "subtitle": "Your content machine today."
+  },
+  "contentLibrary": {
+    "title": "Content Library"
+  },
+  "createContent": {
+    "eyebrow": "New",
+    "title": "Create Content",
+    "subtitle": "Capture a new idea — title and category are all you need to start."
+  },
+  "contentDetail": {
+    "eyebrow": "Library / Detail"
+  },
+  "guide": {
+    "title": "Learn JoSam Content Hub"
+  }
+}

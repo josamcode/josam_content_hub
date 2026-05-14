@@ -1,0 +1,19 @@
+{
+  "idea": "Idea",
+  "scripted": "Scripted",
+  "recorded": "Recorded",
+  "edited": "Edited",
+  "ready": "Ready",
+  "scheduled": "Scheduled",
+  "published": "Published",
+  "failed": "Failed",
+  "archived": "Archived",
+  "draft": "Draft",
+  "manual_pending": "Manual pending",
+  "manual_done": "Manual done",
+  "pending": "Pending",
+  "done": "Done",
+  "cancelled": "Cancelled",
+  "missed": "Missed",
+  "processing": "Processing"
+}

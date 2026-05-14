@@ -1,0 +1,19 @@
+{
+  "idea": "فكرة",
+  "scripted": "مكتوب",
+  "recorded": "مُسجَّل",
+  "edited": "مُنتَج",
+  "ready": "جاهز",
+  "scheduled": "مجدول",
+  "published": "منشور",
+  "failed": "فشل",
+  "archived": "مؤرشف",
+  "draft": "مسودة",
+  "manual_pending": "بانتظار النشر اليدوي",
+  "manual_done": "منشور يدويًا",
+  "pending": "قيد الانتظار",
+  "done": "تم",
+  "cancelled": "ملغي",
+  "missed": "فات وقته",
+  "processing": "قيد المعالجة"
+}

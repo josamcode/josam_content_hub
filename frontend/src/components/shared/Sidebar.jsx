@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "../../lib/cn";
 import { APP_NAME } from "../../lib/constants";
@@ -94,30 +95,32 @@ const ICONS = {
 };
 
 const NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: "dashboard", enabled: true },
-  { to: "/content", label: "Content Library", icon: "library", enabled: true },
-  { to: "/workflow", label: "Workflow", icon: "workflow", enabled: true },
-  { to: "/calendar", label: "Calendar", icon: "calendar", enabled: true },
-  { to: "/reminders", label: "Reminders", icon: "reminders", enabled: true },
-  { to: "/queue", label: "Queue Settings", icon: "queue", enabled: true },
-  { to: "/platforms", label: "Platform Settings", icon: "platform", enabled: true },
-  { to: "/category-defaults", label: "Category Defaults", icon: "categoryDefaults", enabled: true },
-  { to: "/publish-logs", label: "Publish Logs", icon: "logs", enabled: true },
+  { to: "/dashboard", labelKey: "dashboard", icon: "dashboard", enabled: true },
+  { to: "/content", labelKey: "contentLibrary", icon: "library", enabled: true },
+  { to: "/workflow", labelKey: "workflow", icon: "workflow", enabled: true },
+  { to: "/calendar", labelKey: "calendar", icon: "calendar", enabled: true },
+  { to: "/reminders", labelKey: "reminders", icon: "reminders", enabled: true },
+  { to: "/queue", labelKey: "queueSettings", icon: "queue", enabled: true },
+  { to: "/platforms", labelKey: "platformSettings", icon: "platform", enabled: true },
+  { to: "/category-defaults", labelKey: "categoryDefaults", icon: "categoryDefaults", enabled: true },
+  { to: "/publish-logs", labelKey: "publishLogs", icon: "logs", enabled: true },
 ];
 
 const WORKSPACE_COUNT = 5;
 
 const SUPPORT_NAV = [
-  { to: "/guide", label: "Guide", icon: "guide", enabled: true },
+  { to: "/guide", labelKey: "guide", icon: "guide", enabled: true },
 ];
 
 function NavItem({ item }) {
+  const { t } = useTranslation("nav");
   const location = useLocation();
   const iconNode = <Icon path={ICONS[item.icon]} />;
   const isContentSection =
     item.to === "/content" &&
     location.pathname.startsWith("/content/") &&
     location.pathname !== "/content/new";
+  const label = t(item.labelKey);
 
   if (!item.enabled) {
     return (
@@ -127,14 +130,14 @@ function NavItem({ item }) {
           "cursor-not-allowed text-muted/70"
         )}
         aria-disabled="true"
-        title="Available in a later phase"
+        title={label}
       >
         <span className="flex items-center gap-3">
           <span className="text-muted/60">{iconNode}</span>
-          <span>{item.label}</span>
+          <span>{label}</span>
         </span>
         <span className="rounded-full bg-canvas px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted/70">
-          Soon
+          {t("soon")}
         </span>
       </div>
     );
@@ -154,15 +157,16 @@ function NavItem({ item }) {
       }
     >
       {iconNode}
-      <span>{item.label}</span>
+      <span>{label}</span>
     </NavLink>
   );
 }
 
 export function Sidebar() {
+  const { t } = useTranslation("nav");
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col self-start border-r border-border bg-surface md:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col self-start border-e border-border bg-surface md:flex">
         <div className="flex items-center gap-2 px-5 pt-6 pb-4">
           <div className="flex h-8 w-auto items-center justify-center">
             <img src='/logo.png' alt="Logo" className="h-full" />
@@ -179,21 +183,21 @@ export function Sidebar() {
 
         <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2">
           <div className="px-2 pt-2 pb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
-            Workspace
+            {t("groups.workspace")}
           </div>
           {NAV.slice(0, WORKSPACE_COUNT).map((item) => (
             <NavItem key={item.to} item={item} />
           ))}
 
           <div className="mt-4 px-2 pt-2 pb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
-            Configuration
+            {t("groups.configuration")}
           </div>
           {NAV.slice(WORKSPACE_COUNT).map((item) => (
             <NavItem key={item.to} item={item} />
           ))}
 
           <div className="mt-4 px-2 pt-2 pb-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
-            Support
+            {t("groups.support")}
           </div>
           {SUPPORT_NAV.map((item) => (
             <NavItem key={item.to} item={item} />
@@ -256,6 +260,7 @@ function ChevronRightIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className="rtl:rotate-180"
     >
       <path d="m9 6 6 6-6 6" />
     </svg>
@@ -288,6 +293,8 @@ function isLibraryActive(pathname) {
 }
 
 function MobileTile({ item, isActive, onClick }) {
+  const { t } = useTranslation("nav");
+  const label = t(item.labelKey);
   return (
     <NavLink
       to={item.to}
@@ -317,7 +324,7 @@ function MobileTile({ item, isActive, onClick }) {
               <Icon path={ICONS[item.icon]} />
             </span>
             <span className={cn(active ? "text-ink" : "text-muted")}>
-              {item.label.split(" ")[0]}
+              {label.split(/\s+/)[0]}
             </span>
           </>
         );
@@ -327,6 +334,7 @@ function MobileTile({ item, isActive, onClick }) {
 }
 
 function MobileMoreTile({ active, onClick }) {
+  const { t } = useTranslation("nav");
   return (
     <button
       type="button"
@@ -346,12 +354,13 @@ function MobileMoreTile({ active, onClick }) {
       >
         <MoreIcon />
       </span>
-      <span className={cn(active ? "text-ink" : "text-muted")}>More</span>
+      <span className={cn(active ? "text-ink" : "text-muted")}>{t("more")}</span>
     </button>
   );
 }
 
 function MobileMoreSheet({ items, open, onClose }) {
+  const { t } = useTranslation("nav");
   useEffect(() => {
     if (!open) return undefined;
 
@@ -389,7 +398,7 @@ function MobileMoreSheet({ items, open, onClose }) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="More navigation"
+        aria-label={t("more")}
         className={cn(
           "absolute inset-x-0 bottom-0 flex flex-col rounded-t-2xl border-t border-border bg-surface shadow-[0_-20px_40px_rgba(20,20,20,0.18)]",
           "transition-transform duration-250 ease-out",
@@ -406,9 +415,9 @@ function MobileMoreSheet({ items, open, onClose }) {
         <div className="flex items-center justify-between px-5 pt-3 pb-2">
           <div>
             <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted">
-              Quick jump
+              {t("quickJump")}
             </p>
-            <h2 className="font-display text-lg leading-tight text-ink">More</h2>
+            <h2 className="font-display text-lg leading-tight text-ink">{t("more")}</h2>
           </div>
           <button
             type="button"
@@ -422,39 +431,45 @@ function MobileMoreSheet({ items, open, onClose }) {
 
         <div className="flex flex-col gap-1.5 px-3 pb-3 pt-1">
           {items.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end
-              onClick={onClose}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm transition",
-                  isActive
-                    ? "border-ink/30 bg-ink text-canvas"
-                    : "bg-canvas/50 text-ink hover:border-ink/15 hover:bg-canvas"
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <span
-                    className={cn(
-                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-                      isActive ? "bg-canvas/15 text-canvas" : "bg-surface text-ink"
-                    )}
-                  >
-                    <Icon path={ICONS[item.icon]} />
-                  </span>
-                  <span className="flex-1 font-medium">{item.label}</span>
-                  <ChevronRightIcon />
-                </>
-              )}
-            </NavLink>
+            <MobileMoreLink key={item.to} item={item} onClose={onClose} />
           ))}
         </div>
       </div>
     </div>
+  );
+}
+
+function MobileMoreLink({ item, onClose }) {
+  const { t } = useTranslation("nav");
+  return (
+    <NavLink
+      to={item.to}
+      end
+      onClick={onClose}
+      className={({ isActive }) =>
+        cn(
+          "flex items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm transition",
+          isActive
+            ? "border-ink/30 bg-ink text-canvas"
+            : "bg-canvas/50 text-ink hover:border-ink/15 hover:bg-canvas"
+        )
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <span
+            className={cn(
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+              isActive ? "bg-canvas/15 text-canvas" : "bg-surface text-ink"
+            )}
+          >
+            <Icon path={ICONS[item.icon]} />
+          </span>
+          <span className="flex-1 font-medium">{t(item.labelKey)}</span>
+          <ChevronRightIcon />
+        </>
+      )}
+    </NavLink>
   );
 }
 

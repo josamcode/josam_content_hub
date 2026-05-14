@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "hello": "مرحبًا",
+    "title": "لوحة التحكم",
+    "subtitle": "ماكينة محتواك اليوم."
+  },
+  "contentLibrary": {
+    "title": "مكتبة المحتوى"
+  },
+  "createContent": {
+    "eyebrow": "جديد",
+    "title": "إنشاء محتوى",
+    "subtitle": "التقط فكرة جديدة — العنوان والتصنيف يكفيان للبدء."
+  },
+  "contentDetail": {
+    "eyebrow": "المكتبة / التفاصيل"
+  },
+  "guide": {
+    "title": "تعلّم JoSam Content Hub"
+  }
+}

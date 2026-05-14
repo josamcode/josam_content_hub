@@ -1,0 +1,20 @@
+{
+  "dashboard": "Dashboard",
+  "contentLibrary": "Content Library",
+  "workflow": "Workflow",
+  "calendar": "Calendar",
+  "reminders": "Reminders",
+  "queueSettings": "Queue Settings",
+  "platformSettings": "Platform Settings",
+  "categoryDefaults": "Category Defaults",
+  "publishLogs": "Publish Logs",
+  "guide": "Guide",
+  "more": "More",
+  "quickJump": "Quick jump",
+  "soon": "Soon",
+  "groups": {
+    "workspace": "Workspace",
+    "configuration": "Configuration",
+    "support": "Support"
+  }
+}
