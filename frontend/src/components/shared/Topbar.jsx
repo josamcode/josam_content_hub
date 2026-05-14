@@ -64,7 +64,7 @@ export function Topbar() {
             aria-haspopup="menu"
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
-              "flex items-center gap-2 rounded-full border border-border bg-surface px-2 py-1 text-sm transition hover:bg-canvas",
+              "flex items-center gap-2 rounded-full border border-border bg-surface px-1 sm:px-2 py-1 text-sm transition hover:bg-canvas",
               menuOpen && "bg-canvas"
             )}
           >
