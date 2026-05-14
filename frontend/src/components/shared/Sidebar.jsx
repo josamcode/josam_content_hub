@@ -78,7 +78,7 @@ const NAV = [
   { to: "/calendar", label: "Calendar", icon: "calendar", enabled: true },
   { to: "/reminders", label: "Reminders", icon: "reminders", enabled: true },
   { to: "/queue", label: "Queue Settings", icon: "queue", enabled: true },
-  { to: "/platform-settings", label: "Platform Settings", icon: "platform" },
+  { to: "/platforms", label: "Platform Settings", icon: "platform", enabled: true },
   { to: "/publish-logs", label: "Publish Logs", icon: "logs", enabled: true },
 ];
 

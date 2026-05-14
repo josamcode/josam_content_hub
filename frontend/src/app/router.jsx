@@ -12,6 +12,7 @@ import { CalendarPage } from "../features/calendar/pages/CalendarPage";
 import { RemindersPage } from "../features/reminders/pages/RemindersPage";
 import { QueueSettingsPage } from "../features/queueSlots/pages/QueueSettingsPage";
 import { PublishLogsPage } from "../features/publishLogs/pages/PublishLogsPage";
+import { PlatformSettingsPage } from "../features/platformSettings/pages/PlatformSettingsPage";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 function FullPageLoader() {
@@ -70,6 +71,7 @@ export function AppRouter() {
         <Route path="/reminders" element={<RemindersPage />} />
         <Route path="/queue" element={<QueueSettingsPage />} />
         <Route path="/publish-logs" element={<PublishLogsPage />} />
+        <Route path="/platforms" element={<PlatformSettingsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
