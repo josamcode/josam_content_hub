@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { Button } from "../../../../components/ui/Button";
 import { useCategoryDefaults } from "../../../categoryDefaults/hooks/useCategoryDefaults";
@@ -47,6 +48,7 @@ export function CategoryGuidancePanel({
   onCancelReplace,
   embedded = false,
 }) {
+  const { t } = useTranslation(["common", "pages"]);
   const { data, isLoading, isError } = useCategoryDefaults();
 
   const entry = useMemo(() => {
@@ -78,7 +80,9 @@ export function CategoryGuidancePanel({
   if (!hasAnyContent) return null;
 
   const label =
-    CATEGORY_LABELS[category] || categoryLabel(category) || "Category";
+    CATEGORY_LABELS[category] ||
+    categoryLabel(category) ||
+    t("category", { ns: "common" });
 
   const hashtagsEmpty = hashtagsCount === 0;
   const canFill = supportsHashtags && hashtags.length > 0 && hashtagsEmpty;
@@ -96,10 +100,19 @@ export function CategoryGuidancePanel({
     <div className={containerClass}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className={eyebrowClass}>Category guidance</p>
+          <p className={eyebrowClass}>
+            {t("contentDetail.composer.categoryGuidance.title", {
+              ns: "pages",
+            })}
+          </p>
           <p className="mt-0.5 text-sm text-ink">
-            Suggestions from <span className="font-medium">{label}</span>{" "}
-            defaults — nothing is changed automatically.
+            <Trans
+              t={t}
+              ns="pages"
+              i18nKey="contentDetail.composer.categoryGuidance.description"
+              values={{ category: label }}
+              components={{ strong: <span className="font-medium" /> }}
+            />
           </p>
         </div>
 
@@ -115,10 +128,14 @@ export function CategoryGuidancePanel({
               title={
                 hashtagsEmpty
                   ? undefined
-                  : "Hashtags field is not empty. Use Replace to overwrite."
+                  : t("contentDetail.composer.categoryGuidance.fillDisabled", {
+                      ns: "pages",
+                    })
               }
             >
-              Use category hashtags
+              {t("contentDetail.composer.categoryGuidance.useHashtags", {
+                ns: "pages",
+              })}
             </Button>
             {canReplace && (
               <Button
@@ -128,7 +145,10 @@ export function CategoryGuidancePanel({
                 onClick={onStartReplace}
                 disabled={applying}
               >
-                Replace hashtags
+                {t(
+                  "contentDetail.composer.categoryGuidance.replaceHashtags",
+                  { ns: "pages" }
+                )}
               </Button>
             )}
           </div>
@@ -143,7 +163,7 @@ export function CategoryGuidancePanel({
               onClick={onCancelReplace}
               disabled={applying}
             >
-              Cancel
+              {t("cancel", { ns: "common" })}
             </Button>
             <Button
               type="button"
@@ -153,22 +173,55 @@ export function CategoryGuidancePanel({
               loading={applying}
               disabled={applying}
             >
-              {applying ? "Replacing" : "Replace"}
+              {applying
+                ? t("contentDetail.composer.categoryGuidance.replacing", {
+                    ns: "pages",
+                  })
+                : t("contentDetail.composer.categoryGuidance.replace", {
+                    ns: "pages",
+                  })}
             </Button>
           </div>
         )}
       </div>
 
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-        {goal && <GuidanceRow label="Goal">{goal}</GuidanceRow>}
+        {goal && (
+          <GuidanceRow
+            label={t("contentDetail.composer.categoryGuidance.labels.goal", {
+              ns: "pages",
+            })}
+          >
+            {goal}
+          </GuidanceRow>
+        )}
         {hookStyle && (
-          <GuidanceRow label="Hook style">{hookStyle}</GuidanceRow>
+          <GuidanceRow
+            label={t(
+              "contentDetail.composer.categoryGuidance.labels.hookStyle",
+              { ns: "pages" }
+            )}
+          >
+            {hookStyle}
+          </GuidanceRow>
         )}
         {captionStyle && (
-          <GuidanceRow label="Caption style">{captionStyle}</GuidanceRow>
+          <GuidanceRow
+            label={t(
+              "contentDetail.composer.categoryGuidance.labels.captionStyle",
+              { ns: "pages" }
+            )}
+          >
+            {captionStyle}
+          </GuidanceRow>
         )}
         {hashtags.length > 0 && (
-          <GuidanceRow label="Default hashtags">
+          <GuidanceRow
+            label={t(
+              "contentDetail.composer.categoryGuidance.labels.defaultHashtags",
+              { ns: "pages" }
+            )}
+          >
             <div className="flex flex-wrap gap-1.5">
               {hashtags.map((tag) => (
                 <HashtagPill key={tag} value={tag} />
@@ -177,7 +230,12 @@ export function CategoryGuidancePanel({
           </GuidanceRow>
         )}
         {platforms.length > 0 && (
-          <GuidanceRow label="Default platforms">
+          <GuidanceRow
+            label={t(
+              "contentDetail.composer.categoryGuidance.labels.defaultPlatforms",
+              { ns: "pages" }
+            )}
+          >
             <div className="flex flex-wrap gap-1.5">
               {platforms.map((p) => (
                 <PlatformPill key={p} value={p} />
@@ -189,19 +247,20 @@ export function CategoryGuidancePanel({
 
       {confirmingReplace && (
         <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-          This replaces the current hashtags on the {platform || "platform"}{" "}
-          version with the category defaults. Other fields (caption, title,
-          description, tags) are not touched.
+          {t("contentDetail.composer.categoryGuidance.replaceNotice", {
+            ns: "pages",
+            platform: platform || t("platform", { ns: "common" }),
+          })}
         </p>
       )}
 
-      {supportsHashtags &&
-        hashtags.length === 0 &&
-        !confirmingReplace && (
-          <p className="mt-3 text-xs text-muted">
-            No default hashtags set for this category yet.
-          </p>
-        )}
+      {supportsHashtags && hashtags.length === 0 && !confirmingReplace && (
+        <p className="mt-3 text-xs text-muted">
+          {t("contentDetail.composer.categoryGuidance.noDefaultHashtags", {
+            ns: "pages",
+          })}
+        </p>
+      )}
     </div>
   );
 }

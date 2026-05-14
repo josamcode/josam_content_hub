@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { cn } from "../../../../lib/cn";
 
 function CheckIcon() {
@@ -39,13 +41,15 @@ function AlertIcon() {
 }
 
 export function ValidationPanel({ result, source }) {
+  const { t } = useTranslation("pages");
+
   if (!result) return null;
 
   const sourceLabel =
     source === "patch"
-      ? "Backend blocked the save"
+      ? t("contentDetail.composer.validationPanel.source.patch")
       : source === "validate"
-        ? "Validation result"
+        ? t("contentDetail.composer.validationPanel.source.validate")
         : null;
 
   if (result.valid) {
@@ -55,7 +59,9 @@ export function ValidationPanel({ result, source }) {
           <CheckIcon />
         </span>
         <div>
-          <p className="font-medium">Looks good — ready to ship.</p>
+          <p className="font-medium">
+            {t("contentDetail.composer.validationPanel.validTitle")}
+          </p>
           {sourceLabel && (
             <p className="text-[11px] uppercase tracking-[0.16em] text-emerald-700/80">
               {sourceLabel}
@@ -78,14 +84,19 @@ export function ValidationPanel({ result, source }) {
   return (
     <div className={cn("rounded-xl border px-4 py-3 text-sm", tone)}>
       <div className="flex items-start gap-3">
-        <span className={cn("flex h-6 w-6 shrink-0 items-center justify-center rounded-full", iconTone)}>
+        <span
+          className={cn(
+            "flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
+            iconTone
+          )}
+        >
           <AlertIcon />
         </span>
         <div className="flex-1">
           <p className="font-medium">
             {source === "patch"
-              ? "Can't mark this as ready yet"
-              : "A few things need attention"}
+              ? t("contentDetail.composer.validationPanel.blockedTitle")
+              : t("contentDetail.composer.validationPanel.warningTitle")}
           </p>
           {sourceLabel && (
             <p className="text-[11px] uppercase tracking-[0.16em] opacity-70">
@@ -93,11 +104,13 @@ export function ValidationPanel({ result, source }) {
             </p>
           )}
           {Array.isArray(result.warnings) && result.warnings.length > 0 && (
-            <ul className="mt-2 list-disc space-y-1 pl-5">
+            <ul className="mt-2 list-disc space-y-1 ps-5">
               {result.warnings.map((warning) => (
                 <li key={`${warning.field}-${warning.message}`}>
-                  <span className="font-medium capitalize">{warning.field}</span>
-                  {" — "}
+                  <span className="font-medium capitalize">
+                    {warning.field}
+                  </span>
+                  {" - "}
                   <span>{warning.message}</span>
                 </li>
               ))}

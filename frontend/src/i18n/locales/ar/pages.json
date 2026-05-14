@@ -322,8 +322,93 @@
         "applyErrorTitle": "تعذر تطبيق الإعدادات الافتراضية",
         "appliedMessage": "تم تطبيق إعدادات المنصة."
       },
+      "categoryGuidance": {
+        "title": "إرشادات التصنيف",
+        "description": "اقتراحات من إعدادات <strong>{{category}}</strong> الافتراضية - لا يتم تغيير أي شيء تلقائيًا.",
+        "fillDisabled": "حقل الهاشتاجز ليس فارغًا. استخدم الاستبدال للكتابة فوقه.",
+        "useHashtags": "استخدم هاشتاجز التصنيف",
+        "replaceHashtags": "استبدال الهاشتاجز",
+        "replace": "استبدال",
+        "replacing": "جارٍ الاستبدال",
+        "replaceNotice": "سيستبدل هذا الهاشتاجز الحالية في نسخة {{platform}} بإعدادات التصنيف الافتراضية. لن تتغير الحقول الأخرى (الكابشن، العنوان، الوصف، الكلمات المفتاحية).",
+        "noDefaultHashtags": "لا توجد هاشتاجز افتراضية لهذا التصنيف بعد.",
+        "labels": {
+          "goal": "الهدف",
+          "hookStyle": "نمط الافتتاحية",
+          "captionStyle": "نمط الكابشن",
+          "defaultHashtags": "الهاشتاجز الافتراضية",
+          "defaultPlatforms": "المنصات الافتراضية"
+        }
+      },
+      "validationPanel": {
+        "source": {
+          "patch": "منع Backend عملية الحفظ",
+          "validate": "نتيجة التحقق"
+        },
+        "validTitle": "كل شيء جيد - جاهز للنشر.",
+        "blockedTitle": "لا يمكن جعله جاهزًا بعد",
+        "warningTitle": "هناك بعض الأشياء التي تحتاج انتباهك"
+      },
       "footer": {
         "unsaved": "لديك تعديلات غير محفوظة"
+      },
+      "forms": {
+        "youtube": {
+          "title": {
+            "label": "عنوان YouTube",
+            "placeholder": "العنوان الذي سيراه المشاهدون",
+            "hint": "مطلوب لجعل هذه النسخة جاهزة."
+          },
+          "description": {
+            "label": "الوصف",
+            "placeholder": "وصف طويل، روابط، وتوقيتات."
+          },
+          "tags": {
+            "label": "الكلمات المفتاحية",
+            "placeholder": "اكتب كلمة مفتاحية واضغط Enter",
+            "hint": "كلمات مفتاحية بدون #. اضغط Enter أو فاصلة للإضافة.",
+            "copyLabel": "نسخ الكلمات المفتاحية"
+          }
+        },
+        "tiktok": {
+          "caption": {
+            "label": "الكابشن",
+            "placeholder": "اكتب كابشن TikTok.",
+            "hint": "مطلوب لجعل هذه النسخة جاهزة."
+          },
+          "hashtags": {
+            "label": "الهاشتاجز",
+            "placeholder": "اكتب هاشتاج واضغط Enter",
+            "hint": "اضغط Enter أو فاصلة للإضافة.",
+            "copyLabel": "نسخ الهاشتاجز"
+          }
+        },
+        "instagram": {
+          "caption": {
+            "label": "الكابشن",
+            "placeholder": "اكتب كابشن Instagram.",
+            "hint": "مطلوب لجعل هذه النسخة جاهزة. الحد الأقصى 2,200 حرف."
+          },
+          "hashtags": {
+            "label": "الهاشتاجز",
+            "placeholder": "اكتب هاشتاج واضغط Enter",
+            "hint": "اضغط Enter أو فاصلة للإضافة. لا تكتب #؛ سيُضاف تلقائيًا.",
+            "copyLabel": "نسخ الهاشتاجز"
+          }
+        },
+        "facebook": {
+          "caption": {
+            "label": "الكابشن",
+            "placeholder": "اكتب نص منشور Facebook.",
+            "hint": "مطلوب لجعل هذه النسخة جاهزة."
+          },
+          "hashtags": {
+            "label": "الهاشتاجز",
+            "placeholder": "اكتب هاشتاج واضغط Enter",
+            "hint": "اضغط Enter أو فاصلة للإضافة.",
+            "copyLabel": "نسخ الهاشتاجز"
+          }
+        }
       }
     }
   },

@@ -322,8 +322,93 @@
         "applyErrorTitle": "Couldn't apply defaults",
         "appliedMessage": "Platform defaults applied."
       },
+      "categoryGuidance": {
+        "title": "Category guidance",
+        "description": "Suggestions from <strong>{{category}}</strong> defaults - nothing is changed automatically.",
+        "fillDisabled": "Hashtags field is not empty. Use Replace to overwrite.",
+        "useHashtags": "Use category hashtags",
+        "replaceHashtags": "Replace hashtags",
+        "replace": "Replace",
+        "replacing": "Replacing",
+        "replaceNotice": "This replaces the current hashtags on the {{platform}} version with the category defaults. Other fields (caption, title, description, tags) are not touched.",
+        "noDefaultHashtags": "No default hashtags set for this category yet.",
+        "labels": {
+          "goal": "Goal",
+          "hookStyle": "Hook style",
+          "captionStyle": "Caption style",
+          "defaultHashtags": "Default hashtags",
+          "defaultPlatforms": "Default platforms"
+        }
+      },
+      "validationPanel": {
+        "source": {
+          "patch": "Backend blocked the save",
+          "validate": "Validation result"
+        },
+        "validTitle": "Looks good - ready to ship.",
+        "blockedTitle": "Can't mark this as ready yet",
+        "warningTitle": "A few things need attention"
+      },
       "footer": {
         "unsaved": "You have unsaved changes"
+      },
+      "forms": {
+        "youtube": {
+          "title": {
+            "label": "YouTube title",
+            "placeholder": "The video title viewers will see",
+            "hint": "Required to mark this version as ready."
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Long-form description, links, timestamps."
+          },
+          "tags": {
+            "label": "Tags",
+            "placeholder": "Type a tag and press Enter",
+            "hint": "Plain keywords without #. Press Enter or comma to add.",
+            "copyLabel": "Copy tags"
+          }
+        },
+        "tiktok": {
+          "caption": {
+            "label": "Caption",
+            "placeholder": "Your TikTok caption.",
+            "hint": "Required to mark this version as ready."
+          },
+          "hashtags": {
+            "label": "Hashtags",
+            "placeholder": "Type a hashtag and press Enter",
+            "hint": "Press Enter or comma to add.",
+            "copyLabel": "Copy hashtags"
+          }
+        },
+        "instagram": {
+          "caption": {
+            "label": "Caption",
+            "placeholder": "Your Instagram caption.",
+            "hint": "Required to mark this version as ready. Max 2,200 characters."
+          },
+          "hashtags": {
+            "label": "Hashtags",
+            "placeholder": "Type a hashtag and press Enter",
+            "hint": "Press Enter or comma to add. Don't include the # - it's added for you.",
+            "copyLabel": "Copy hashtags"
+          }
+        },
+        "facebook": {
+          "caption": {
+            "label": "Caption",
+            "placeholder": "Your Facebook post copy.",
+            "hint": "Required to mark this version as ready."
+          },
+          "hashtags": {
+            "label": "Hashtags",
+            "placeholder": "Type a hashtag and press Enter",
+            "hint": "Press Enter or comma to add.",
+            "copyLabel": "Copy hashtags"
+          }
+        }
       }
     }
   },
