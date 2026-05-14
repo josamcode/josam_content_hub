@@ -155,6 +155,55 @@
       "showing": "عرض {{start}}-{{end}} من {{total}}"
     }
   },
+  "calendar": {
+    "eyebrow": "الخطة",
+    "title": "التقويم",
+    "subtitle": "خطة المحتوى المجدول.",
+    "actions": {
+      "today": "اليوم",
+      "previousMonth": "الشهر السابق",
+      "nextMonth": "الشهر التالي",
+      "goToLibrary": "الذهاب إلى المكتبة"
+    },
+    "filters": {
+      "allPlatforms": "كل المنصات",
+      "allStatuses": "كل الحالات",
+      "refreshing": "جارٍ تحديث الجدولة...",
+      "autoApply": "تُطبّق الفلاتر تلقائيًا"
+    },
+    "error": {
+      "title": "تعذر تحميل التقويم",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    },
+    "empty": {
+      "title": "لا توجد منشورات مجدولة",
+      "description": "جدول منشور منصة من صفحة تفاصيل المحتوى.",
+      "filteredDescription": "جرّب مسح الفلاتر أو جدول منشور منصة من صفحة تفاصيل المحتوى."
+    },
+    "publishModes": {
+      "manual": "يدوي",
+      "reminder": "تذكير",
+      "auto": "تلقائي"
+    },
+    "drawer": {
+      "ariaLabel": "تفاصيل الموعد",
+      "eyebrow": "موعد مجدول",
+      "close": "إغلاق",
+      "scheduledAt": "موعد النشر",
+      "publishMode": "طريقة النشر",
+      "scheduleStatus": "حالة الجدولة",
+      "platformPostStatus": "حالة منشور المنصة",
+      "cancelSuccess": "تم إلغاء الجدولة.",
+      "cancelErrorFallback": "لم نتمكن من إلغاء هذه الجدولة الآن.",
+      "cancelFailed": "فشل الإلغاء",
+      "confirmTitle": "إلغاء هذه الجدولة؟",
+      "confirmDescription": "سيتم إلغاء التذكير. سيعود منشور المنصة إلى جاهز ويمكن جدولته مرة أخرى.",
+      "keepSchedule": "الإبقاء على الجدولة",
+      "yesCancel": "نعم، إلغاء",
+      "cancelling": "جارٍ الإلغاء",
+      "cancelSchedule": "إلغاء الجدولة"
+    }
+  },
   "createContent": {
     "eyebrow": "جديد",
     "title": "إنشاء محتوى",

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { Button } from "../../../components/ui/Button";
@@ -61,6 +62,7 @@ function startOfTodayMonth() {
 }
 
 export function CalendarPage() {
+  const { t, i18n } = useTranslation(["common", "pages"]);
   const [focused, setFocused] = useState(() => startOfTodayMonth());
   const [filters, setFilters] = useState({ platform: "", status: "" });
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -99,13 +101,14 @@ export function CalendarPage() {
   const goNext = () => setFocused((d) => addMonths(d, 1));
 
   const hasFilters = Boolean(filters.platform || filters.status);
+  const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
 
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Plan"
-        title="Calendar"
-        subtitle="Your scheduled content plan."
+        eyebrow={t("calendar.eyebrow", { ns: "pages" })}
+        title={t("calendar.title", { ns: "pages" })}
+        subtitle={t("calendar.subtitle", { ns: "pages" })}
       />
 
       <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 md:flex-row md:items-center md:justify-between md:p-5">
@@ -116,7 +119,7 @@ export function CalendarPage() {
             onClick={goToToday}
             type="button"
           >
-            Today
+            {t("calendar.actions.today", { ns: "pages" })}
           </Button>
           <div className="flex items-center gap-1">
             <Button
@@ -124,7 +127,7 @@ export function CalendarPage() {
               size="sm"
               onClick={goPrev}
               type="button"
-              aria-label="Previous month"
+              aria-label={t("calendar.actions.previousMonth", { ns: "pages" })}
             >
               <ChevronLeftIcon />
             </Button>
@@ -133,7 +136,7 @@ export function CalendarPage() {
               size="sm"
               onClick={goNext}
               type="button"
-              aria-label="Next month"
+              aria-label={t("calendar.actions.nextMonth", { ns: "pages" })}
             >
               <ChevronRightIcon />
             </Button>
@@ -141,12 +144,12 @@ export function CalendarPage() {
         </div>
         <div className="flex items-center gap-3">
           <h2 className="font-display text-2xl leading-none text-ink">
-            {formatMonthLabel(focused)}
+            {formatMonthLabel(focused, locale)}
           </h2>
           {isFetching && !isLoading && (
             <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-muted">
               <Spinner size="sm" />
-              Refreshing
+              {t("refreshing", { ns: "common" })}
             </span>
           )}
         </div>
@@ -166,28 +169,31 @@ export function CalendarPage() {
       ) : isError ? (
         <Card padding="lg" className="border-danger/30 bg-danger/5">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            Couldn't load calendar
+            {t("calendar.error.title", { ns: "pages" })}
           </p>
           <p className="mt-2 text-sm text-ink">
-            {extractErrorMessage(error, "We couldn't reach the API just now.")}
+            {extractErrorMessage(
+              error,
+              t("calendar.error.fallback", { ns: "pages" })
+            )}
           </p>
           <div className="mt-4">
             <Button variant="outline" size="sm" onClick={() => refetch()}>
-              Try again
+              {t("tryAgain", { ns: "common" })}
             </Button>
           </div>
         </Card>
       ) : events.length === 0 ? (
         <EmptyState
-          title="No scheduled content for this month."
+          title={t("calendar.empty.title", { ns: "pages" })}
           description={
             hasFilters
-              ? "Try clearing filters, or schedule a platform post from a content details page."
-              : "Schedule a platform post from a content details page."
+              ? t("calendar.empty.filteredDescription", { ns: "pages" })
+              : t("calendar.empty.description", { ns: "pages" })
           }
           action={
             <Button as={Link} to="/content" variant="primary" size="md">
-              Go to library
+              {t("calendar.actions.goToLibrary", { ns: "pages" })}
             </Button>
           }
         />
@@ -195,6 +201,7 @@ export function CalendarPage() {
         <CalendarGrid
           focused={focused}
           events={events}
+          locale={locale}
           onEventClick={(event) => setSelectedEvent(event)}
         />
       )}

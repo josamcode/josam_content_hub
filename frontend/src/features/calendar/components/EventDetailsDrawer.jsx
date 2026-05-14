@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { Badge } from "../../../components/ui/Badge";
@@ -45,12 +46,13 @@ function MetaRow({ label, children }) {
       <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
         {label}
       </span>
-      <div className="text-sm text-ink text-right">{children}</div>
+      <div className="text-end text-sm text-ink">{children}</div>
     </div>
   );
 }
 
 export function EventDetailsDrawer({ event, open, onClose }) {
+  const { t } = useTranslation(["common", "pages", "status"]);
   const queryClient = useQueryClient();
   const [confirming, setConfirming] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -88,7 +90,10 @@ export function EventDetailsDrawer({ event, open, onClose }) {
           null
         );
       }
-      setFeedback({ tone: "success", message: "Schedule cancelled." });
+      setFeedback({
+        tone: "success",
+        message: t("calendar.drawer.cancelSuccess", { ns: "pages" }),
+      });
       setConfirming(false);
     },
     onError: (error) => {
@@ -96,7 +101,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
         tone: "error",
         message: extractErrorMessage(
           error,
-          "We couldn't cancel this schedule just now."
+          t("calendar.drawer.cancelErrorFallback", { ns: "pages" })
         ),
       });
     },
@@ -115,7 +120,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
     >
       <button
         type="button"
-        aria-label="Close"
+        aria-label={t("calendar.drawer.close", { ns: "pages" })}
         onClick={onClose}
         className={cn(
           "absolute inset-0 bg-ink/30 transition-opacity",
@@ -125,7 +130,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
       <aside
         role="dialog"
         aria-modal="true"
-        aria-label="Schedule details"
+        aria-label={t("calendar.drawer.ariaLabel", { ns: "pages" })}
         className={cn(
           "absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-canvas shadow-xl transition-transform duration-200 ease-out",
           "sm:w-[420px]",
@@ -135,16 +140,16 @@ export function EventDetailsDrawer({ event, open, onClose }) {
         <header className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
           <div className="min-w-0">
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              Scheduled event
+              {t("calendar.drawer.eyebrow", { ns: "pages" })}
             </p>
             <h2 className="mt-1 font-display text-xl leading-tight text-ink line-clamp-2">
-              {event?.contentTitle || "Untitled"}
+              {event?.contentTitle || t("untitled", { ns: "common" })}
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("calendar.drawer.close", { ns: "pages" })}
             className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface text-muted transition hover:bg-canvas hover:text-ink"
           >
             <XIcon />
@@ -166,12 +171,14 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                   {formatPlatform(event.platform)}
                 </span>
                 <Badge tone={statusTone(event.status)}>
-                  {formatStatus(event.status)}
+                  {formatStatus(event.status, t)}
                 </Badge>
               </div>
 
               <div className="rounded-xl border border-border bg-surface px-4 py-3">
-                <MetaRow label="Scheduled at">
+                <MetaRow
+                  label={t("calendar.drawer.scheduledAt", { ns: "pages" })}
+                >
                   <p className="font-medium text-ink">
                     {formatScheduledAtInTimezone(
                       event.scheduledAt,
@@ -180,17 +187,33 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                   </p>
                   <p className="text-[11px] text-muted">{event.timezone}</p>
                 </MetaRow>
-                <MetaRow label="Publish mode">
-                  <span className="capitalize">{event.publishMode || "manual"}</span>
+                <MetaRow
+                  label={t("calendar.drawer.publishMode", { ns: "pages" })}
+                >
+                  <span className="capitalize">
+                    {t(
+                      `calendar.publishModes.${event.publishMode || "manual"}`,
+                      {
+                        ns: "pages",
+                        defaultValue: event.publishMode || "manual",
+                      }
+                    )}
+                  </span>
                 </MetaRow>
-                <MetaRow label="Schedule status">
+                <MetaRow
+                  label={t("calendar.drawer.scheduleStatus", { ns: "pages" })}
+                >
                   <Badge tone={statusTone(event.status)}>
-                    {formatStatus(event.status)}
+                    {formatStatus(event.status, t)}
                   </Badge>
                 </MetaRow>
-                <MetaRow label="Platform post status">
+                <MetaRow
+                  label={t("calendar.drawer.platformPostStatus", {
+                    ns: "pages",
+                  })}
+                >
                   <Badge tone={statusTone(event.platformPostStatus)}>
-                    {formatStatus(event.platformPostStatus)}
+                    {formatStatus(event.platformPostStatus, t)}
                   </Badge>
                 </MetaRow>
               </div>
@@ -206,7 +229,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                 >
                   {feedback.tone === "error" && (
                     <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-                      Cancel failed
+                      {t("calendar.drawer.cancelFailed", { ns: "pages" })}
                     </p>
                   )}
                   <p className={feedback.tone === "error" ? "mt-1" : undefined}>
@@ -225,10 +248,13 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                 <>
                   {confirming ? (
                     <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-                      <p className="font-medium">Cancel this schedule?</p>
+                      <p className="font-medium">
+                        {t("calendar.drawer.confirmTitle", { ns: "pages" })}
+                      </p>
                       <p className="mt-1 text-[12px] text-amber-900/80">
-                        Reminder will be cancelled. The platform post returns to
-                        ready and can be rescheduled.
+                        {t("calendar.drawer.confirmDescription", {
+                          ns: "pages",
+                        })}
                       </p>
                       <div className="mt-3 flex items-center justify-end gap-2">
                         <Button
@@ -238,7 +264,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                           onClick={() => setConfirming(false)}
                           disabled={cancelling}
                         >
-                          Keep schedule
+                          {t("calendar.drawer.keepSchedule", { ns: "pages" })}
                         </Button>
                         <Button
                           type="button"
@@ -247,7 +273,9 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                           loading={cancelling}
                           onClick={() => cancelMutation.mutate()}
                         >
-                          {cancelling ? "Cancelling" : "Yes, cancel"}
+                          {cancelling
+                            ? t("calendar.drawer.cancelling", { ns: "pages" })
+                            : t("calendar.drawer.yesCancel", { ns: "pages" })}
                         </Button>
                       </div>
                     </div>
@@ -261,7 +289,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                         setConfirming(true);
                       }}
                     >
-                      Cancel schedule
+                      {t("calendar.drawer.cancelSchedule", { ns: "pages" })}
                     </Button>
                   )}
                 </>
@@ -277,7 +305,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                     className="flex-1"
                     onClick={onClose}
                   >
-                    Open content
+                    {t("openContent", { ns: "common" })}
                   </Button>
                 ) : (
                   <Button
@@ -286,7 +314,7 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                     className="flex-1"
                     disabled
                   >
-                    Open content
+                    {t("openContent", { ns: "common" })}
                   </Button>
                 )}
                 <Button
@@ -295,13 +323,13 @@ export function EventDetailsDrawer({ event, open, onClose }) {
                   size="md"
                   onClick={onClose}
                 >
-                  Close
+                  {t("calendar.drawer.close", { ns: "pages" })}
                 </Button>
               </div>
             </div>
           ) : (
             <Button type="button" variant="ghost" size="md" onClick={onClose}>
-              Close
+              {t("calendar.drawer.close", { ns: "pages" })}
             </Button>
           )}
         </footer>

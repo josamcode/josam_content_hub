@@ -61,8 +61,8 @@ export function isSameMonth(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
 }
 
-export function formatMonthLabel(date) {
-  return new Intl.DateTimeFormat(undefined, {
+export function formatMonthLabel(date, locale) {
+  return new Intl.DateTimeFormat(locale, {
     month: "long",
     year: "numeric",
   }).format(date);
@@ -84,12 +84,12 @@ export function dayKeyInTimezone(iso, timezone) {
   return `${obj.year}-${obj.month}-${obj.day}`;
 }
 
-export function timeInTimezone(iso, timezone) {
+export function timeInTimezone(iso, timezone, locale) {
   if (!iso || !timezone) return "—";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "—";
   try {
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(locale, {
       timeZone: timezone,
       hour: "numeric",
       minute: "2-digit",
@@ -99,4 +99,12 @@ export function timeInTimezone(iso, timezone) {
   }
 }
 
-export const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export function getWeekdayLabels(locale) {
+  const base = new Date(Date.UTC(2024, 0, 7));
+  const formatter = new Intl.DateTimeFormat(locale, { weekday: "short" });
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(base);
+    date.setUTCDate(base.getUTCDate() + index);
+    return formatter.format(date);
+  });
+}

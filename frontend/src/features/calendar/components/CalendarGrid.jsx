@@ -4,9 +4,9 @@ import { Card } from "../../../components/ui/Card";
 import { cn } from "../../../lib/cn";
 import { CalendarEvent } from "./CalendarEvent";
 import {
-  WEEKDAY_LABELS,
   buildMonthGrid,
   dayKeyInTimezone,
+  getWeekdayLabels,
   isSameDay,
   isSameMonth,
   ymd,
@@ -28,15 +28,16 @@ function groupEventsByDay(events) {
   return map;
 }
 
-export function CalendarGrid({ focused, events = [], onEventClick }) {
+export function CalendarGrid({ focused, events = [], locale, onEventClick }) {
   const days = useMemo(() => buildMonthGrid(focused), [focused]);
   const groups = useMemo(() => groupEventsByDay(events), [events]);
+  const weekdayLabels = useMemo(() => getWeekdayLabels(locale), [locale]);
   const today = new Date();
 
   return (
     <Card padding="none" className="overflow-hidden">
       <div className="grid grid-cols-7 border-b border-border bg-canvas/60">
-        {WEEKDAY_LABELS.map((label) => (
+        {weekdayLabels.map((label) => (
           <div
             key={label}
             className="px-3 py-2 text-[10px] font-medium uppercase tracking-[0.18em] text-muted"
@@ -57,7 +58,7 @@ export function CalendarGrid({ focused, events = [], onEventClick }) {
             <div
               key={key}
               className={cn(
-                "flex min-h-[7.5rem] flex-col gap-1 border-b border-r border-border p-2",
+                "flex min-h-[7.5rem] flex-col gap-1 border-b border-e border-border p-2",
                 !inMonth && "bg-canvas/40",
                 isToday && "bg-accent-soft/40"
               )}

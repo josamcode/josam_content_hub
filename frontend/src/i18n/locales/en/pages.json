@@ -155,6 +155,55 @@
       "showing": "Showing {{start}}-{{end}} of {{total}}"
     }
   },
+  "calendar": {
+    "eyebrow": "Plan",
+    "title": "Calendar",
+    "subtitle": "Your scheduled content plan.",
+    "actions": {
+      "today": "Today",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "goToLibrary": "Go to library"
+    },
+    "filters": {
+      "allPlatforms": "All platforms",
+      "allStatuses": "All statuses",
+      "refreshing": "Refreshing schedule...",
+      "autoApply": "Filters apply automatically"
+    },
+    "error": {
+      "title": "Couldn't load calendar",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "empty": {
+      "title": "No scheduled posts",
+      "description": "Schedule a platform post from a content details page.",
+      "filteredDescription": "Try clearing filters, or schedule a platform post from a content details page."
+    },
+    "publishModes": {
+      "manual": "Manual",
+      "reminder": "Reminder",
+      "auto": "Auto"
+    },
+    "drawer": {
+      "ariaLabel": "Event details",
+      "eyebrow": "Scheduled event",
+      "close": "Close",
+      "scheduledAt": "Scheduled at",
+      "publishMode": "Publish mode",
+      "scheduleStatus": "Schedule status",
+      "platformPostStatus": "Platform post status",
+      "cancelSuccess": "Schedule cancelled.",
+      "cancelErrorFallback": "We couldn't cancel this schedule just now.",
+      "cancelFailed": "Cancel failed",
+      "confirmTitle": "Cancel this schedule?",
+      "confirmDescription": "Reminder will be cancelled. The platform post returns to ready and can be rescheduled.",
+      "keepSchedule": "Keep schedule",
+      "yesCancel": "Yes, cancel",
+      "cancelling": "Cancelling",
+      "cancelSchedule": "Cancel schedule"
+    }
+  },
   "createContent": {
     "eyebrow": "New",
     "title": "Create Content",
