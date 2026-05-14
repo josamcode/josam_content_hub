@@ -93,6 +93,56 @@ function mergeDefinedFields(existingPlatformPost, payload) {
   );
 }
 
+function isEmptyArray(value) {
+  return !Array.isArray(value) || value.length === 0;
+}
+
+function setTextDefault(
+  updateData,
+  existingPlatformPost,
+  defaults,
+  field,
+  overwrite
+) {
+  if (!hasText(defaults[field])) {
+    return;
+  }
+
+  if (overwrite || !hasText(existingPlatformPost[field])) {
+    updateData[field] = defaults[field];
+  }
+}
+
+function setArrayDefault(
+  updateData,
+  existingPlatformPost,
+  defaults,
+  field,
+  overwrite
+) {
+  if (!Array.isArray(defaults[field])) {
+    return;
+  }
+
+  if (overwrite || isEmptyArray(existingPlatformPost[field])) {
+    updateData[field] = [...defaults[field]];
+  }
+}
+
+function buildApplyDefaultsData(existingPlatformPost, defaults, overwrite) {
+  const updateData = {};
+
+  ["title", "caption", "description"].forEach((field) => {
+    setTextDefault(updateData, existingPlatformPost, defaults, field, overwrite);
+  });
+
+  ["hashtags", "tags"].forEach((field) => {
+    setArrayDefault(updateData, existingPlatformPost, defaults, field, overwrite);
+  });
+
+  return updateData;
+}
+
 async function assertOwnedContentItem(userId, contentItemId) {
   const contentItem = await prisma.contentItem.findFirst({
     where: {
@@ -185,6 +235,36 @@ async function createPlatformPost(userId, contentItemId, payload) {
   }
 }
 
+async function applyPlatformDefaults(userId, id, payload) {
+  const platformPost = await getOwnedPlatformPost(userId, id);
+  const defaults = await getPlatformSettingDefaultsForPost(
+    userId,
+    platformPost.platform
+  );
+  const data = buildApplyDefaultsData(
+    platformPost,
+    defaults,
+    payload.overwrite
+  );
+
+  if (Object.keys(data).length === 0) {
+    return prisma.platformPost.findUnique({
+      where: {
+        id,
+      },
+      select: platformPostDetailsSelect,
+    });
+  }
+
+  return prisma.platformPost.update({
+    where: {
+      id,
+    },
+    data,
+    select: platformPostDetailsSelect,
+  });
+}
+
 async function updatePlatformPost(userId, id, payload) {
   const existingPlatformPost = await getOwnedPlatformPost(userId, id);
   const nextPlatformPost = mergeDefinedFields(existingPlatformPost, payload);
@@ -236,6 +316,7 @@ async function validatePlatformPost(userId, id) {
 module.exports = {
   listPlatformPosts,
   createPlatformPost,
+  applyPlatformDefaults,
   updatePlatformPost,
   deletePlatformPost,
   validatePlatformPost,

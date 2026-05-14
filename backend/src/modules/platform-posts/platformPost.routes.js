@@ -17,6 +17,12 @@ router.post(
   asyncHandler(platformPostController.validatePlatformPost)
 );
 
+router.post(
+  "/platform-posts/:id/apply-defaults",
+  authMiddleware,
+  asyncHandler(platformPostController.applyPlatformDefaults)
+);
+
 router
   .route("/platform-posts/:id")
   .patch(authMiddleware, asyncHandler(platformPostController.updatePlatformPost))

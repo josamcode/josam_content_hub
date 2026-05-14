@@ -4,6 +4,7 @@ const platformPostService = require("./platformPost.service");
 const {
   createPlatformPostSchema,
   updatePlatformPostSchema,
+  applyPlatformDefaultsSchema,
   idParamsSchema,
 } = require("./platformPost.validation");
 
@@ -44,6 +45,28 @@ async function createPlatformPost(req, res) {
   return successResponse(res, 201, "Platform post created successfully", data);
 }
 
+async function applyPlatformDefaults(req, res) {
+  const { id } = validateParams(req.params);
+  const parsedBody = applyPlatformDefaultsSchema.safeParse(req.body || {});
+
+  if (!parsedBody.success) {
+    throw new ApiError(422, "Invalid apply defaults data");
+  }
+
+  const data = await platformPostService.applyPlatformDefaults(
+    req.user.id,
+    id,
+    parsedBody.data
+  );
+
+  return successResponse(
+    res,
+    200,
+    "Platform defaults applied successfully",
+    data
+  );
+}
+
 async function updatePlatformPost(req, res) {
   const { id } = validateParams(req.params);
   const parsedBody = updatePlatformPostSchema.safeParse(req.body);
@@ -82,6 +105,7 @@ async function validatePlatformPost(req, res) {
 module.exports = {
   listPlatformPosts,
   createPlatformPost,
+  applyPlatformDefaults,
   updatePlatformPost,
   deletePlatformPost,
   validatePlatformPost,

@@ -38,6 +38,12 @@ const updatePlatformPostSchema = z
   })
   .strict();
 
+const applyPlatformDefaultsSchema = z
+  .object({
+    overwrite: z.boolean().optional().default(false),
+  })
+  .strict();
+
 const idParamsSchema = z.object({
   id: z.string().min(1),
 });
@@ -45,5 +51,6 @@ const idParamsSchema = z.object({
 module.exports = {
   createPlatformPostSchema,
   updatePlatformPostSchema,
+  applyPlatformDefaultsSchema,
   idParamsSchema,
 };
