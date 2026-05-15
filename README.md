@@ -175,6 +175,7 @@ npm run dev
 npx prisma validate
 npx prisma generate
 npm run backup:postgres
+npm run backup:uploads
 npm audit --omit=dev
 ```
 
@@ -310,6 +311,23 @@ npm run backup:postgres
 ```
 
 It reads `BACKUP_DATABASE_URL` or `DATABASE_URL`, writes timestamped `pg_dump --format=custom --no-owner --no-acl` files under `BACKUP_DIR` defaulting to `./backups/postgres`, and refuses non-local database hosts unless `BACKUP_ALLOW_REMOTE=true` is set in the current secure shell/session.
+
+### Uploads Backups
+
+Use the uploads backup runbook for files stored under `UPLOAD_DIR`:
+
+```text
+docs/operations/uploads-backup-restore.md
+```
+
+The backend helper command is manual and opt-in:
+
+```bash
+cd backend
+npm run backup:uploads
+```
+
+It reads `BACKUP_UPLOADS_DIR` or `UPLOAD_DIR`, writes timestamped `.tar.gz` archives under `BACKUP_DIR` defaulting to `./backups/uploads`, and fails safely if the uploads directory is missing. Treat PostgreSQL backups and uploads backups as a pair from the same backup window because `MediaAsset` database records depend on files existing on disk.
 
 ### Known Staging Risks
 
