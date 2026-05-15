@@ -5,6 +5,7 @@ const categoryDefaultRoutes = require("../modules/category-defaults/categoryDefa
 const contentRoutes = require("../modules/content/content.routes");
 const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
 const healthRoutes = require("./health.routes");
+const youtubeIntegrationRoutes = require("../modules/integrations/youtube.routes");
 const mediaRoutes = require("../modules/media/media.routes");
 const platformPostRoutes = require("../modules/platform-posts/platformPost.routes");
 const platformSettingRoutes = require("../modules/platform-settings/platformSetting.routes");
@@ -19,6 +20,7 @@ router.use("/auth", authRoutes);
 router.use("/category-defaults", categoryDefaultRoutes);
 router.use("/content-items", contentRoutes);
 router.use("/dashboard", dashboardRoutes);
+router.use("/integrations/youtube", youtubeIntegrationRoutes);
 router.use("/", mediaRoutes);
 router.use("/", platformPostRoutes);
 router.use("/platform-settings", platformSettingRoutes);

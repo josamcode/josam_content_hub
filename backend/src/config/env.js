@@ -32,6 +32,31 @@ const envSchema = z.object({
         )
         .optional()
     ),
+  GOOGLE_CLIENT_ID: z
+    .preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().min(1).optional()
+    ),
+  GOOGLE_CLIENT_SECRET: z
+    .preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().min(1).optional()
+    ),
+  GOOGLE_REDIRECT_URI: z
+    .preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().url().optional()
+    ),
+  YOUTUBE_OAUTH_SUCCESS_REDIRECT_URL: z
+    .preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().url().optional()
+    ),
+  YOUTUBE_OAUTH_ERROR_REDIRECT_URL: z
+    .preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().url().optional()
+    ),
   AUTH_RATE_LIMIT_WINDOW_MS: z.coerce
     .number()
     .int()
@@ -107,6 +132,12 @@ module.exports = {
   jwtSecret: parsedEnv.data.JWT_SECRET,
   jwtExpiresIn: parsedEnv.data.JWT_EXPIRES_IN,
   tokenEncryptionKey: parsedEnv.data.TOKEN_ENCRYPTION_KEY,
+  googleClientId: parsedEnv.data.GOOGLE_CLIENT_ID,
+  googleClientSecret: parsedEnv.data.GOOGLE_CLIENT_SECRET,
+  googleRedirectUri: parsedEnv.data.GOOGLE_REDIRECT_URI,
+  youtubeOauthSuccessRedirectUrl:
+    parsedEnv.data.YOUTUBE_OAUTH_SUCCESS_REDIRECT_URL,
+  youtubeOauthErrorRedirectUrl: parsedEnv.data.YOUTUBE_OAUTH_ERROR_REDIRECT_URL,
   authRateLimitWindowMs: parsedEnv.data.AUTH_RATE_LIMIT_WINDOW_MS,
   authRateLimitMax: parsedEnv.data.AUTH_RATE_LIMIT_MAX,
   seedUserName: parsedEnv.data.SEED_USER_NAME,
