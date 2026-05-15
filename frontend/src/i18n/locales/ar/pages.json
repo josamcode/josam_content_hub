@@ -703,11 +703,16 @@
         "eyebrow": "رفع YouTube",
         "title": "رفع إلى YouTube",
         "uploadSchedule": "رفع/جدولة على YouTube",
+        "prepareUpload": "تجهيز الرفع",
         "confirmUpload": "تأكيد الرفع",
         "uploading": "جارٍ الرفع",
         "uploaded": "تم الرفع إلى YouTube",
         "openVideo": "فتح فيديو YouTube",
+        "viewPublishLogs": "عرض سجل النشر",
         "realVideoWarning": "هذا سينشئ فيديو حقيقي على YouTube.",
+        "privateByDefault": "سيكون الفيديو خاصًا افتراضيًا ما لم يطبق الخادم سلوك الجدولة.",
+        "studioCleanup": "يمكنك حذف فيديوهات الاختبار لاحقًا من YouTube Studio.",
+        "confirmWarning": "أكد عندما تكون جاهزًا. هذا سينشئ فيديو حقيقي على YouTube.",
         "saveFirst": "رفع YouTube متاح بعد حفظ التغييرات.",
         "titleRequired": "أضف عنوان YouTube واحفظه قبل الرفع.",
         "videoRequired": "ارفع فيديو أولًا.",
@@ -716,9 +721,20 @@
         "checkingConnection": "جارٍ فحص اتصال YouTube...",
         "connectFirst": "اربط YouTube أولًا.",
         "alreadyUploaded": "منشور المنصة هذا يحتوي بالفعل على رابط YouTube.",
+        "alreadyUploadedDetail": "تم رفع هذا المنشور بالفعل. تم منع الرفع المكرر.",
         "success": "اكتمل رفع YouTube.",
         "uploadFailed": "فشل الرفع",
-        "errorFallback": "لم نتمكن من الرفع إلى YouTube الآن."
+        "latestAttempt": "آخر محاولة",
+        "failedAttemptHint": "افتح سجل النشر لعرض تفاصيل الفشل الآمنة.",
+        "errorFallback": "لم نتمكن من الرفع إلى YouTube الآن.",
+        "errors": {
+          "alreadyUploaded": "تم رفعه بالفعل. تم منع الرفع المكرر.",
+          "missingTitle": "العنوان غير موجود. أضف عنوان YouTube واحفظه أولًا.",
+          "missingVideo": "الفيديو غير موجود. ارفع فيديو أولًا.",
+          "notConnected": "YouTube غير مربوط أو يحتاج إعادة الربط.",
+          "quotaExceeded": "تم الوصول إلى حد حصة YouTube أو معدل الطلبات.",
+          "serverError": "تعذر على الخادم إكمال رفع YouTube."
+        }
       },
       "accordions": {
         "defaults": {

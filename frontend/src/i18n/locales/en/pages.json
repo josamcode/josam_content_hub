@@ -703,11 +703,16 @@
         "eyebrow": "YouTube upload",
         "title": "Upload to YouTube",
         "uploadSchedule": "Upload/Schedule to YouTube",
+        "prepareUpload": "Prepare upload",
         "confirmUpload": "Confirm upload",
         "uploading": "Uploading",
         "uploaded": "Uploaded to YouTube",
         "openVideo": "Open YouTube video",
+        "viewPublishLogs": "View publish logs",
         "realVideoWarning": "This will create a real YouTube video.",
+        "privateByDefault": "The video will be private by default unless backend schedule behavior applies.",
+        "studioCleanup": "You can delete test videos later from YouTube Studio.",
+        "confirmWarning": "Confirm when you're ready. This creates a real YouTube video.",
         "saveFirst": "YouTube upload is available after saving changes.",
         "titleRequired": "Add and save a YouTube title before uploading.",
         "videoRequired": "Upload a video first.",
@@ -716,9 +721,20 @@
         "checkingConnection": "Checking YouTube connection...",
         "connectFirst": "Connect YouTube first.",
         "alreadyUploaded": "This platform post already has a YouTube URL.",
+        "alreadyUploadedDetail": "This post is already uploaded. Duplicate uploads are blocked.",
         "success": "YouTube upload completed.",
         "uploadFailed": "Upload failed",
-        "errorFallback": "We couldn't upload to YouTube just now."
+        "latestAttempt": "Latest attempt",
+        "failedAttemptHint": "Open Publish Logs for the safe failure details.",
+        "errorFallback": "We couldn't upload to YouTube just now.",
+        "errors": {
+          "alreadyUploaded": "Already uploaded. Duplicate uploads are blocked.",
+          "missingTitle": "Missing title. Add and save a YouTube title first.",
+          "missingVideo": "Missing video. Upload a video first.",
+          "notConnected": "YouTube is not connected or needs re-auth.",
+          "quotaExceeded": "YouTube quota or rate limit was reached.",
+          "serverError": "The server could not complete the YouTube upload."
+        }
       },
       "accordions": {
         "defaults": {
