@@ -23,6 +23,7 @@ const manualCompleteSchema = z
   .strict();
 
 const publishAttemptsQuerySchema = z.object({
+  platformPostId: z.string().min(1).optional(),
   platform: z.enum(platforms).optional(),
   status: z.enum(publishAttemptStatuses).optional(),
   from: z.string().trim().min(1).optional(),

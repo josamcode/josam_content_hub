@@ -60,7 +60,11 @@ function mapCategoryId(payload) {
   return payload.categoryId || env.youtubeDefaultCategoryId || undefined;
 }
 
-function getSafeErrorMessage(error) {
+function getSafeErrorMessage(error, uploadRecovery) {
+  if (uploadRecovery?.videoId) {
+    return "YouTube upload completed but local save failed";
+  }
+
   if (error instanceof ApiError) return error.message;
   return "YouTube upload failed";
 }
@@ -155,6 +159,30 @@ async function getMediaAsset(contentItemId, type) {
       createdAt: "desc",
     },
   });
+}
+
+async function assertStillNotUploaded(platformPostId) {
+  const currentPost = await prisma.platformPost.findUnique({
+    where: {
+      id: platformPostId,
+    },
+    select: {
+      platformPostUrl: true,
+      status: true,
+    },
+  });
+
+  if (!currentPost) {
+    throw new ApiError(404, "Platform post not found");
+  }
+
+  if (currentPost.platformPostUrl) {
+    throw new ApiError(409, "Platform post is already uploaded");
+  }
+
+  if (["manual_done", "published"].includes(currentPost.status)) {
+    throw new ApiError(409, "Platform post is already completed");
+  }
 }
 
 async function resolveSchedule(userId, platformPost, scheduleId) {
@@ -443,7 +471,57 @@ async function uploadThumbnail(youtube, videoId, thumbnailAsset) {
   }
 }
 
-async function createFailedAttempt(platformPost, schedule, error) {
+function buildFailedAttemptPayload(error, uploadRecovery) {
+  const payload = {
+    statusCode: getSafeErrorStatus(error),
+    details: error instanceof ApiError ? error.errors || null : null,
+  };
+
+  if (uploadRecovery?.videoId) {
+    payload.youtubeUploadSucceeded = true;
+    payload.videoId = uploadRecovery.videoId;
+    payload.platformPostUrl = uploadRecovery.platformPostUrl;
+    payload.platformPostUrlPersisted = Boolean(
+      uploadRecovery.platformPostUrlPersisted
+    );
+    payload.persistenceWarning =
+      "YouTube upload completed, but local success save did not finish";
+  }
+
+  return payload;
+}
+
+async function persistPlatformPostUrlAfterSaveFailure(
+  platformPost,
+  platformPostUrl
+) {
+  if (!platformPost || !platformPostUrl) {
+    return false;
+  }
+
+  try {
+    const result = await prisma.platformPost.updateMany({
+      where: {
+        id: platformPost.id,
+        platformPostUrl: null,
+      },
+      data: {
+        platformPostUrl,
+      },
+    });
+
+    return result.count > 0;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function createFailedAttempt(
+  platformPost,
+  schedule,
+  error,
+  uploadRecovery
+) {
   if (!platformPost || platformPost.platform !== YOUTUBE_PLATFORM) {
     return null;
   }
@@ -456,11 +534,8 @@ async function createFailedAttempt(platformPost, schedule, error) {
         platform: YOUTUBE_PLATFORM,
         status: "failed",
         publishMode: schedule ? schedule.publishMode : "manual",
-        errorMessage: getSafeErrorMessage(error),
-        responsePayload: {
-          statusCode: getSafeErrorStatus(error),
-          details: error.errors || null,
-        },
+        errorMessage: getSafeErrorMessage(error, uploadRecovery),
+        responsePayload: buildFailedAttemptPayload(error, uploadRecovery),
       },
       select: {
         id: true,
@@ -557,6 +632,8 @@ async function saveUploadSuccess({
 async function uploadPlatformPost(userId, platformPostId, payload = {}) {
   let platformPost = null;
   let schedule = null;
+  let videoId = null;
+  let platformPostUrl = null;
 
   try {
     platformPost = await getOwnedPlatformPost(userId, platformPostId);
@@ -593,7 +670,10 @@ async function uploadPlatformPost(userId, platformPostId, payload = {}) {
       "thumbnail"
     );
     const authorizedClient = await getAuthorizedYouTubeClient(userId);
-    const videoId = await uploadVideo(
+
+    await assertStillNotUploaded(platformPost.id);
+
+    videoId = await uploadVideo(
       authorizedClient.youtube,
       platformPost,
       videoPath,
@@ -601,7 +681,7 @@ async function uploadPlatformPost(userId, platformPostId, payload = {}) {
       publishAt,
       authorizedClient.accountId
     );
-    const platformPostUrl = buildWatchUrl(videoId);
+    platformPostUrl = buildWatchUrl(videoId);
     const thumbnailResult = await uploadThumbnail(
       authorizedClient.youtube,
       videoId,
@@ -627,7 +707,19 @@ async function uploadPlatformPost(userId, platformPostId, payload = {}) {
       scheduleStatus: saved.scheduleStatus,
     };
   } catch (error) {
-    await createFailedAttempt(platformPost, schedule, error);
+    const platformPostUrlPersisted =
+      videoId && platformPostUrl
+        ? await persistPlatformPostUrlAfterSaveFailure(
+            platformPost,
+            platformPostUrl
+          )
+        : false;
+
+    await createFailedAttempt(platformPost, schedule, error, {
+      videoId,
+      platformPostUrl,
+      platformPostUrlPersisted,
+    });
     throw error;
   }
 }

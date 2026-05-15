@@ -57,6 +57,10 @@ function buildAttemptsWhere(userId, query) {
     where.status = query.status;
   }
 
+  if (query.platformPostId) {
+    where.platformPostId = query.platformPostId;
+  }
+
   const attemptedAt = parseDateRange(query);
 
   if (Object.keys(attemptedAt).length > 0) {
@@ -76,6 +80,7 @@ function toPublishAttemptListItem(attempt) {
     platform: attempt.platform,
     publishMode: attempt.publishMode,
     status: attempt.status,
+    errorMessage: attempt.errorMessage,
     attemptedAt: attempt.attemptedAt,
     platformPostUrl: attempt.platformPost.platformPostUrl,
   };
