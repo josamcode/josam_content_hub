@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Badge } from "../../../components/ui/Badge";
 import { Button } from "../../../components/ui/Button";
@@ -78,12 +79,13 @@ function buildPayload(form) {
 }
 
 export function PlatformSettingsCard({ setting }) {
+  const { t } = useTranslation(["common", "pages"]);
   const strategy = PLATFORM_STRATEGY[setting.platform] || {
     name: setting.platform,
-    summary: null,
-    currentStatus: null,
+    summaryKey: null,
+    statusKey: null,
     statusTone: "neutral",
-    futurePlan: null,
+    futurePlanKey: null,
   };
 
   const accent = PLATFORM_ACCENT[setting.platform] || "bg-muted";
@@ -98,6 +100,16 @@ export function PlatformSettingsCard({ setting }) {
 
   const initial = useMemo(() => buildInitialForm(setting), [setting]);
   const isDirty = useMemo(() => !settingsEqual(form, initial), [form, initial]);
+  const publishModeOptions = useMemo(
+    () =>
+      PUBLISH_MODE_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(`platformSettings.publishModes.${option.value}`, {
+          ns: "pages",
+        }),
+      })),
+    [t]
+  );
 
   const mutation = useUpdatePlatformSetting(setting.platform, {
     onSuccess: () => {
@@ -106,7 +118,10 @@ export function PlatformSettingsCard({ setting }) {
     },
     onError: (error) => {
       setSubmitError(
-        extractErrorMessage(error, "We couldn't save these settings.")
+        extractErrorMessage(
+          error,
+          t("platformSettings.card.saveErrorFallback", { ns: "pages" })
+        )
       );
     },
   });
@@ -151,17 +166,25 @@ export function PlatformSettingsCard({ setting }) {
             <h2 className="font-display text-xl leading-tight text-ink">
               {strategy.name}
             </h2>
-            {strategy.currentStatus && (
+            {strategy.statusKey && (
               <Badge tone={strategy.statusTone || "neutral"}>
-                {strategy.currentStatus}
+                {t(`platformSettings.platforms.${strategy.statusKey}`, {
+                  ns: "pages",
+                })}
               </Badge>
             )}
             <Badge tone={form.isEnabled ? "success" : "neutral"}>
-              {form.isEnabled ? "Enabled" : "Disabled"}
+              {form.isEnabled
+                ? t("platformSettings.card.enabled", { ns: "pages" })
+                : t("platformSettings.card.disabled", { ns: "pages" })}
             </Badge>
           </div>
-          {strategy.summary && (
-            <p className="mt-1 text-sm text-muted">{strategy.summary}</p>
+          {strategy.summaryKey && (
+            <p className="mt-1 text-sm text-muted">
+              {t(`platformSettings.platforms.${strategy.summaryKey}`, {
+                ns: "pages",
+              })}
+            </p>
           )}
         </div>
       </header>
@@ -173,29 +196,37 @@ export function PlatformSettingsCard({ setting }) {
       >
         <div className="rounded-xl border border-border bg-canvas/40 px-4 py-3">
           <Toggle
-            label="Enabled"
-            description="Show this platform in content workflows."
+            label={t("platformSettings.card.enabled", { ns: "pages" })}
+            description={t("platformSettings.card.enabledDescription", {
+              ns: "pages",
+            })}
             checked={form.isEnabled}
             onChange={(event) =>
               handleField("isEnabled", event.target.checked)
             }
+            onLabel={t("platformSettings.card.enabled", { ns: "pages" })}
+            offLabel={t("platformSettings.card.disabled", { ns: "pages" })}
             showStateLabel
           />
         </div>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <Select
-            label="Default publish mode"
-            options={PUBLISH_MODE_OPTIONS}
+            label={t("platformSettings.form.defaultPublishMode", {
+              ns: "pages",
+            })}
+            options={publishModeOptions}
             value={form.defaultPublishMode}
             onChange={(event) =>
               handleField("defaultPublishMode", event.target.value)
             }
-            hint="Stored only — used as default by future workflows."
+            hint={t("platformSettings.form.publishModeHint", { ns: "pages" })}
           />
           <Input
-            label="Title template"
-            placeholder="Optional title template"
+            label={t("platformSettings.form.titleTemplate", { ns: "pages" })}
+            placeholder={t("platformSettings.form.titlePlaceholder", {
+              ns: "pages",
+            })}
             value={form.titleTemplate}
             onChange={(event) =>
               handleField("titleTemplate", event.target.value)
@@ -205,32 +236,37 @@ export function PlatformSettingsCard({ setting }) {
 
         {showAutoWarning && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-            Auto publishing is not active yet. This value is stored for future
-            integration.
+            {t("platformSettings.form.autoWarning", { ns: "pages" })}
           </div>
         )}
 
         <TagInput
-          label="Default hashtags"
+          label={t("platformSettings.form.defaultHashtags", { ns: "pages" })}
           value={form.defaultHashtags}
           onChange={(next) => handleField("defaultHashtags", next)}
           prefix="#"
-          placeholder="Type a hashtag and press Enter"
+          placeholder={t("platformSettings.form.hashtagPlaceholder", {
+            ns: "pages",
+          })}
           maxTags={30}
         />
 
         <TagInput
-          label="Default tags"
+          label={t("platformSettings.form.defaultTags", { ns: "pages" })}
           value={form.defaultTags}
           onChange={(next) => handleField("defaultTags", next)}
-          placeholder="Type a tag and press Enter"
+          placeholder={t("platformSettings.form.tagPlaceholder", {
+            ns: "pages",
+          })}
           maxTags={30}
         />
 
         <Textarea
-          label="Caption template"
+          label={t("platformSettings.form.captionTemplate", { ns: "pages" })}
           rows={3}
-          placeholder="Default caption template…"
+          placeholder={t("platformSettings.form.captionPlaceholder", {
+            ns: "pages",
+          })}
           value={form.captionTemplate}
           onChange={(event) =>
             handleField("captionTemplate", event.target.value)
@@ -238,9 +274,13 @@ export function PlatformSettingsCard({ setting }) {
         />
 
         <Textarea
-          label="Description template"
+          label={t("platformSettings.form.descriptionTemplate", {
+            ns: "pages",
+          })}
           rows={3}
-          placeholder="Default description template…"
+          placeholder={t("platformSettings.form.descriptionPlaceholder", {
+            ns: "pages",
+          })}
           value={form.descriptionTemplate}
           onChange={(event) =>
             handleField("descriptionTemplate", event.target.value)
@@ -248,26 +288,34 @@ export function PlatformSettingsCard({ setting }) {
         />
 
         <Textarea
-          label="Notes"
+          label={t("platformSettings.form.notes", { ns: "pages" })}
           rows={2}
-          placeholder="Private notes for this platform"
+          placeholder={t("platformSettings.form.notesPlaceholder", {
+            ns: "pages",
+          })}
           value={form.notes}
           onChange={(event) => handleField("notes", event.target.value)}
         />
 
-        {strategy.futurePlan && (
+        {strategy.futurePlanKey && (
           <div className="rounded-xl border border-border bg-surface p-3">
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              Future integration plan
+              {t("platformSettings.card.futureIntegrationPlan", {
+                ns: "pages",
+              })}
             </p>
-            <p className="mt-1 text-sm text-ink">{strategy.futurePlan}</p>
+            <p className="mt-1 text-sm text-ink">
+              {t(`platformSettings.platforms.${strategy.futurePlanKey}`, {
+                ns: "pages",
+              })}
+            </p>
           </div>
         )}
 
         {submitError && (
           <div className="rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-              Couldn't save
+              {t("platformSettings.card.saveErrorTitle", { ns: "pages" })}
             </p>
             <p className="mt-1">{submitError}</p>
           </div>
@@ -275,13 +323,13 @@ export function PlatformSettingsCard({ setting }) {
 
         {!submitError && savedAt && !isDirty && (
           <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-            Saved.
+            {t("platformSettings.card.saved", { ns: "pages" })}
           </div>
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
           <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-            Defaults &amp; templates only · no OAuth yet
+            {t("platformSettings.card.footerNote", { ns: "pages" })}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -291,7 +339,7 @@ export function PlatformSettingsCard({ setting }) {
               onClick={handleReset}
               disabled={!isDirty || submitting}
             >
-              Reset
+              {t("platformSettings.actions.reset", { ns: "pages" })}
             </Button>
             <Button
               type="submit"
@@ -300,16 +348,22 @@ export function PlatformSettingsCard({ setting }) {
               loading={submitting}
               disabled={!isDirty || submitting}
             >
-              {submitting ? "Saving" : "Save changes"}
+              {submitting
+                ? t("saving", { ns: "common" })
+                : t("saveChanges", { ns: "common" })}
             </Button>
             <Button
               type="button"
               variant="outline"
               size="sm"
               disabled
-              title="Coming later"
+              title={t("platformSettings.actions.comingLater", {
+                ns: "pages",
+              })}
             >
-              Connect · coming later
+              {t("platformSettings.actions.connectComingLater", {
+                ns: "pages",
+              })}
             </Button>
           </div>
         </div>

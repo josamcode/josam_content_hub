@@ -307,6 +307,110 @@
       "6": "Saturday"
     }
   },
+  "platformSettings": {
+    "eyebrow": "Settings",
+    "title": "Platform Settings",
+    "subtitle": "Defaults and templates per platform.",
+    "loading": "Loading platform settings...",
+    "notice": {
+      "eyebrow": "Defaults only",
+      "body": "These settings store defaults and templates per platform. They don't connect OAuth accounts, don't auto-publish, and don't create platform accounts. Publishing stays manual-first until official integrations land."
+    },
+    "error": {
+      "title": "Couldn't load platform settings",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "empty": {
+      "title": "No platform settings yet.",
+      "description": "Settings will be created automatically the first time you load this page."
+    },
+    "card": {
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "enabledDescription": "Show this platform in content workflows.",
+      "futureIntegrationPlan": "Future integration plan",
+      "saveErrorTitle": "Couldn't save",
+      "saveErrorFallback": "We couldn't save these settings.",
+      "saved": "Saved.",
+      "footerNote": "Defaults & templates only - no OAuth yet"
+    },
+    "actions": {
+      "reset": "Reset",
+      "comingLater": "Coming later",
+      "connectComingLater": "Connect - coming later"
+    },
+    "form": {
+      "defaultPublishMode": "Default publish mode",
+      "publishModeHint": "Stored only - used as default by future workflows.",
+      "titleTemplate": "Title template",
+      "titlePlaceholder": "Optional title template",
+      "autoWarning": "Auto publishing is not active yet. This value is stored for future integration.",
+      "defaultHashtags": "Default hashtags",
+      "hashtagPlaceholder": "Type a hashtag and press Enter",
+      "defaultTags": "Default tags",
+      "tagPlaceholder": "Type a tag and press Enter",
+      "captionTemplate": "Caption template",
+      "captionPlaceholder": "Default caption template...",
+      "descriptionTemplate": "Description template",
+      "descriptionPlaceholder": "Default description template...",
+      "notes": "Notes",
+      "notesPlaceholder": "Private notes for this platform"
+    },
+    "publishModes": {
+      "manual": "Manual",
+      "reminder": "Reminder",
+      "auto": "Auto (not active)"
+    },
+    "platforms": {
+      "youtube": {
+        "summary": "Long-form home for in-depth pieces.",
+        "status": "Manual now, auto later",
+        "futurePlan": "Add official YouTube Data API v3 with OAuth and a token refresh loop."
+      },
+      "instagram": {
+        "summary": "Short vertical clips and visual content.",
+        "status": "Manual / reminder",
+        "futurePlan": "Onboard a Meta app, link an Instagram Professional account, request graph permissions."
+      },
+      "tiktok": {
+        "summary": "Vertical short-form, manual-first by design.",
+        "status": "Manual only",
+        "futurePlan": "Revisit TikTok Content Posting API once approval is realistic; otherwise stay manual."
+      },
+      "facebook": {
+        "summary": "Page-first posting through Meta.",
+        "status": "Manual / reminder",
+        "futurePlan": "Reuse the Meta app from Instagram and target a specific Facebook Page."
+      }
+    },
+    "roadmap": {
+      "eyebrow": "What's next",
+      "title": "Integration roadmap",
+      "description": "The order we expect real platform integrations to land. Dates aren't promised - manual workflow stays the default until each one ships.",
+      "steps": {
+        "youtube": {
+          "title": "YouTube official integration",
+          "description": "OAuth + YouTube Data API v3 for auto-publishing.",
+          "status": "Up next"
+        },
+        "meta": {
+          "title": "Meta integration for Facebook & Instagram",
+          "description": "Single Meta app handles both Pages and Instagram Professional accounts.",
+          "status": "Planned"
+        },
+        "tiktok": {
+          "title": "TikTok official API research",
+          "description": "Validate TikTok approval flow before committing to an integration.",
+          "status": "Research"
+        },
+        "analytics": {
+          "title": "Analytics across platforms",
+          "description": "Pull post-level performance once each integration lands.",
+          "status": "Later"
+        }
+      }
+    }
+  },
   "createContent": {
     "eyebrow": "New",
     "title": "Create Content",

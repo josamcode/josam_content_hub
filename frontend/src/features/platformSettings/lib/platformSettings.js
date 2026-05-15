@@ -3,70 +3,55 @@ export const PLATFORM_ORDER = ["youtube", "instagram", "tiktok", "facebook"];
 export const PLATFORM_STRATEGY = {
   youtube: {
     name: "YouTube",
-    summary: "Long-form home for in-depth pieces.",
-    currentStatus: "Manual now, auto later",
+    summaryKey: "youtube.summary",
+    statusKey: "youtube.status",
     statusTone: "warning",
-    futurePlan:
-      "Add official YouTube Data API v3 with OAuth and a token refresh loop.",
+    futurePlanKey: "youtube.futurePlan",
   },
   instagram: {
     name: "Instagram",
-    summary: "Short vertical clips and visual content.",
-    currentStatus: "Manual / reminder",
+    summaryKey: "instagram.summary",
+    statusKey: "instagram.status",
     statusTone: "warning",
-    futurePlan:
-      "Onboard a Meta app, link an Instagram Professional account, request graph permissions.",
+    futurePlanKey: "instagram.futurePlan",
   },
   tiktok: {
     name: "TikTok",
-    summary: "Vertical short-form, manual-first by design.",
-    currentStatus: "Manual only",
+    summaryKey: "tiktok.summary",
+    statusKey: "tiktok.status",
     statusTone: "neutral",
-    futurePlan:
-      "Revisit TikTok Content Posting API once approval is realistic; otherwise stay manual.",
+    futurePlanKey: "tiktok.futurePlan",
   },
   facebook: {
     name: "Facebook",
-    summary: "Page-first posting through Meta.",
-    currentStatus: "Manual / reminder",
+    summaryKey: "facebook.summary",
+    statusKey: "facebook.status",
     statusTone: "warning",
-    futurePlan:
-      "Reuse the Meta app from Instagram and target a specific Facebook Page.",
+    futurePlanKey: "facebook.futurePlan",
   },
 };
 
 export const PUBLISH_MODE_OPTIONS = [
-  { value: "manual", label: "Manual" },
-  { value: "reminder", label: "Reminder" },
-  { value: "auto", label: "Auto (not active)" },
+  { value: "manual" },
+  { value: "reminder" },
+  { value: "auto" },
 ];
 
 export const INTEGRATION_ROADMAP = [
   {
-    title: "YouTube official integration",
-    description: "OAuth + YouTube Data API v3 for auto-publishing.",
-    status: "Up next",
+    key: "youtube",
     tone: "accent",
   },
   {
-    title: "Meta integration for Facebook & Instagram",
-    description:
-      "Single Meta app handles both Pages and Instagram Professional accounts.",
-    status: "Planned",
+    key: "meta",
     tone: "neutral",
   },
   {
-    title: "TikTok official API research",
-    description:
-      "Validate TikTok approval flow before committing to an integration.",
-    status: "Research",
+    key: "tiktok",
     tone: "warning",
   },
   {
-    title: "Analytics across platforms",
-    description:
-      "Pull post-level performance once each integration lands.",
-    status: "Later",
+    key: "analytics",
     tone: "neutral",
   },
 ];

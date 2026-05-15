@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Badge } from "../../../components/ui/Badge";
 import { Button } from "../../../components/ui/Button";
@@ -44,24 +45,28 @@ function sortSettings(list) {
 }
 
 function LoadingState() {
+  const { t } = useTranslation("pages");
+
   return (
     <Card padding="lg" className="flex items-center justify-center gap-3">
       <Spinner size="md" />
-      <p className="text-sm text-muted">Loading platform settings…</p>
+      <p className="text-sm text-muted">{t("platformSettings.loading")}</p>
     </Card>
   );
 }
 
 function ErrorBlock({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load platform settings
+        {t("platformSettings.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -69,6 +74,7 @@ function ErrorBlock({ message, onRetry }) {
 }
 
 export function PlatformSettingsPage() {
+  const { t } = useTranslation(["common", "pages"]);
   const { data, isLoading, isError, error, refetch } = usePlatformSettings();
 
   const sorted = useMemo(() => sortSettings(data || []), [data]);
@@ -76,9 +82,9 @@ export function PlatformSettingsPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Settings"
-        title="Platform Settings"
-        subtitle="Defaults and templates per platform."
+        eyebrow={t("platformSettings.eyebrow", { ns: "pages" })}
+        title={t("platformSettings.title", { ns: "pages" })}
+        subtitle={t("platformSettings.subtitle", { ns: "pages" })}
       />
 
       <Card padding="md" className="border-amber-200 bg-amber-50">
@@ -91,13 +97,10 @@ export function PlatformSettingsPage() {
           </span>
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.18em]">
-              Defaults only
+              {t("platformSettings.notice.eyebrow", { ns: "pages" })}
             </p>
             <p className="mt-1 text-sm">
-              These settings store defaults and templates per platform. They
-              don't connect OAuth accounts, don't auto-publish, and don't create
-              platform accounts. Publishing stays manual-first until official
-              integrations land.
+              {t("platformSettings.notice.body", { ns: "pages" })}
             </p>
           </div>
         </div>
@@ -109,17 +112,17 @@ export function PlatformSettingsPage() {
         <ErrorBlock
           message={extractErrorMessage(
             error,
-            "We couldn't reach the API just now."
+            t("platformSettings.error.fallback", { ns: "pages" })
           )}
           onRetry={() => refetch()}
         />
       ) : sorted.length === 0 ? (
         <EmptyState
-          title="No platform settings yet."
-          description="Settings will be created automatically the first time you load this page."
+          title={t("platformSettings.empty.title", { ns: "pages" })}
+          description={t("platformSettings.empty.description", { ns: "pages" })}
           action={
             <Button variant="outline" size="sm" onClick={() => refetch()}>
-              Refresh
+              {t("refresh", { ns: "common" })}
             </Button>
           }
         />
@@ -134,21 +137,20 @@ export function PlatformSettingsPage() {
       <Card padding="lg">
         <div className="mb-4 flex flex-col gap-1">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-            What's next
+            {t("platformSettings.roadmap.eyebrow", { ns: "pages" })}
           </p>
           <h2 className="font-display text-xl leading-tight text-ink">
-            Integration roadmap
+            {t("platformSettings.roadmap.title", { ns: "pages" })}
           </h2>
           <p className="text-sm text-muted">
-            The order we expect real platform integrations to land. Dates aren't
-            promised — manual workflow stays the default until each one ships.
+            {t("platformSettings.roadmap.description", { ns: "pages" })}
           </p>
         </div>
 
         <ol className="flex flex-col gap-3">
           {INTEGRATION_ROADMAP.map((step, idx) => (
             <li
-              key={step.title}
+              key={step.key}
               className="flex items-start gap-3 rounded-xl border border-border bg-canvas/40 p-3"
             >
               <span
@@ -159,10 +161,22 @@ export function PlatformSettingsPage() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-medium text-ink">{step.title}</p>
-                  <Badge tone={step.tone || "neutral"}>{step.status}</Badge>
+                  <p className="text-sm font-medium text-ink">
+                    {t(`platformSettings.roadmap.steps.${step.key}.title`, {
+                      ns: "pages",
+                    })}
+                  </p>
+                  <Badge tone={step.tone || "neutral"}>
+                    {t(`platformSettings.roadmap.steps.${step.key}.status`, {
+                      ns: "pages",
+                    })}
+                  </Badge>
                 </div>
-                <p className="mt-0.5 text-sm text-muted">{step.description}</p>
+                <p className="mt-0.5 text-sm text-muted">
+                  {t(`platformSettings.roadmap.steps.${step.key}.description`, {
+                    ns: "pages",
+                  })}
+                </p>
               </div>
             </li>
           ))}

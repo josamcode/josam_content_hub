@@ -307,6 +307,110 @@
       "6": "السبت"
     }
   },
+  "platformSettings": {
+    "eyebrow": "الإعدادات",
+    "title": "إعدادات المنصات",
+    "subtitle": "الإعدادات الافتراضية والقوالب لكل منصة.",
+    "loading": "جارٍ تحميل إعدادات المنصات...",
+    "notice": {
+      "eyebrow": "إعدادات افتراضية فقط",
+      "body": "هذه الإعدادات تحفظ القيم الافتراضية والقوالب لكل منصة. لا تربط حسابات OAuth، ولا تنشر تلقائيًا، ولا تنشئ حسابات على المنصات. سيبقى النشر يدويًا أولًا إلى أن تصبح عمليات الربط الرسمية جاهزة."
+    },
+    "error": {
+      "title": "تعذر تحميل إعدادات المنصات",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    },
+    "empty": {
+      "title": "لا توجد إعدادات منصات بعد.",
+      "description": "سيتم إنشاء الإعدادات تلقائيًا عند تحميل هذه الصفحة لأول مرة."
+    },
+    "card": {
+      "enabled": "مفعّل",
+      "disabled": "معطّل",
+      "enabledDescription": "إظهار هذه المنصة في سير عمل المحتوى.",
+      "futureIntegrationPlan": "خطة الربط المستقبلية",
+      "saveErrorTitle": "تعذر الحفظ",
+      "saveErrorFallback": "لم نتمكن من حفظ هذه الإعدادات.",
+      "saved": "تم الحفظ.",
+      "footerNote": "إعدادات وقوالب فقط - لا يوجد OAuth بعد"
+    },
+    "actions": {
+      "reset": "إعادة ضبط",
+      "comingLater": "لاحقًا",
+      "connectComingLater": "ربط - لاحقًا"
+    },
+    "form": {
+      "defaultPublishMode": "طريقة النشر الافتراضية",
+      "publishModeHint": "محفوظ فقط - يُستخدم كافتراضي في سير العمل لاحقًا.",
+      "titleTemplate": "قالب العنوان",
+      "titlePlaceholder": "قالب عنوان اختياري",
+      "autoWarning": "النشر التلقائي غير مفعّل بعد. سيتم حفظ هذه القيمة للربط مستقبلًا.",
+      "defaultHashtags": "الهاشتاجز الافتراضية",
+      "hashtagPlaceholder": "اكتب هاشتاج واضغط Enter",
+      "defaultTags": "الكلمات المفتاحية الافتراضية",
+      "tagPlaceholder": "اكتب كلمة مفتاحية واضغط Enter",
+      "captionTemplate": "قالب الكابشن",
+      "captionPlaceholder": "قالب الكابشن الافتراضي...",
+      "descriptionTemplate": "قالب الوصف",
+      "descriptionPlaceholder": "قالب الوصف الافتراضي...",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "ملاحظات خاصة لهذه المنصة"
+    },
+    "publishModes": {
+      "manual": "يدوي",
+      "reminder": "تذكير",
+      "auto": "تلقائي (غير مفعّل)"
+    },
+    "platforms": {
+      "youtube": {
+        "summary": "مساحة الفيديوهات الطويلة للمحتوى المتعمق.",
+        "status": "يدوي الآن، تلقائي لاحقًا",
+        "futurePlan": "إضافة YouTube Data API v3 الرسمي مع OAuth وتجديد token تلقائي."
+      },
+      "instagram": {
+        "summary": "مقاطع رأسية قصيرة ومحتوى بصري.",
+        "status": "يدوي / تذكير",
+        "futurePlan": "إعداد Meta app، وربط Instagram Professional account، وطلب graph permissions."
+      },
+      "tiktok": {
+        "summary": "محتوى رأسي قصير، والنهج اليدوي أولًا.",
+        "status": "يدوي فقط",
+        "futurePlan": "إعادة تقييم TikTok Content Posting API عندما يصبح الحصول على الموافقة واقعيًا؛ وإلا سنبقى على النشر اليدوي."
+      },
+      "facebook": {
+        "summary": "النشر عبر Pages في Meta.",
+        "status": "يدوي / تذكير",
+        "futurePlan": "إعادة استخدام Meta app من Instagram واستهداف Facebook Page محددة."
+      }
+    },
+    "roadmap": {
+      "eyebrow": "ما التالي",
+      "title": "خطة الربط",
+      "description": "الترتيب المتوقع لوصول عمليات الربط الحقيقية مع المنصات. لا توجد تواريخ موعودة - سيبقى سير العمل اليدوي هو الافتراضي حتى يجهز كل ربط.",
+      "steps": {
+        "youtube": {
+          "title": "الربط الرسمي مع YouTube",
+          "description": "OAuth + YouTube Data API v3 للنشر التلقائي.",
+          "status": "التالي"
+        },
+        "meta": {
+          "title": "ربط Meta مع Facebook و Instagram",
+          "description": "Meta app واحد يتعامل مع Pages وحسابات Instagram Professional.",
+          "status": "مخطط"
+        },
+        "tiktok": {
+          "title": "بحث API الرسمي من TikTok",
+          "description": "التحقق من مسار موافقة TikTok قبل الالتزام بربط كامل.",
+          "status": "بحث"
+        },
+        "analytics": {
+          "title": "التحليلات عبر المنصات",
+          "description": "سحب أداء المنشورات بعد جاهزية كل ربط.",
+          "status": "لاحقًا"
+        }
+      }
+    }
+  },
   "createContent": {
     "eyebrow": "جديد",
     "title": "إنشاء محتوى",
