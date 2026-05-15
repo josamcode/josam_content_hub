@@ -32,6 +32,7 @@ function ChevronLeftIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className="rtl:rotate-180"
     >
       <path d="m15 6-6 6 6 6" />
     </svg>
@@ -50,6 +51,7 @@ function ChevronRightIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className="rtl:rotate-180"
     >
       <path d="m9 6 6 6-6 6" />
     </svg>

@@ -6,12 +6,12 @@ const sizes = {
   sm: {
     track: "h-5 w-9",
     thumb: "h-4 w-4",
-    translate: "translate-x-4",
+    translate: "translate-x-4 rtl:-translate-x-4",
   },
   md: {
     track: "h-6 w-11",
     thumb: "h-5 w-5",
-    translate: "translate-x-5",
+    translate: "translate-x-5 rtl:-translate-x-5",
   },
 };
 
@@ -81,7 +81,7 @@ export const Toggle = forwardRef(function Toggle(
         <span
           aria-hidden="true"
           className={cn(
-            "pointer-events-none inline-block translate-x-0.5 transform rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-transform",
+            "pointer-events-none inline-block translate-x-0.5 rtl:-translate-x-0.5 transform rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-transform",
             dims.thumb,
             checked && dims.translate
           )}

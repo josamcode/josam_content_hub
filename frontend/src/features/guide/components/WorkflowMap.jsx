@@ -25,7 +25,7 @@ function ArrowRightIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      className="text-muted"
+      className="text-muted rtl:rotate-180"
     >
       <path d="M5 12h14" />
       <path d="m13 5 7 7-7 7" />

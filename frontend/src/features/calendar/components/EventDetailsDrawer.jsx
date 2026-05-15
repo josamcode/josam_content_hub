@@ -132,9 +132,9 @@ export function EventDetailsDrawer({ event, open, onClose }) {
         aria-modal="true"
         aria-label={t("calendar.drawer.ariaLabel", { ns: "pages" })}
         className={cn(
-          "absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-canvas shadow-xl transition-transform duration-200 ease-out",
+          "absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-canvas shadow-xl transition-transform duration-200 ease-out",
           "sm:w-[420px]",
-          open ? "translate-x-0" : "translate-x-full"
+          open ? "translate-x-0" : "translate-x-full rtl:-translate-x-full"
         )}
       >
         <header className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">

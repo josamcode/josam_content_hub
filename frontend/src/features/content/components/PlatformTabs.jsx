@@ -145,7 +145,7 @@ export function PlatformTabs({ contentItemId, initialPlatform, category }) {
               <span
                 aria-label={formatStatus(post.status)}
                 className={cn(
-                  "ml-1 inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] uppercase tracking-[0.16em]",
+                  "ms-1 inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] uppercase tracking-[0.16em]",
                   isActive
                     ? "bg-canvas/15 text-canvas/90"
                     : "bg-canvas text-muted"

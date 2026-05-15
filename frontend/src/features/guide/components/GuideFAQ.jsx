@@ -34,7 +34,7 @@ function FAQItem({ item, index }) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className={cn(
-          "flex w-full items-start justify-between gap-3 px-4 py-3 text-left transition hover:bg-canvas/40",
+          "flex w-full items-start justify-between gap-3 px-4 py-3 text-start transition hover:bg-canvas/40",
           open ? "border-b border-border" : "border-b border-transparent"
         )}
       >

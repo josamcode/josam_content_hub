@@ -102,6 +102,7 @@ function ChevronLeft() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className="rtl:rotate-180"
     >
       <path d="m15 18-6-6 6-6" />
     </svg>
@@ -120,6 +121,7 @@ function ChevronRight() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className="rtl:rotate-180"
     >
       <path d="m9 18 6-6-6-6" />
     </svg>
@@ -310,7 +312,7 @@ export const DatePicker = forwardRef(function DatePicker(
             setOpen((v) => !v);
           }}
           className={cn(
-            "flex h-10 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-left text-sm transition",
+            "flex h-10 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-start text-sm transition",
             "border-border hover:border-ink/20",
             "focus:outline-none focus-visible:border-ink/30 focus-visible:ring-2 focus-visible:ring-accent/15",
             open && "border-ink/30 ring-2 ring-accent/15",
@@ -343,7 +345,7 @@ export const DatePicker = forwardRef(function DatePicker(
                 event.stopPropagation();
                 handleClear();
               }}
-              className="ml-2 shrink-0 rounded p-0.5 text-muted hover:bg-canvas hover:text-ink"
+              className="ms-2 shrink-0 rounded p-0.5 text-muted hover:bg-canvas hover:text-ink"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -368,7 +370,7 @@ export const DatePicker = forwardRef(function DatePicker(
             id={popoverId}
             role="dialog"
             aria-label="Choose date"
-            className="absolute left-0 z-40 mt-1 w-[19rem] max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-surface p-3 shadow-lg ring-1 ring-ink/5"
+            className="absolute start-0 z-40 mt-1 w-[19rem] max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-surface p-3 shadow-lg ring-1 ring-ink/5"
           >
             <div className="mb-2 flex items-center justify-between">
               <button

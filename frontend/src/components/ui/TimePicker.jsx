@@ -230,7 +230,7 @@ export const TimePicker = forwardRef(function TimePicker(
             setOpen((v) => !v);
           }}
           className={cn(
-            "flex h-10 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-left text-sm transition",
+            "flex h-10 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-start text-sm transition",
             "border-border hover:border-ink/20",
             "focus:outline-none focus-visible:border-ink/30 focus-visible:ring-2 focus-visible:ring-accent/15",
             open && "border-ink/30 ring-2 ring-accent/15",
@@ -261,7 +261,7 @@ export const TimePicker = forwardRef(function TimePicker(
             id={popoverId}
             role="dialog"
             aria-label="Choose time"
-            className="absolute left-0 z-40 mt-1 w-56 rounded-xl border border-border bg-surface p-3 shadow-lg ring-1 ring-ink/5"
+            className="absolute start-0 z-40 mt-1 w-56 rounded-xl border border-border bg-surface p-3 shadow-lg ring-1 ring-ink/5"
           >
             <div className="grid grid-cols-2 gap-2">
               <div className="flex flex-col">
@@ -290,7 +290,7 @@ export const TimePicker = forwardRef(function TimePicker(
                         >
                           {use12h ? (h % 12 || 12) : pad2(h)}
                           {use12h && (
-                            <span className="ml-1 text-[10px] text-muted/80">
+                            <span className="ms-1 text-[10px] text-muted/80">
                               {h >= 12 ? "PM" : "AM"}
                             </span>
                           )}

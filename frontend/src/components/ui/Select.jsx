@@ -242,7 +242,7 @@ export const Select = forwardRef(function Select(
           }}
           onKeyDown={handleTriggerKeyDown}
           className={cn(
-            "flex h-10 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-left text-sm transition",
+            "flex h-10 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-start text-sm transition",
             "border-border hover:border-ink/20",
             "focus:outline-none focus-visible:border-ink/30 focus-visible:ring-2 focus-visible:ring-accent/15",
             open && "border-ink/30 ring-2 ring-accent/15",
@@ -272,7 +272,7 @@ export const Select = forwardRef(function Select(
             tabIndex={-1}
             aria-labelledby={label ? triggerId : undefined}
             className={cn(
-              "absolute left-0 right-0 z-40 mt-1 max-h-64 overflow-y-auto rounded-lg border border-border bg-surface py-1 shadow-lg",
+              "absolute start-0 end-0 z-40 mt-1 max-h-64 overflow-y-auto rounded-lg border border-border bg-surface py-1 shadow-lg",
               "ring-1 ring-ink/5"
             )}
           >

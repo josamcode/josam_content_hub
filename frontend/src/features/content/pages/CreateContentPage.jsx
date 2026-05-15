@@ -52,6 +52,7 @@ function ArrowLeftIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      className="rtl:rotate-180"
     >
       <path d="M19 12H5" />
       <path d="m11 19-7-7 7-7" />

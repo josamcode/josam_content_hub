@@ -23,8 +23,8 @@ function RowSkeleton() {
       <td className="hidden px-4 py-3 sm:table-cell">
         <Bar className="h-3 w-24" />
       </td>
-      <td className="px-4 py-3 text-right">
-        <div className="ml-auto flex w-fit gap-2">
+      <td className="px-4 py-3 text-end">
+        <div className="ms-auto flex w-fit gap-2">
           <Bar className="h-6 w-20 rounded-md" />
           <Bar className="h-6 w-16 rounded-md" />
         </div>
@@ -39,7 +39,7 @@ export function PublishLogSkeleton({ rows = 6 }) {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
-            <tr className="border-b border-border bg-canvas/60 text-left">
+            <tr className="border-b border-border bg-canvas/60 text-start">
               {Array.from({ length: 6 }).map((_, i) => (
                 <th key={i} className="px-4 py-3">
                   <Bar className="h-3 w-20" />
