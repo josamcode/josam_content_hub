@@ -366,6 +366,14 @@ docs/operations/security-checklist.md
 
 It covers login rate limiting, seed/password safety, JWT/localStorage risk, and OAuth token handling requirements before adding Google/YouTube credentials.
 
+### YouTube Integration Plan
+
+Review the YouTube integration technical design before writing OAuth or upload code:
+
+```text
+docs/integrations/youtube-integration-plan.md
+```
+
 ### Known Staging Risks
 
 - Local uploads require persistent disk.
