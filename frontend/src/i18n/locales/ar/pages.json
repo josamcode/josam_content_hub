@@ -411,6 +411,84 @@
       }
     }
   },
+  "categoryDefaults": {
+    "eyebrow": "الإعدادات",
+    "title": "إعدادات التصنيفات الافتراضية",
+    "subtitle": "الأهداف والهاشتاجز والمنصات الافتراضية لكل تصنيف محتوى.",
+    "notice": {
+      "eyebrow": "إعدادات افتراضية فقط",
+      "body": "هذه القيم محفوظة كإعدادات افتراضية لكل تصنيف. لا تُطبّق على المحتوى الحالي بعد - ستستخدمها سير العمل لاحقًا عند كتابة منشورات جديدة."
+    },
+    "error": {
+      "title": "تعذر تحميل إعدادات التصنيفات الافتراضية",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    },
+    "empty": {
+      "title": "لا توجد إعدادات تصنيفات افتراضية بعد.",
+      "description": "سيتم إنشاء الإعدادات تلقائيًا عند تحميل هذه الصفحة لأول مرة."
+    },
+    "card": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "activeDescription": "إدراج هذا التصنيف في سير عمل المحتوى لاحقًا.",
+      "saveErrorTitle": "تعذر الحفظ",
+      "saveErrorFallback": "لم نتمكن من حفظ هذه الإعدادات الافتراضية.",
+      "saved": "تم الحفظ.",
+      "footerNote": "إعدادات افتراضية محفوظة - تُطبّق لاحقًا عبر سير عمل المحتوى"
+    },
+    "actions": {
+      "reset": "إعادة ضبط"
+    },
+    "form": {
+      "defaultGoal": "هدف المحتوى",
+      "defaultGoalPlaceholder": "مثال: شرح مفهوم عملي",
+      "defaultHookStyle": "نمط الافتتاحية الافتراضي",
+      "defaultHookPlaceholder": "مثال: سؤال مباشر",
+      "defaultCaptionStyle": "نمط الكابشن الافتراضي",
+      "defaultCaptionPlaceholder": "مثال: قصير وقوي",
+      "defaultHashtags": "الهاشتاجز الافتراضية",
+      "hashtagsPlaceholder": "افصل بفواصل أو أسطر جديدة (مثال: javascript, webdev)",
+      "hashtagsHint": "افصل بفواصل أو أسطر جديدة. علامة # في البداية اختيارية.",
+      "defaultPlatforms": "المنصات الافتراضية",
+      "selectedCount": "المحدد: {{count}}",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "ملاحظات خاصة بهذا التصنيف"
+    },
+    "categories": {
+      "programming": {
+        "label": "البرمجة",
+        "description": "شرح مفاهيم برمجية عملية."
+      },
+      "softwareEngineering": {
+        "label": "هندسة البرمجيات",
+        "description": "تفكير هندسي من بيئات إنتاج حقيقية."
+      },
+      "businessSystems": {
+        "label": "أنظمة الأعمال",
+        "description": "كيف يحل software مشاكل التشغيل."
+      },
+      "araFinancial": {
+        "label": "ARA Financial",
+        "description": "ARA Financial كنظام ERP وأعمال حقيقي."
+      },
+      "portfolioClientAcquisition": {
+        "label": "اكتساب العملاء",
+        "description": "جذب عملاء لتطوير الويب وأنظمة الأعمال."
+      },
+      "courseContent": {
+        "label": "محتوى الكورس",
+        "description": "بناء الثقة وشرح الأساسيات لمحتوى الكورسات."
+      },
+      "saasProductJourney": {
+        "label": "رحلة منتج SaaS",
+        "description": "توثيق دروس بناء SaaS."
+      },
+      "personalBrand": {
+        "label": "البراند الشخصي",
+        "description": "تعزيز ثقة وحضور JoSam Code."
+      }
+    }
+  },
   "createContent": {
     "eyebrow": "جديد",
     "title": "إنشاء محتوى",

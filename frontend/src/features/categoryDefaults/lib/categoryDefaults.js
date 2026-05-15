@@ -9,6 +9,17 @@ export const CATEGORY_ORDER = [
   "personal_brand",
 ];
 
+export const CATEGORY_TRANSLATION_KEYS = {
+  programming: "programming",
+  software_engineering: "softwareEngineering",
+  business_systems: "businessSystems",
+  ara_financial: "araFinancial",
+  portfolio_client_acquisition: "portfolioClientAcquisition",
+  course_content: "courseContent",
+  saas_product_journey: "saasProductJourney",
+  personal_brand: "personalBrand",
+};
+
 export const CATEGORY_LABELS = {
   programming: "Programming",
   software_engineering: "Software Engineering",
@@ -20,18 +31,6 @@ export const CATEGORY_LABELS = {
   personal_brand: "Personal Brand",
 };
 
-export const CATEGORY_DESCRIPTIONS = {
-  programming: "Teach practical programming concepts.",
-  software_engineering: "Real production engineering thinking.",
-  business_systems: "How software solves operations problems.",
-  ara_financial: "ARA Financial as a real ERP/business system.",
-  portfolio_client_acquisition:
-    "Attract clients for web dev & business systems.",
-  course_content: "Build trust and teach fundamentals for courses.",
-  saas_product_journey: "Document SaaS building lessons.",
-  personal_brand: "JoSam Code authority and trust.",
-};
-
 export const PLATFORM_OPTIONS = [
   { value: "youtube", label: "YouTube" },
   { value: "instagram", label: "Instagram" },
@@ -39,7 +38,11 @@ export const PLATFORM_OPTIONS = [
   { value: "facebook", label: "Facebook" },
 ];
 
-export function categoryLabel(category) {
+export function categoryLabel(category, t) {
+  const key = CATEGORY_TRANSLATION_KEYS[category];
+  if (key && typeof t === "function") {
+    return t(`categoryDefaults.categories.${key}.label`, { ns: "pages" });
+  }
   return CATEGORY_LABELS[category] || category;
 }
 

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -31,15 +32,17 @@ function InfoIcon() {
 }
 
 function ErrorBlock({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load category defaults
+        {t("categoryDefaults.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -47,6 +50,7 @@ function ErrorBlock({ message, onRetry }) {
 }
 
 export function CategoryDefaultsPage() {
+  const { t } = useTranslation(["common", "pages"]);
   const { data, isLoading, isError, error, refetch } = useCategoryDefaults();
 
   const sorted = useMemo(() => sortCategoryDefaults(data || []), [data]);
@@ -54,9 +58,9 @@ export function CategoryDefaultsPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Settings"
-        title="Category Defaults"
-        subtitle="Default goals, hashtags, and platforms per content category."
+        eyebrow={t("categoryDefaults.eyebrow", { ns: "pages" })}
+        title={t("categoryDefaults.title", { ns: "pages" })}
+        subtitle={t("categoryDefaults.subtitle", { ns: "pages" })}
       />
 
       <Card padding="md" className="border-amber-200 bg-amber-50">
@@ -69,12 +73,10 @@ export function CategoryDefaultsPage() {
           </span>
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.18em]">
-              Defaults only
+              {t("categoryDefaults.notice.eyebrow", { ns: "pages" })}
             </p>
             <p className="mt-1 text-sm">
-              These values are stored as defaults per category. They aren't
-              applied to existing content yet — future workflows will use them
-              when drafting new posts.
+              {t("categoryDefaults.notice.body", { ns: "pages" })}
             </p>
           </div>
         </div>
@@ -86,17 +88,17 @@ export function CategoryDefaultsPage() {
         <ErrorBlock
           message={extractErrorMessage(
             error,
-            "We couldn't reach the API just now."
+            t("categoryDefaults.error.fallback", { ns: "pages" })
           )}
           onRetry={() => refetch()}
         />
       ) : sorted.length === 0 ? (
         <EmptyState
-          title="No category defaults yet."
-          description="Defaults will be created automatically the first time you load this page."
+          title={t("categoryDefaults.empty.title", { ns: "pages" })}
+          description={t("categoryDefaults.empty.description", { ns: "pages" })}
           action={
             <Button variant="outline" size="sm" onClick={() => refetch()}>
-              Refresh
+              {t("refresh", { ns: "common" })}
             </Button>
           }
         />

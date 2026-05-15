@@ -411,6 +411,84 @@
       }
     }
   },
+  "categoryDefaults": {
+    "eyebrow": "Settings",
+    "title": "Category Defaults",
+    "subtitle": "Default goals, hashtags, and platforms per content category.",
+    "notice": {
+      "eyebrow": "Defaults only",
+      "body": "These values are stored as defaults per category. They aren't applied to existing content yet - future workflows will use them when drafting new posts."
+    },
+    "error": {
+      "title": "Couldn't load category defaults",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "empty": {
+      "title": "No category defaults yet.",
+      "description": "Defaults will be created automatically the first time you load this page."
+    },
+    "card": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "activeDescription": "Include this category in future content workflows.",
+      "saveErrorTitle": "Couldn't save",
+      "saveErrorFallback": "We couldn't save these defaults.",
+      "saved": "Saved.",
+      "footerNote": "Stored defaults - applied later by content workflows"
+    },
+    "actions": {
+      "reset": "Reset"
+    },
+    "form": {
+      "defaultGoal": "Content goal",
+      "defaultGoalPlaceholder": "e.g. teach a practical concept",
+      "defaultHookStyle": "Default hook style",
+      "defaultHookPlaceholder": "e.g. bold question",
+      "defaultCaptionStyle": "Default caption style",
+      "defaultCaptionPlaceholder": "e.g. short and punchy",
+      "defaultHashtags": "Default hashtags",
+      "hashtagsPlaceholder": "Comma or newline separated (e.g. javascript, webdev)",
+      "hashtagsHint": "Separate with commas or new lines. Leading # is optional.",
+      "defaultPlatforms": "Default platforms",
+      "selectedCount": "{{count}} selected",
+      "notes": "Notes",
+      "notesPlaceholder": "Private notes for this category"
+    },
+    "categories": {
+      "programming": {
+        "label": "Programming",
+        "description": "Teach practical programming concepts."
+      },
+      "softwareEngineering": {
+        "label": "Software Engineering",
+        "description": "Real production engineering thinking."
+      },
+      "businessSystems": {
+        "label": "Business Systems",
+        "description": "How software solves operations problems."
+      },
+      "araFinancial": {
+        "label": "ARA Financial",
+        "description": "ARA Financial as a real ERP/business system."
+      },
+      "portfolioClientAcquisition": {
+        "label": "Client Acquisition",
+        "description": "Attract clients for web dev & business systems."
+      },
+      "courseContent": {
+        "label": "Course Content",
+        "description": "Build trust and teach fundamentals for courses."
+      },
+      "saasProductJourney": {
+        "label": "SaaS Product Journey",
+        "description": "Document SaaS building lessons."
+      },
+      "personalBrand": {
+        "label": "Personal Brand",
+        "description": "JoSam Code authority and trust."
+      }
+    }
+  },
   "createContent": {
     "eyebrow": "New",
     "title": "Create Content",
