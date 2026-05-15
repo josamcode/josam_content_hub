@@ -1,10 +1,12 @@
 const ApiError = require("../../utils/apiError");
 const { successResponse } = require("../../utils/apiResponse");
+const youtubeUploadService = require("../integrations/youtubeUpload.service");
 const platformPostService = require("./platformPost.service");
 const {
   createPlatformPostSchema,
   updatePlatformPostSchema,
   applyPlatformDefaultsSchema,
+  youtubeUploadSchema,
   idParamsSchema,
 } = require("./platformPost.validation");
 
@@ -102,6 +104,23 @@ async function validatePlatformPost(req, res) {
   });
 }
 
+async function uploadYouTube(req, res) {
+  const { id } = validateParams(req.params);
+  const parsedBody = youtubeUploadSchema.safeParse(req.body || {});
+
+  if (!parsedBody.success) {
+    throw new ApiError(422, "Invalid YouTube upload data");
+  }
+
+  const data = await youtubeUploadService.uploadPlatformPost(
+    req.user.id,
+    id,
+    parsedBody.data
+  );
+
+  return successResponse(res, 200, "YouTube upload completed", data);
+}
+
 module.exports = {
   listPlatformPosts,
   createPlatformPost,
@@ -109,4 +128,5 @@ module.exports = {
   updatePlatformPost,
   deletePlatformPost,
   validatePlatformPost,
+  uploadYouTube,
 };

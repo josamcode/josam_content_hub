@@ -20,6 +20,11 @@ const platformPostUrlSchema = z.preprocess(
   z.string().url().nullable().optional()
 );
 
+const optionalTrimmedString = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.string().trim().min(1).optional()
+);
+
 const createPlatformPostSchema = z
   .object({
     platform: platformSchema,
@@ -44,6 +49,14 @@ const applyPlatformDefaultsSchema = z
   })
   .strict();
 
+const youtubeUploadSchema = z
+  .object({
+    scheduleId: optionalTrimmedString,
+    privacyStatus: z.enum(["private", "unlisted", "public"]).optional(),
+    categoryId: optionalTrimmedString,
+  })
+  .strict();
+
 const idParamsSchema = z.object({
   id: z.string().min(1),
 });
@@ -52,5 +65,6 @@ module.exports = {
   createPlatformPostSchema,
   updatePlatformPostSchema,
   applyPlatformDefaultsSchema,
+  youtubeUploadSchema,
   idParamsSchema,
 };

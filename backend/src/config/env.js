@@ -57,6 +57,14 @@ const envSchema = z.object({
       (value) => (value === "" ? undefined : value),
       z.string().url().optional()
     ),
+  YOUTUBE_UPLOAD_PRIVACY_STATUS: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.enum(["private", "unlisted", "public"]).default("private")
+  ),
+  YOUTUBE_DEFAULT_CATEGORY_ID: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().trim().min(1).optional()
+  ),
   AUTH_RATE_LIMIT_WINDOW_MS: z.coerce
     .number()
     .int()
@@ -138,6 +146,8 @@ module.exports = {
   youtubeOauthSuccessRedirectUrl:
     parsedEnv.data.YOUTUBE_OAUTH_SUCCESS_REDIRECT_URL,
   youtubeOauthErrorRedirectUrl: parsedEnv.data.YOUTUBE_OAUTH_ERROR_REDIRECT_URL,
+  youtubeUploadPrivacyStatus: parsedEnv.data.YOUTUBE_UPLOAD_PRIVACY_STATUS,
+  youtubeDefaultCategoryId: parsedEnv.data.YOUTUBE_DEFAULT_CATEGORY_ID,
   authRateLimitWindowMs: parsedEnv.data.AUTH_RATE_LIMIT_WINDOW_MS,
   authRateLimitMax: parsedEnv.data.AUTH_RATE_LIMIT_MAX,
   seedUserName: parsedEnv.data.SEED_USER_NAME,

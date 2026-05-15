@@ -23,6 +23,12 @@ router.post(
   asyncHandler(platformPostController.applyPlatformDefaults)
 );
 
+router.post(
+  "/platform-posts/:id/youtube/upload",
+  authMiddleware,
+  asyncHandler(platformPostController.uploadYouTube)
+);
+
 router
   .route("/platform-posts/:id")
   .patch(authMiddleware, asyncHandler(platformPostController.updatePlatformPost))
