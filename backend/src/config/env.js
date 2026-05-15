@@ -21,6 +21,17 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(1),
   JWT_EXPIRES_IN: z.string().min(1),
+  TOKEN_ENCRYPTION_KEY: z
+    .preprocess(
+      (value) => (value === "" ? undefined : value),
+      z
+        .string()
+        .regex(
+          /^[0-9a-fA-F]{64}$/,
+          "must be 64 hex characters for AES-256 token encryption"
+        )
+        .optional()
+    ),
   AUTH_RATE_LIMIT_WINDOW_MS: z.coerce
     .number()
     .int()
@@ -95,6 +106,7 @@ module.exports = {
   databaseUrl: parsedEnv.data.DATABASE_URL,
   jwtSecret: parsedEnv.data.JWT_SECRET,
   jwtExpiresIn: parsedEnv.data.JWT_EXPIRES_IN,
+  tokenEncryptionKey: parsedEnv.data.TOKEN_ENCRYPTION_KEY,
   authRateLimitWindowMs: parsedEnv.data.AUTH_RATE_LIMIT_WINDOW_MS,
   authRateLimitMax: parsedEnv.data.AUTH_RATE_LIMIT_MAX,
   seedUserName: parsedEnv.data.SEED_USER_NAME,

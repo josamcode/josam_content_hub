@@ -37,6 +37,13 @@ enum Platform {
   tiktok
 }
 
+enum PlatformAccountStatus {
+  connected
+  needs_reauth
+  revoked
+  error
+}
+
 enum PlatformPostStatus {
   draft
   ready
@@ -93,6 +100,7 @@ model User {
   contentItems            ContentItem[]
   queueSlots              QueueSlot[]
   platformSettings        PlatformSetting[]
+  platformAccounts        PlatformAccount[]
   contentCategoryDefaults ContentCategoryDefault[]
   createdAt               DateTime                 @default(now()) @map("created_at")
   updatedAt               DateTime                 @updatedAt @map("updated_at")
@@ -235,6 +243,30 @@ model PlatformSetting {
   @@index([platform])
   @@index([isEnabled])
   @@map("platform_settings")
+}
+
+model PlatformAccount {
+  id                    String                @id @default(cuid())
+  userId                String                @map("user_id")
+  platform              Platform
+  accountId             String?               @map("account_id")
+  accountName           String?               @map("account_name")
+  accessTokenEncrypted  String?               @map("access_token_encrypted")
+  refreshTokenEncrypted String?               @map("refresh_token_encrypted")
+  tokenExpiresAt        DateTime?             @map("token_expires_at")
+  scopes                String[]              @default([])
+  status                PlatformAccountStatus @default(connected)
+  lastError             String?               @map("last_error")
+  connectedAt           DateTime              @default(now()) @map("connected_at")
+  createdAt             DateTime              @default(now()) @map("created_at")
+  updatedAt             DateTime              @updatedAt @map("updated_at")
+  user                  User                  @relation(fields: [userId], references: [id])
+
+  @@unique([userId, platform])
+  @@index([userId])
+  @@index([platform])
+  @@index([status])
+  @@map("platform_accounts")
 }
 
 model ContentCategoryDefault {
