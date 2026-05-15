@@ -251,6 +251,62 @@
       "success": "Marked as published. Moving this reminder to Done..."
     }
   },
+  "queueSettings": {
+    "eyebrow": "Settings",
+    "title": "Queue Settings",
+    "subtitle": "Fixed posting times for each platform.",
+    "notice": {
+      "eyebrow": "Heads up",
+      "body": "Queue slots are templates. They do not publish or schedule content automatically yet - use them as reusable posting times when you plan content manually."
+    },
+    "error": {
+      "title": "Couldn't load queue slots",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "empty": {
+      "title": "No queue slots yet.",
+      "description": "Add fixed posting times to plan content faster."
+    },
+    "section": {
+      "activeSlotsZero": "No active slots",
+      "activeSlotOne": "{{count}} active slot",
+      "activeSlotsMany": "{{count}} active slots",
+      "noSlotsForPlatform": "No slots for {{platform}} yet."
+    },
+    "actions": {
+      "addSlot": "Add slot",
+      "deactivate": "Deactivate",
+      "keep": "Keep",
+      "confirm": "Confirm",
+      "deactivating": "Deactivating"
+    },
+    "slotCard": {
+      "timezoneAndTime": "{{timezone}} - 24h: {{time}}",
+      "confirmDeactivate": "Deactivate?",
+      "deactivateErrorTitle": "Couldn't deactivate",
+      "deactivateErrorFallback": "We couldn't deactivate this slot just now."
+    },
+    "form": {
+      "labels": {
+        "platform": "Platform",
+        "day": "Day",
+        "time": "Time (HH:mm)",
+        "timezone": "Timezone"
+      },
+      "duplicateSlot": "This slot already exists for this platform.",
+      "saveErrorTitle": "Couldn't save",
+      "saveErrorFallback": "We couldn't save this slot just now."
+    },
+    "days": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    }
+  },
   "createContent": {
     "eyebrow": "New",
     "title": "Create Content",

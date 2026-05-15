@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { extractErrorMessage } from "../../../lib/axios";
@@ -27,6 +28,7 @@ function ClockIcon() {
 }
 
 export function QueueSlotCard({ slot }) {
+  const { t } = useTranslation(["common", "pages"]);
   const [editing, setEditing] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState(null);
@@ -38,7 +40,10 @@ export function QueueSlotCard({ slot }) {
     },
     onError: (err) => {
       setError(
-        extractErrorMessage(err, "We couldn't deactivate this slot just now.")
+        extractErrorMessage(
+          err,
+          t("queueSettings.slotCard.deactivateErrorFallback", { ns: "pages" })
+        )
       );
     },
   });
@@ -70,10 +75,18 @@ export function QueueSlotCard({ slot }) {
         </div>
         <div className="min-w-0">
           <p className="font-display text-lg leading-tight text-ink">
-            {dayName(slot.dayOfWeek)} · {formatTime12h(slot.timeOfDay)}
+            {t(`queueSettings.days.${slot.dayOfWeek}`, {
+              ns: "pages",
+              defaultValue: dayName(slot.dayOfWeek),
+            })}{" "}
+            - {formatTime12h(slot.timeOfDay)}
           </p>
           <p className="text-xs text-muted">
-            {slot.timezone} · 24h: {slot.timeOfDay}
+            {t("queueSettings.slotCard.timezoneAndTime", {
+              ns: "pages",
+              timezone: slot.timezone,
+              time: slot.timeOfDay,
+            })}
           </p>
         </div>
       </div>
@@ -82,7 +95,7 @@ export function QueueSlotCard({ slot }) {
         {confirming ? (
           <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-sm text-amber-900">
             <span className="text-[11px] uppercase tracking-[0.16em]">
-              Deactivate?
+              {t("queueSettings.slotCard.confirmDeactivate", { ns: "pages" })}
             </span>
             <Button
               type="button"
@@ -91,7 +104,7 @@ export function QueueSlotCard({ slot }) {
               onClick={() => setConfirming(false)}
               disabled={deleteMutation.isPending}
             >
-              Keep
+              {t("queueSettings.actions.keep", { ns: "pages" })}
             </Button>
             <Button
               type="button"
@@ -100,7 +113,9 @@ export function QueueSlotCard({ slot }) {
               loading={deleteMutation.isPending}
               onClick={() => deleteMutation.mutate()}
             >
-              {deleteMutation.isPending ? "Deactivating" : "Confirm"}
+              {deleteMutation.isPending
+                ? t("queueSettings.actions.deactivating", { ns: "pages" })
+                : t("queueSettings.actions.confirm", { ns: "pages" })}
             </Button>
           </div>
         ) : (
@@ -111,7 +126,7 @@ export function QueueSlotCard({ slot }) {
               size="sm"
               onClick={() => setEditing(true)}
             >
-              Edit
+              {t("edit", { ns: "common" })}
             </Button>
             <Button
               type="button"
@@ -122,7 +137,7 @@ export function QueueSlotCard({ slot }) {
                 setConfirming(true);
               }}
             >
-              Deactivate
+              {t("queueSettings.actions.deactivate", { ns: "pages" })}
             </Button>
           </>
         )}
@@ -131,7 +146,7 @@ export function QueueSlotCard({ slot }) {
       {error && (
         <div className="basis-full rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            Couldn't deactivate
+            {t("queueSettings.slotCard.deactivateErrorTitle", { ns: "pages" })}
           </p>
           <p className="mt-1">{error}</p>
         </div>

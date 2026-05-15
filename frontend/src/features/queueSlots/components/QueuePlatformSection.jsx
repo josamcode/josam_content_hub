@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -34,8 +35,15 @@ function PlusIcon() {
 }
 
 export function QueuePlatformSection({ platform, slots }) {
+  const { t } = useTranslation("pages");
   const [adding, setAdding] = useState(false);
   const dot = PLATFORM_DOT[platform] || "bg-muted";
+  const activeSlotLabel =
+    slots.length === 0
+      ? t("queueSettings.section.activeSlotsZero")
+      : slots.length === 1
+        ? t("queueSettings.section.activeSlotOne", { count: slots.length })
+        : t("queueSettings.section.activeSlotsMany", { count: slots.length });
 
   return (
     <Card padding="lg">
@@ -55,7 +63,7 @@ export function QueuePlatformSection({ platform, slots }) {
               {formatPlatform(platform)}
             </h2>
             <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-              {slots.length} active {slots.length === 1 ? "slot" : "slots"}
+              {activeSlotLabel}
             </p>
           </div>
         </div>
@@ -68,7 +76,7 @@ export function QueuePlatformSection({ platform, slots }) {
             onClick={() => setAdding(true)}
           >
             <PlusIcon />
-            Add slot
+            {t("queueSettings.actions.addSlot")}
           </Button>
         )}
       </header>
@@ -87,7 +95,9 @@ export function QueuePlatformSection({ platform, slots }) {
       {slots.length === 0 ? (
         <div className="mt-4 rounded-xl border border-dashed border-border bg-canvas/40 px-4 py-6 text-center">
           <p className="text-sm text-muted">
-            No slots for {formatPlatform(platform)} yet.
+            {t("queueSettings.section.noSlotsForPlatform", {
+              platform: formatPlatform(platform),
+            })}
           </p>
         </div>
       ) : (

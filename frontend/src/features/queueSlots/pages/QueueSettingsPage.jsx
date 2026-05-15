@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -30,15 +31,17 @@ function groupByPlatform(slots) {
 }
 
 function ErrorBlock({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load queue slots
+        {t("queueSettings.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -46,6 +49,7 @@ function ErrorBlock({ message, onRetry }) {
 }
 
 export function QueueSettingsPage() {
+  const { t } = useTranslation("pages");
   const { data, isLoading, isError, error, refetch } = useQueueSlots({
     active: true,
   });
@@ -56,19 +60,17 @@ export function QueueSettingsPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Settings"
-        title="Queue Settings"
-        subtitle="Fixed posting times for each platform."
+        eyebrow={t("queueSettings.eyebrow")}
+        title={t("queueSettings.title")}
+        subtitle={t("queueSettings.subtitle")}
       />
 
       <Card padding="md" className="bg-ink text-canvas">
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-canvas/70">
-          Heads up
+          {t("queueSettings.notice.eyebrow")}
         </p>
         <p className="mt-2 text-sm leading-relaxed text-canvas/85">
-          Queue slots are templates. They do not publish or schedule content
-          automatically yet — use them as reusable posting times when you plan
-          content manually.
+          {t("queueSettings.notice.body")}
         </p>
       </Card>
 
@@ -78,7 +80,7 @@ export function QueueSettingsPage() {
         <ErrorBlock
           message={extractErrorMessage(
             error,
-            "We couldn't reach the API just now."
+            t("queueSettings.error.fallback")
           )}
           onRetry={() => refetch()}
         />
@@ -86,8 +88,8 @@ export function QueueSettingsPage() {
         <>
           {totalSlots === 0 && (
             <EmptyState
-              title="No queue slots yet."
-              description="Add fixed posting times to plan content faster."
+              title={t("queueSettings.empty.title")}
+              description={t("queueSettings.empty.description")}
             />
           )}
 

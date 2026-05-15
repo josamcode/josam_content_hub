@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Select } from "../../../components/ui/Select";
@@ -11,7 +12,6 @@ import { getBrowserTimezone, getTimezoneOptions } from "../../../lib/datetime";
 import { PLATFORMS, formatPlatform } from "../../../lib/format";
 import { useCreateQueueSlot } from "../hooks/useCreateQueueSlot";
 import { useUpdateQueueSlot } from "../hooks/useUpdateQueueSlot";
-import { DAY_LABELS } from "../lib/queueSlotConstants";
 
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -30,22 +30,20 @@ const schema = z.object({
   timezone: z.string().trim().min(1, "Timezone is required"),
 });
 
-const DAY_OPTIONS = DAY_LABELS.map((label, idx) => ({
-  value: String(idx),
-  label,
-}));
-
 const PLATFORM_OPTIONS = PLATFORMS.map((value) => ({
   value,
   label: formatPlatform(value),
 }));
 
-function describeError(error) {
+function describeError(error, t) {
   const status = error?.response?.status;
   if (status === 409) {
-    return "This slot already exists for this platform.";
+    return t("queueSettings.form.duplicateSlot", { ns: "pages" });
   }
-  return extractErrorMessage(error, "We couldn't save this slot just now.");
+  return extractErrorMessage(
+    error,
+    t("queueSettings.form.saveErrorFallback", { ns: "pages" })
+  );
 }
 
 export function QueueSlotForm({
@@ -55,7 +53,17 @@ export function QueueSlotForm({
   onCancel,
   onSuccess,
 }) {
+  const { t } = useTranslation(["common", "pages"]);
   const [submitError, setSubmitError] = useState(null);
+
+  const dayOptions = useMemo(
+    () =>
+      Array.from({ length: 7 }, (_, idx) => ({
+        value: String(idx),
+        label: t(`queueSettings.days.${idx}`, { ns: "pages" }),
+      })),
+    [t]
+  );
 
   const timezoneOptions = useMemo(() => {
     const seeds = [
@@ -92,7 +100,7 @@ export function QueueSlotForm({
       onSuccess?.();
     },
     onError: (error) => {
-      setSubmitError(describeError(error));
+      setSubmitError(describeError(error, t));
     },
   });
 
@@ -102,7 +110,7 @@ export function QueueSlotForm({
       onSuccess?.();
     },
     onError: (error) => {
-      setSubmitError(describeError(error));
+      setSubmitError(describeError(error, t));
     },
   });
 
@@ -136,7 +144,7 @@ export function QueueSlotForm({
           name="platform"
           render={({ field }) => (
             <Select
-              label="Platform"
+              label={t("queueSettings.form.labels.platform", { ns: "pages" })}
               options={PLATFORM_OPTIONS}
               error={errors.platform?.message}
               {...field}
@@ -148,8 +156,8 @@ export function QueueSlotForm({
           name="dayOfWeek"
           render={({ field }) => (
             <Select
-              label="Day"
-              options={DAY_OPTIONS}
+              label={t("queueSettings.form.labels.day", { ns: "pages" })}
+              options={dayOptions}
               error={errors.dayOfWeek?.message}
               {...field}
             />
@@ -160,7 +168,7 @@ export function QueueSlotForm({
           name="timeOfDay"
           render={({ field }) => (
             <TimePicker
-              label="Time (HH:mm)"
+              label={t("queueSettings.form.labels.time", { ns: "pages" })}
               error={errors.timeOfDay?.message}
               {...field}
             />
@@ -171,7 +179,7 @@ export function QueueSlotForm({
           name="timezone"
           render={({ field }) => (
             <Select
-              label="Timezone"
+              label={t("queueSettings.form.labels.timezone", { ns: "pages" })}
               options={timezoneOptions}
               error={errors.timezone?.message}
               {...field}
@@ -183,7 +191,7 @@ export function QueueSlotForm({
       {submitError && (
         <div className="rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-ink">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            Couldn't save
+            {t("queueSettings.form.saveErrorTitle", { ns: "pages" })}
           </p>
           <p className="mt-1">{submitError}</p>
         </div>
@@ -198,7 +206,7 @@ export function QueueSlotForm({
             onClick={onCancel}
             disabled={submitting}
           >
-            Cancel
+            {t("cancel", { ns: "common" })}
           </Button>
         )}
         <Button
@@ -208,10 +216,10 @@ export function QueueSlotForm({
           loading={submitting}
         >
           {submitting
-            ? "Saving"
+            ? t("saving", { ns: "common" })
             : mode === "edit"
-              ? "Save changes"
-              : "Add slot"}
+              ? t("saveChanges", { ns: "common" })
+              : t("queueSettings.actions.addSlot", { ns: "pages" })}
         </Button>
       </div>
     </form>
