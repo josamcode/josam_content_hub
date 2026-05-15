@@ -629,15 +629,17 @@ async function saveUploadSuccess({
   });
 }
 
-async function uploadPlatformPost(userId, platformPostId, payload = {}) {
-  let platformPost = null;
-  let schedule = null;
+async function executeYouTubeUploadPipeline({
+  userId,
+  platformPost,
+  schedule,
+  payload,
+  publishAt,
+}) {
   let videoId = null;
   let platformPostUrl = null;
 
   try {
-    platformPost = await getOwnedPlatformPost(userId, platformPostId);
-
     if (platformPost.platform !== YOUTUBE_PLATFORM) {
       throw new ApiError(422, "Platform post is not a YouTube post");
     }
@@ -653,10 +655,6 @@ async function uploadPlatformPost(userId, platformPostId, payload = {}) {
     if (!hasText(platformPost.title)) {
       throw new ApiError(422, "YouTube title is required");
     }
-
-    const privacyStatus = mapUploadPrivacyStatus(payload);
-    schedule = await resolveSchedule(userId, platformPost, payload.scheduleId);
-    const publishAt = resolvePublishAt(schedule, privacyStatus);
 
     const videoAsset = await getMediaAsset(platformPost.contentItemId, "video");
 
@@ -724,6 +722,37 @@ async function uploadPlatformPost(userId, platformPostId, payload = {}) {
   }
 }
 
+async function uploadPlatformPost(userId, platformPostId, payload = {}) {
+  const platformPost = await getOwnedPlatformPost(userId, platformPostId);
+  const privacyStatus = mapUploadPrivacyStatus(payload);
+  const schedule = await resolveSchedule(userId, platformPost, payload.scheduleId);
+  const publishAt = resolvePublishAt(schedule, privacyStatus);
+
+  return executeYouTubeUploadPipeline({
+    userId,
+    platformPost,
+    schedule,
+    payload,
+    publishAt,
+  });
+}
+
+async function uploadPlatformPostFromWorker({
+  schedule,
+  platformPost,
+  userId,
+  payload = {},
+}) {
+  return executeYouTubeUploadPipeline({
+    userId,
+    platformPost,
+    schedule,
+    payload,
+    publishAt: null,
+  });
+}
+
 module.exports = {
   uploadPlatformPost,
+  uploadPlatformPostFromWorker,
 };

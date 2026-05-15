@@ -65,6 +65,25 @@ const envSchema = z.object({
     (value) => (value === "" ? undefined : value),
     z.string().trim().min(1).optional()
   ),
+  YOUTUBE_AUTO_UPLOAD_WORKER_ENABLED: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.enum(["true", "false"]).default("false")
+  ),
+  YOUTUBE_AUTO_UPLOAD_WORKER_INTERVAL_MS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(60000),
+  YOUTUBE_AUTO_UPLOAD_WORKER_BATCH_SIZE: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(1),
+  YOUTUBE_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(3),
   AUTH_RATE_LIMIT_WINDOW_MS: z.coerce
     .number()
     .int()
@@ -148,6 +167,14 @@ module.exports = {
   youtubeOauthErrorRedirectUrl: parsedEnv.data.YOUTUBE_OAUTH_ERROR_REDIRECT_URL,
   youtubeUploadPrivacyStatus: parsedEnv.data.YOUTUBE_UPLOAD_PRIVACY_STATUS,
   youtubeDefaultCategoryId: parsedEnv.data.YOUTUBE_DEFAULT_CATEGORY_ID,
+  youtubeAutoUploadWorkerEnabled:
+    parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_ENABLED === "true",
+  youtubeAutoUploadWorkerIntervalMs:
+    parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_INTERVAL_MS,
+  youtubeAutoUploadWorkerBatchSize:
+    parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_BATCH_SIZE,
+  youtubeAutoUploadWorkerMaxAttempts:
+    parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS,
   authRateLimitWindowMs: parsedEnv.data.AUTH_RATE_LIMIT_WINDOW_MS,
   authRateLimitMax: parsedEnv.data.AUTH_RATE_LIMIT_MAX,
   seedUserName: parsedEnv.data.SEED_USER_NAME,
