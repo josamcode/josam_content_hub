@@ -29,3 +29,18 @@ export async function updatePlatformSetting(platform, payload) {
   const { data } = await api.patch(`/platform-settings/${platform}`, body);
   return data?.data;
 }
+
+export async function getYouTubeStatus() {
+  const { data } = await api.get("/integrations/youtube/status");
+  return data?.data;
+}
+
+export async function connectYouTube() {
+  const { data } = await api.get("/integrations/youtube/connect");
+  return data?.data;
+}
+
+export async function disconnectYouTube() {
+  const { data } = await api.delete("/integrations/youtube/disconnect");
+  return data?.data;
+}

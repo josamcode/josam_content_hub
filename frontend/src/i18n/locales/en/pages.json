@@ -339,6 +339,38 @@
       "comingLater": "Coming later",
       "connectComingLater": "Connect - coming later"
     },
+    "youtubeConnection": {
+      "eyebrow": "Account connection",
+      "title": "YouTube connection",
+      "loading": "Checking status...",
+      "status": {
+        "connected": "Connected",
+        "disconnected": "Not connected",
+        "needs_reauth": "Needs re-auth",
+        "revoked": "Revoked",
+        "error": "Error"
+      },
+      "account": "Account",
+      "accountEmpty": "No YouTube account connected",
+      "scopes": "Scopes",
+      "scopesEmpty": "No scopes granted yet",
+      "moreScopes": "+{{count}} more",
+      "connect": "Connect YouTube",
+      "reconnect": "Reconnect YouTube",
+      "disconnect": "Disconnect YouTube",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "refresh": "Refresh status",
+      "confirmDisconnect": "Click Confirm to disconnect YouTube and clear stored OAuth tokens.",
+      "configMissing": "YouTube OAuth is not configured yet.",
+      "uploadUnavailable": "Uploading is not available yet.",
+      "actionFailed": "Action failed",
+      "connectErrorFallback": "We couldn't start YouTube connection just now.",
+      "disconnectErrorFallback": "We couldn't disconnect YouTube just now.",
+      "statusErrorFallback": "We couldn't load YouTube status just now.",
+      "callbackConnected": "YouTube connected successfully.",
+      "callbackError": "YouTube connection failed."
+    },
     "form": {
       "defaultPublishMode": "Default publish mode",
       "publishModeHint": "Stored only - used as default by future workflows.",

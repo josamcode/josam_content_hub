@@ -17,6 +17,7 @@ import {
   PLATFORM_STRATEGY,
   PUBLISH_MODE_OPTIONS,
 } from "../lib/platformSettings";
+import { YouTubeConnectionPanel } from "./YouTubeConnectionPanel";
 
 const PLATFORM_ACCENT = {
   youtube: "bg-rose-500",
@@ -189,6 +190,8 @@ export function PlatformSettingsCard({ setting }) {
         </div>
       </header>
 
+      {setting.platform === "youtube" && <YouTubeConnectionPanel />}
+
       <form
         onSubmit={handleSubmit}
         noValidate
@@ -352,19 +355,21 @@ export function PlatformSettingsCard({ setting }) {
                 ? t("saving", { ns: "common" })
                 : t("saveChanges", { ns: "common" })}
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              disabled
-              title={t("platformSettings.actions.comingLater", {
-                ns: "pages",
-              })}
-            >
-              {t("platformSettings.actions.connectComingLater", {
-                ns: "pages",
-              })}
-            </Button>
+            {setting.platform !== "youtube" && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled
+                title={t("platformSettings.actions.comingLater", {
+                  ns: "pages",
+                })}
+              >
+                {t("platformSettings.actions.connectComingLater", {
+                  ns: "pages",
+                })}
+              </Button>
+            )}
           </div>
         </div>
       </form>

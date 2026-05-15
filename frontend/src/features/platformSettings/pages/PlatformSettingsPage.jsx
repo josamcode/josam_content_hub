@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 import { Badge } from "../../../components/ui/Badge";
 import { Button } from "../../../components/ui/Button";
@@ -73,11 +74,46 @@ function ErrorBlock({ message, onRetry }) {
   );
 }
 
+function YouTubeCallbackBanner({ status }) {
+  const { t } = useTranslation("pages");
+
+  if (!["connected", "error"].includes(status)) return null;
+
+  const isSuccess = status === "connected";
+
+  return (
+    <Card
+      padding="md"
+      className={
+        isSuccess
+          ? "border-emerald-200 bg-emerald-50"
+          : "border-danger/30 bg-danger/5"
+      }
+    >
+      <p
+        className={
+          isSuccess
+            ? "text-sm font-medium text-emerald-800"
+            : "text-sm font-medium text-danger"
+        }
+      >
+        {t(
+          isSuccess
+            ? "platformSettings.youtubeConnection.callbackConnected"
+            : "platformSettings.youtubeConnection.callbackError"
+        )}
+      </p>
+    </Card>
+  );
+}
+
 export function PlatformSettingsPage() {
   const { t } = useTranslation(["common", "pages"]);
+  const [searchParams] = useSearchParams();
   const { data, isLoading, isError, error, refetch } = usePlatformSettings();
 
   const sorted = useMemo(() => sortSettings(data || []), [data]);
+  const youtubeCallbackStatus = searchParams.get("youtube");
 
   return (
     <div className="flex flex-col gap-8">
@@ -105,6 +141,8 @@ export function PlatformSettingsPage() {
           </div>
         </div>
       </Card>
+
+      <YouTubeCallbackBanner status={youtubeCallbackStatus} />
 
       {isLoading ? (
         <LoadingState />
