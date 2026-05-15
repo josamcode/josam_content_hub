@@ -40,6 +40,10 @@ temp/
 uploads/
 backend/uploads/
 
+# Generated backups
+backups/
+backend/backups/
+
 # OS files
 .DS_Store
 Thumbs.db

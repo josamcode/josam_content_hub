@@ -174,6 +174,7 @@ Use this checklist to verify the MVP locally:
 npm run dev
 npx prisma validate
 npx prisma generate
+npm run backup:postgres
 npm audit --omit=dev
 ```
 
@@ -293,9 +294,27 @@ npm run smoke:test
 
 Note: the smoke test mutates staging data and uploads files.
 
+### PostgreSQL Backups
+
+Use the PostgreSQL backup runbook before migrations, before risky deploys, and on a daily production/staging schedule:
+
+```text
+docs/operations/postgres-backup-restore.md
+```
+
+The backend helper command is manual and opt-in:
+
+```bash
+cd backend
+npm run backup:postgres
+```
+
+It reads `BACKUP_DATABASE_URL` or `DATABASE_URL`, writes timestamped `pg_dump --format=custom --no-owner --no-acl` files under `BACKUP_DIR` defaulting to `./backups/postgres`, and refuses non-local database hosts unless `BACKUP_ALLOW_REMOTE=true` is set in the current secure shell/session.
+
 ### Known Staging Risks
 
 - Local uploads require persistent disk.
+- PostgreSQL backups and uploads backups must be stored outside the Coolify host before relying on real content.
 - Multiple backend instances each start the missed-reminder worker.
 - Prisma CLI is currently in `devDependencies`, so the deploy pipeline must install dev dependencies for migrate/generate or change deployment strategy later.
 - Vite large chunk warning is non-blocking.

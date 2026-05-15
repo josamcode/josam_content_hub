@@ -9,7 +9,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "node prisma/seed.js",
-    "smoke:test": "node scripts/smoke-test.js"
+    "smoke:test": "node scripts/smoke-test.js",
+    "backup:postgres": "node scripts/backup-postgres.js"
   },
   "keywords": [],
   "author": "",
