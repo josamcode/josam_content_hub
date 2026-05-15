@@ -489,6 +489,53 @@
       }
     }
   },
+  "publishLogs": {
+    "eyebrow": "المراقبة",
+    "title": "سجل النشر",
+    "subtitle": "تاريخ النشر عبر المنصات.",
+    "error": {
+      "title": "تعذر تحميل سجل النشر",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    },
+    "empty": {
+      "title": "لا توجد سجلات نشر بعد.",
+      "filteredTitle": "لا توجد سجلات تطابق هذه الفلاتر.",
+      "description": "ستظهر هنا عمليات النشر اليدوي ومحاولات النشر التلقائي لاحقًا.",
+      "filteredDescription": "جرّب مسح الفلاتر أو توسيع نطاق التاريخ."
+    },
+    "filters": {
+      "allPlatforms": "كل المنصات",
+      "allStatuses": "كل الحالات",
+      "from": "من",
+      "to": "إلى",
+      "refreshing": "جارٍ تحديث السجل...",
+      "autoApply": "تُطبّق الفلاتر تلقائيًا"
+    },
+    "table": {
+      "content": "المحتوى",
+      "publishMode": "طريقة النشر",
+      "attemptedAt": "وقت المحاولة",
+      "actions": "الإجراءات"
+    },
+    "actions": {
+      "openPost": "فتح المنشور"
+    },
+    "pagination": {
+      "showing": "عرض {{start}}-{{end}} من {{total}}"
+    },
+    "publishModes": {
+      "manual": "يدوي",
+      "reminder": "تذكير",
+      "auto": "تلقائي"
+    },
+    "statuses": {
+      "success": "ناجح",
+      "manual_completed": "تم النشر يدويًا",
+      "failed": "فشل",
+      "skipped": "تم تخطيه",
+      "cancelled": "ملغي"
+    }
+  },
   "createContent": {
     "eyebrow": "جديد",
     "title": "إنشاء محتوى",

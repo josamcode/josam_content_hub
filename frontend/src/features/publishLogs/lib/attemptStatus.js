@@ -20,3 +20,13 @@ export const ATTEMPT_STATUSES = [
   "skipped",
   "cancelled",
 ];
+
+export function attemptStatusLabel(status, t) {
+  if (typeof t === "function") {
+    return t(`publishLogs.statuses.${status}`, {
+      ns: "pages",
+      defaultValue: status?.replace(/_/g, " ") || "",
+    });
+  }
+  return status?.replace(/_/g, " ") || "";
+}

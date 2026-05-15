@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -22,15 +23,17 @@ const DEFAULT_FILTERS = {
 };
 
 function ErrorBlock({ message, onRetry }) {
+  const { t } = useTranslation(["common", "pages"]);
+
   return (
     <Card padding="lg" className="border-danger/30 bg-danger/5">
       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-        Couldn't load publish logs
+        {t("publishLogs.error.title", { ns: "pages" })}
       </p>
       <p className="mt-2 text-sm text-ink">{message}</p>
       <div className="mt-4">
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Try again
+          {t("tryAgain", { ns: "common" })}
         </Button>
       </div>
     </Card>
@@ -38,6 +41,7 @@ function ErrorBlock({ message, onRetry }) {
 }
 
 export function PublishLogsPage() {
+  const { t } = useTranslation(["common", "pages"]);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
   const queryFilters = useMemo(
@@ -83,9 +87,9 @@ export function PublishLogsPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Monitor"
-        title="Publish Logs"
-        subtitle="Publishing history across platforms."
+        eyebrow={t("publishLogs.eyebrow", { ns: "pages" })}
+        title={t("publishLogs.title", { ns: "pages" })}
+        subtitle={t("publishLogs.subtitle", { ns: "pages" })}
       />
 
       <PublishLogFilters
@@ -104,22 +108,26 @@ export function PublishLogsPage() {
         <ErrorBlock
           message={extractErrorMessage(
             error,
-            "We couldn't reach the API just now."
+            t("publishLogs.error.fallback", { ns: "pages" })
           )}
           onRetry={() => refetch()}
         />
       ) : items.length === 0 ? (
         <EmptyState
-          title={hasFilters ? "No logs match those filters." : "No publish logs yet."}
+          title={
+            hasFilters
+              ? t("publishLogs.empty.filteredTitle", { ns: "pages" })
+              : t("publishLogs.empty.title", { ns: "pages" })
+          }
           description={
             hasFilters
-              ? "Try clearing filters or widening the date range."
-              : "Manual completions and future auto-publish attempts will appear here."
+              ? t("publishLogs.empty.filteredDescription", { ns: "pages" })
+              : t("publishLogs.empty.description", { ns: "pages" })
           }
           action={
             hasFilters ? (
               <Button variant="outline" size="sm" onClick={resetFilters}>
-                Clear filters
+                {t("clearFilters", { ns: "common" })}
               </Button>
             ) : null
           }

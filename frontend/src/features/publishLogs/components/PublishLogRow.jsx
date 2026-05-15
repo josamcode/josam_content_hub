@@ -1,9 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { Badge } from "../../../components/ui/Badge";
 import { cn } from "../../../lib/cn";
-import { formatDateTime, formatPlatform, formatStatus } from "../../../lib/format";
-import { attemptStatusTone } from "../lib/attemptStatus";
+import { formatDateTime, formatPlatform } from "../../../lib/format";
+import { attemptStatusLabel, attemptStatusTone } from "../lib/attemptStatus";
 
 const PLATFORM_DOT = {
   youtube: "bg-rose-500",
@@ -48,7 +49,16 @@ function PlatformChip({ platform }) {
 }
 
 export function PublishLogRow({ attempt }) {
-  const date = formatDateTime(attempt.attemptedAt);
+  const { t, i18n } = useTranslation(["common", "pages"]);
+  const locale = i18n.language === "ar" ? "ar-EG" : "en-US";
+  const date = formatDateTime(attempt.attemptedAt, locale);
+  const publishMode = attempt.publishMode
+    ? t(`publishLogs.publishModes.${attempt.publishMode}`, {
+        ns: "pages",
+        defaultValue: attempt.publishMode,
+      })
+    : "-";
+
   return (
     <tr className="border-b border-border last:border-b-0 hover:bg-canvas/50">
       <td className="px-4 py-3 align-top">
@@ -56,7 +66,7 @@ export function PublishLogRow({ attempt }) {
           to={`/content/${attempt.contentItemId}`}
           className="font-medium text-ink hover:underline line-clamp-2"
         >
-          {attempt.contentTitle || "Untitled"}
+          {attempt.contentTitle || t("untitled", { ns: "common" })}
         </Link>
         <p className="mt-0.5 text-[11px] text-muted sm:hidden">{date}</p>
       </td>
@@ -64,25 +74,23 @@ export function PublishLogRow({ attempt }) {
         <PlatformChip platform={attempt.platform} />
       </td>
       <td className="hidden px-4 py-3 align-top sm:table-cell">
-        <span className="text-sm capitalize text-ink">
-          {attempt.publishMode || "—"}
-        </span>
+        <span className="text-sm capitalize text-ink">{publishMode}</span>
       </td>
       <td className="px-4 py-3 align-top">
         <Badge tone={attemptStatusTone(attempt.status)}>
-          {formatStatus(attempt.status)}
+          {attemptStatusLabel(attempt.status, t)}
         </Badge>
       </td>
       <td className="hidden px-4 py-3 align-top text-sm text-muted whitespace-nowrap sm:table-cell">
         {date}
       </td>
-      <td className="px-4 py-3 align-top text-right">
+      <td className="px-4 py-3 align-top text-end">
         <div className="flex flex-wrap items-center justify-end gap-2">
           <Link
             to={`/content/${attempt.contentItemId}`}
             className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-[11px] font-medium text-ink transition hover:border-ink/20"
           >
-            Open content
+            {t("openContent", { ns: "common" })}
           </Link>
           {attempt.platformPostUrl ? (
             <a
@@ -91,10 +99,11 @@ export function PublishLogRow({ attempt }) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-[11px] font-medium text-accent transition hover:border-accent/30"
             >
-              Open post <ExternalIcon />
+              {t("publishLogs.actions.openPost", { ns: "pages" })}{" "}
+              <ExternalIcon />
             </a>
           ) : (
-            <span className="text-[11px] text-muted">—</span>
+            <span className="text-[11px] text-muted">-</span>
           )}
         </div>
       </td>

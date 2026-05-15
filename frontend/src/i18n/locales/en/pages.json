@@ -489,6 +489,53 @@
       }
     }
   },
+  "publishLogs": {
+    "eyebrow": "Monitor",
+    "title": "Publish Logs",
+    "subtitle": "Publishing history across platforms.",
+    "error": {
+      "title": "Couldn't load publish logs",
+      "fallback": "We couldn't reach the API just now."
+    },
+    "empty": {
+      "title": "No publish logs yet.",
+      "filteredTitle": "No logs match those filters.",
+      "description": "Manual completions and future auto-publish attempts will appear here.",
+      "filteredDescription": "Try clearing filters or widening the date range."
+    },
+    "filters": {
+      "allPlatforms": "All platforms",
+      "allStatuses": "All statuses",
+      "from": "From",
+      "to": "To",
+      "refreshing": "Refreshing logs...",
+      "autoApply": "Filters apply automatically"
+    },
+    "table": {
+      "content": "Content",
+      "publishMode": "Publish mode",
+      "attemptedAt": "Attempted at",
+      "actions": "Actions"
+    },
+    "actions": {
+      "openPost": "Open post"
+    },
+    "pagination": {
+      "showing": "Showing {{start}}-{{end}} of {{total}}"
+    },
+    "publishModes": {
+      "manual": "Manual",
+      "reminder": "Reminder",
+      "auto": "Auto"
+    },
+    "statuses": {
+      "success": "Success",
+      "manual_completed": "Manual completed",
+      "failed": "Failed",
+      "skipped": "Skipped",
+      "cancelled": "Cancelled"
+    }
+  },
   "createContent": {
     "eyebrow": "New",
     "title": "Create Content",
