@@ -10,6 +10,8 @@ const errorMiddleware = require("./middlewares/error.middleware");
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 const corsOptions = {
   origin(origin, callback) {
     if (!origin || env.allowedOrigins.includes(origin)) {

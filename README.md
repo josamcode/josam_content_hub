@@ -356,6 +356,16 @@ docs/operations/disaster-recovery.md
 
 The disaster recovery process restores PostgreSQL and uploads from the same backup window, verifies core app workflows, and avoids destructive restore automation.
 
+### Security Checklist
+
+Review the security checklist before YouTube integration:
+
+```text
+docs/operations/security-checklist.md
+```
+
+It covers login rate limiting, seed/password safety, JWT/localStorage risk, and OAuth token handling requirements before adding Google/YouTube credentials.
+
 ### Known Staging Risks
 
 - Local uploads require persistent disk.
@@ -403,7 +413,7 @@ Recommended order:
 5. YouTube integration research
 6. Analytics foundation later
 
-Review `docs/operations/postgres-backup-restore.md`, `docs/operations/uploads-backup-restore.md`, and `docs/operations/disaster-recovery.md` before starting YouTube integration.
+Review `docs/operations/postgres-backup-restore.md`, `docs/operations/uploads-backup-restore.md`, `docs/operations/disaster-recovery.md`, and `docs/operations/security-checklist.md` before starting YouTube integration.
 
 ## MVP Status
 

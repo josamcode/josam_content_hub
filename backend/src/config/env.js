@@ -21,6 +21,12 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(1),
   JWT_EXPIRES_IN: z.string().min(1),
+  AUTH_RATE_LIMIT_WINDOW_MS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(15 * 60 * 1000),
+  AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
   SEED_USER_NAME: z.string().min(1),
   SEED_USER_EMAIL: z.string().email(),
   SEED_USER_PASSWORD: z.string().min(1),
@@ -89,6 +95,8 @@ module.exports = {
   databaseUrl: parsedEnv.data.DATABASE_URL,
   jwtSecret: parsedEnv.data.JWT_SECRET,
   jwtExpiresIn: parsedEnv.data.JWT_EXPIRES_IN,
+  authRateLimitWindowMs: parsedEnv.data.AUTH_RATE_LIMIT_WINDOW_MS,
+  authRateLimitMax: parsedEnv.data.AUTH_RATE_LIMIT_MAX,
   seedUserName: parsedEnv.data.SEED_USER_NAME,
   seedUserEmail: parsedEnv.data.SEED_USER_EMAIL,
   seedUserPassword: parsedEnv.data.SEED_USER_PASSWORD,
