@@ -699,6 +699,27 @@
     "composer": {
       "versionLabel": "نسخة {{platform}}",
       "saveErrorTitle": "تعذر الحفظ",
+      "youtubeUpload": {
+        "eyebrow": "رفع YouTube",
+        "title": "رفع إلى YouTube",
+        "uploadSchedule": "رفع/جدولة على YouTube",
+        "confirmUpload": "تأكيد الرفع",
+        "uploading": "جارٍ الرفع",
+        "uploaded": "تم الرفع إلى YouTube",
+        "openVideo": "فتح فيديو YouTube",
+        "realVideoWarning": "هذا سينشئ فيديو حقيقي على YouTube.",
+        "saveFirst": "رفع YouTube متاح بعد حفظ التغييرات.",
+        "titleRequired": "أضف عنوان YouTube واحفظه قبل الرفع.",
+        "videoRequired": "ارفع فيديو أولًا.",
+        "checkingVideo": "جارٍ فحص الفيديو المرفوع...",
+        "videoCheckUnavailable": "تعذر التحقق من الوسائط هنا. سيتحقق الخادم قبل الرفع.",
+        "checkingConnection": "جارٍ فحص اتصال YouTube...",
+        "connectFirst": "اربط YouTube أولًا.",
+        "alreadyUploaded": "منشور المنصة هذا يحتوي بالفعل على رابط YouTube.",
+        "success": "اكتمل رفع YouTube.",
+        "uploadFailed": "فشل الرفع",
+        "errorFallback": "لم نتمكن من الرفع إلى YouTube الآن."
+      },
       "accordions": {
         "defaults": {
           "title": "الإعدادات الذكية وإرشادات التصنيف",

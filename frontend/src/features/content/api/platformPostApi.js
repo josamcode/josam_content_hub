@@ -39,3 +39,11 @@ export async function applyPlatformDefaults(id, { overwrite = false } = {}) {
   });
   return data?.data;
 }
+
+export async function uploadYouTubePost(platformPostId, payload = {}) {
+  const { data } = await api.post(
+    `/platform-posts/${platformPostId}/youtube/upload`,
+    payload || {}
+  );
+  return data?.data;
+}

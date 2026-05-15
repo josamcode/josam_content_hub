@@ -699,6 +699,27 @@
     "composer": {
       "versionLabel": "{{platform}} version",
       "saveErrorTitle": "Couldn't save",
+      "youtubeUpload": {
+        "eyebrow": "YouTube upload",
+        "title": "Upload to YouTube",
+        "uploadSchedule": "Upload/Schedule to YouTube",
+        "confirmUpload": "Confirm upload",
+        "uploading": "Uploading",
+        "uploaded": "Uploaded to YouTube",
+        "openVideo": "Open YouTube video",
+        "realVideoWarning": "This will create a real YouTube video.",
+        "saveFirst": "YouTube upload is available after saving changes.",
+        "titleRequired": "Add and save a YouTube title before uploading.",
+        "videoRequired": "Upload a video first.",
+        "checkingVideo": "Checking uploaded video...",
+        "videoCheckUnavailable": "Could not verify media here. The backend will validate before uploading.",
+        "checkingConnection": "Checking YouTube connection...",
+        "connectFirst": "Connect YouTube first.",
+        "alreadyUploaded": "This platform post already has a YouTube URL.",
+        "success": "YouTube upload completed.",
+        "uploadFailed": "Upload failed",
+        "errorFallback": "We couldn't upload to YouTube just now."
+      },
       "accordions": {
         "defaults": {
           "title": "Smart defaults & category guidance",

@@ -24,6 +24,7 @@ import { ScheduleSummary } from "../ScheduleSummary";
 import { CategoryGuidancePanel } from "./CategoryGuidancePanel";
 import { CopyButton } from "./CopyButton";
 import { ValidationPanel } from "./ValidationPanel";
+import { YouTubeUploadPanel } from "./YouTubeUploadPanel";
 
 const PLATFORM_POST_STATUSES = [
   "draft",
@@ -640,6 +641,14 @@ export function PlatformComposerForm({ post, contentItemId, fields, category }) 
           </div>
         </div>
       </AccordionSection>
+
+      {post.platform === "youtube" && (
+        <YouTubeUploadPanel
+          post={post}
+          contentItemId={contentItemId}
+          isDirty={isDirty}
+        />
+      )}
 
       <AccordionSection
         title={t("contentDetail.composer.accordions.validation.title", {
