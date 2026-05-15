@@ -69,6 +69,10 @@ async function requeueStaleProcessingSchedules() {
       status: "processing",
       publishMode: "auto",
       lastAttemptAt: { lt: threshold },
+      platformPost: {
+        platform: YOUTUBE_PLATFORM,
+        platformPostUrl: null,
+      },
     },
     data: {
       status: "scheduled",
