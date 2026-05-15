@@ -295,6 +295,23 @@ npm run smoke:test
 
 Note: the smoke test mutates staging data and uploads files.
 
+### Read-Only Smoke And Monitoring
+
+Use the read-only smoke runbook for production/staging verification after deploys and restores:
+
+```text
+docs/operations/production-smoke-monitoring.md
+```
+
+The backend helper command is:
+
+```bash
+cd backend
+npm run smoke:readonly
+```
+
+It uses GET requests for API checks after login, with an optional `HEAD` check for media files, and does not create, update, delete, upload, schedule, or publish content. The existing `npm run smoke:test` remains mutating and should stay staging/manual only.
+
 ### PostgreSQL Backups
 
 Use the PostgreSQL backup runbook before migrations, before risky deploys, and on a daily production/staging schedule:

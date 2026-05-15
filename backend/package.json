@@ -10,6 +10,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "node prisma/seed.js",
     "smoke:test": "node scripts/smoke-test.js",
+    "smoke:readonly": "node scripts/smoke-readonly.js",
     "backup:postgres": "node scripts/backup-postgres.js",
     "backup:uploads": "node scripts/backup-uploads.js"
   },
