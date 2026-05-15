@@ -552,6 +552,9 @@
     "actions": {
       "openPost": "فتح المنشور"
     },
+    "errorDetails": "تفاصيل الخطأ",
+    "safeErrorMessage": "رسالة الخطأ",
+    "noErrorDetails": "لا توجد تفاصيل خطأ متاحة",
     "pagination": {
       "showing": "عرض {{start}}-{{end}} من {{total}}"
     },
@@ -708,7 +711,7 @@
         "uploading": "جارٍ الرفع",
         "uploaded": "تم الرفع إلى YouTube",
         "openVideo": "فتح فيديو YouTube",
-        "viewPublishLogs": "عرض سجل النشر",
+        "viewPublishLogs": "عرض سجل النشر الكامل",
         "realVideoWarning": "هذا سينشئ فيديو حقيقي على YouTube.",
         "privateByDefault": "سيكون الفيديو خاصًا افتراضيًا ما لم يطبق الخادم سلوك الجدولة.",
         "studioCleanup": "يمكنك حذف فيديوهات الاختبار لاحقًا من YouTube Studio.",
@@ -725,6 +728,8 @@
         "success": "اكتمل رفع YouTube.",
         "uploadFailed": "فشل الرفع",
         "latestAttempt": "آخر محاولة",
+        "errorDetails": "تفاصيل الخطأ",
+        "noErrorDetails": "لا توجد تفاصيل خطأ متاحة",
         "failedAttemptHint": "افتح سجل النشر لعرض تفاصيل الفشل الآمنة.",
         "errorFallback": "لم نتمكن من الرفع إلى YouTube الآن.",
         "errors": {

@@ -81,7 +81,8 @@ export function YouTubeUploadPanel({ post, contentItemId, isDirty }) {
   const youtubeStatusQuery = useYouTubeStatus();
   const publishAttemptsQuery = usePublishAttempts({
     page: 1,
-    limit: 50,
+    limit: 1,
+    platformPostId: post.id,
     platform: "youtube",
   });
 
@@ -112,11 +113,11 @@ export function YouTubeUploadPanel({ post, contentItemId, isDirty }) {
     (!youtubeConnected || REAUTH_STATUSES.has(youtubeStatus));
   const latestAttempt = useMemo(() => {
     const attempts = publishAttemptsQuery.data?.items || [];
-    return attempts.find(
-      (attempt) =>
-        attempt.platformPostId === post.id && attempt.platform === "youtube"
-    );
+    return attempts[0] || null;
   }, [post.id, publishAttemptsQuery.data?.items]);
+  const publishLogsUrl = `/publish-logs?platform=youtube&platformPostId=${encodeURIComponent(
+    post.id
+  )}`;
 
   const disabledMessage = useMemo(() => {
     if (platformPostUrl) {
@@ -270,7 +271,7 @@ export function YouTubeUploadPanel({ post, contentItemId, isDirty }) {
               })}
             </Button>
           )}
-          <Button as={Link} variant="ghost" size="sm" to="/publish-logs">
+          <Button as={Link} variant="ghost" size="sm" to={publishLogsUrl}>
             {t("contentDetail.composer.youtubeUpload.viewPublishLogs", {
               ns: "pages",
             })}
@@ -336,11 +337,19 @@ export function YouTubeUploadPanel({ post, contentItemId, isDirty }) {
             {formatDateTime(latestAttempt.attemptedAt, i18n.language)}
           </p>
           {latestAttempt.status === "failed" && (
-            <p className="mt-1 text-xs text-muted">
-              {t("contentDetail.composer.youtubeUpload.failedAttemptHint", {
-                ns: "pages",
-              })}
-            </p>
+            <div className="mt-2 rounded-md border border-danger/20 bg-danger/5 px-3 py-2 text-sm text-ink">
+              <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
+                {t("contentDetail.composer.youtubeUpload.errorDetails", {
+                  ns: "pages",
+                })}
+              </p>
+              <p className="mt-1">
+                {latestAttempt.errorMessage ||
+                  t("contentDetail.composer.youtubeUpload.noErrorDetails", {
+                    ns: "pages",
+                  })}
+              </p>
+            </div>
           )}
         </div>
       )}

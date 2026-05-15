@@ -3,12 +3,14 @@ import { api } from "../../../lib/axios";
 export async function fetchPublishAttempts({
   page = 1,
   limit = 20,
+  platformPostId,
   platform,
   status,
   from,
   to,
 } = {}) {
   const params = { page, limit };
+  if (platformPostId) params.platformPostId = platformPostId;
   if (platform) params.platform = platform;
   if (status) params.status = status;
   if (from) params.from = from;

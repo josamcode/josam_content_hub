@@ -552,6 +552,9 @@
     "actions": {
       "openPost": "Open post"
     },
+    "errorDetails": "Error details",
+    "safeErrorMessage": "Safe error message",
+    "noErrorDetails": "No error details available",
     "pagination": {
       "showing": "Showing {{start}}-{{end}} of {{total}}"
     },
@@ -708,7 +711,7 @@
         "uploading": "Uploading",
         "uploaded": "Uploaded to YouTube",
         "openVideo": "Open YouTube video",
-        "viewPublishLogs": "View publish logs",
+        "viewPublishLogs": "View full publish logs",
         "realVideoWarning": "This will create a real YouTube video.",
         "privateByDefault": "The video will be private by default unless backend schedule behavior applies.",
         "studioCleanup": "You can delete test videos later from YouTube Studio.",
@@ -725,6 +728,8 @@
         "success": "YouTube upload completed.",
         "uploadFailed": "Upload failed",
         "latestAttempt": "Latest attempt",
+        "errorDetails": "Error details",
+        "noErrorDetails": "No error details available",
         "failedAttemptHint": "Open Publish Logs for the safe failure details.",
         "errorFallback": "We couldn't upload to YouTube just now.",
         "errors": {

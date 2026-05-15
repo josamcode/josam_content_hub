@@ -58,6 +58,8 @@ export function PublishLogRow({ attempt }) {
         defaultValue: attempt.publishMode,
       })
     : "-";
+  const failedErrorMessage =
+    attempt.status === "failed" ? attempt.errorMessage : null;
 
   return (
     <tr className="border-b border-border last:border-b-0 hover:bg-canvas/50">
@@ -69,6 +71,15 @@ export function PublishLogRow({ attempt }) {
           {attempt.contentTitle || t("untitled", { ns: "common" })}
         </Link>
         <p className="mt-0.5 text-[11px] text-muted sm:hidden">{date}</p>
+        {attempt.status === "failed" && (
+          <p className="mt-1 max-w-md text-xs text-danger/90 line-clamp-2">
+            <span className="font-medium">
+              {t("publishLogs.errorDetails", { ns: "pages" })}:{" "}
+            </span>
+            {failedErrorMessage ||
+              t("publishLogs.noErrorDetails", { ns: "pages" })}
+          </p>
+        )}
       </td>
       <td className="px-4 py-3 align-top whitespace-nowrap">
         <PlatformChip platform={attempt.platform} />

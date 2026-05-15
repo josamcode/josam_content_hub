@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -16,6 +17,7 @@ const PAGE_SIZE = 20;
 
 const DEFAULT_FILTERS = {
   page: 1,
+  platformPostId: "",
   platform: "",
   status: "",
   from: "",
@@ -42,12 +44,19 @@ function ErrorBlock({ message, onRetry }) {
 
 export function PublishLogsPage() {
   const { t } = useTranslation(["common", "pages"]);
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = useState(() => ({
+    ...DEFAULT_FILTERS,
+    platformPostId: searchParams.get("platformPostId") || "",
+    platform: searchParams.get("platform") || "",
+    status: searchParams.get("status") || "",
+  }));
 
   const queryFilters = useMemo(
     () => ({
       page: filters.page,
       limit: PAGE_SIZE,
+      platformPostId: filters.platformPostId || undefined,
       platform: filters.platform || undefined,
       status: filters.status || undefined,
       from: filters.from || undefined,
@@ -60,6 +69,9 @@ export function PublishLogsPage() {
     usePublishAttempts(queryFilters);
 
   const updateFilter = useCallback((partial) => {
+    if (searchParams.toString()) {
+      setSearchParams({}, { replace: true });
+    }
     setFilters((prev) => {
       const next = { ...prev, ...partial };
       if (!("page" in partial)) {
@@ -67,11 +79,12 @@ export function PublishLogsPage() {
       }
       return next;
     });
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   const resetFilters = useCallback(() => {
+    setSearchParams({}, { replace: true });
     setFilters(DEFAULT_FILTERS);
-  }, []);
+  }, [setSearchParams]);
 
   const items = data?.items || [];
   const meta = data?.meta || {
@@ -81,7 +94,11 @@ export function PublishLogsPage() {
     totalPages: 0,
   };
   const hasFilters = Boolean(
-    filters.platform || filters.status || filters.from || filters.to
+    filters.platformPostId ||
+      filters.platform ||
+      filters.status ||
+      filters.from ||
+      filters.to
   );
 
   return (
