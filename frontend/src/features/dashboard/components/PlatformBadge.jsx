@@ -14,13 +14,13 @@ export function PlatformBadge({ platform, className }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium tracking-wide",
+        "inline-flex w-fit max-w-fit self-start items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium tracking-wide",
         tone,
         className
       )}
       title={formatPlatform(platform)}
     >
-      <PlatformIcon platform={platform} className="h-3.5 w-3.5" />
+      <PlatformIcon platform={platform} className="h-3.5 w-3.5 shrink-0" />
       {formatPlatform(platform)}
     </span>
   );
