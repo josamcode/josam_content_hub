@@ -8,7 +8,19 @@ JoSam Content Hub is not just a scheduler. It manages the full personal content 
 
 Idea -> Script -> Media -> Platform Versions -> Schedule -> Reminder -> Manual Publish -> Publish Logs
 
-The current MVP is built for a local, personal workflow. It helps track content from early idea through platform-specific publishing records without requiring live social platform integrations yet.
+The current MVP is built for a private personal workflow. It helps track content from early idea through platform-specific publishing records, including YouTube OAuth and upload support.
+
+## Current Production Status
+
+- Backend runs on Coolify at `https://api-content.josamcode.com`.
+- Frontend runs on Vercel at `https://content.josamcode.com`.
+- PostgreSQL stores application data.
+- Uploaded media is stored on persistent backend storage.
+- YouTube OAuth works in production.
+- Manual YouTube upload works in production.
+- Scheduled YouTube auto-upload worker is implemented and has passed a controlled production activation test.
+- The scheduled worker is disabled by default and should stay disabled unless auto uploads are intentionally being processed.
+- See the YouTube worker runbook: `docs/operations/youtube-auto-upload-worker.md`.
 
 ## Current MVP Features
 
@@ -24,6 +36,9 @@ The current MVP is built for a local, personal workflow. It helps track content 
 - Publish attempts and publish logs
 - Dashboard summary API
 - Media upload with local storage
+- YouTube OAuth connect/status/disconnect
+- Manual YouTube upload
+- Scheduled YouTube auto-upload worker, disabled by default
 
 ### Frontend
 
@@ -132,6 +147,19 @@ Required backend variables:
 - `SEED_USER_PASSWORD`
 - `UPLOAD_DIR`
 - `PUBLIC_UPLOAD_BASE_URL`
+
+YouTube integration variables:
+
+- `TOKEN_ENCRYPTION_KEY`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_REDIRECT_URI`
+- `YOUTUBE_UPLOAD_PRIVACY_STATUS`
+- `YOUTUBE_DEFAULT_CATEGORY_ID` optional
+- `YOUTUBE_AUTO_UPLOAD_WORKER_ENABLED`, default `false`
+- `YOUTUBE_AUTO_UPLOAD_WORKER_INTERVAL_MS`
+- `YOUTUBE_AUTO_UPLOAD_WORKER_BATCH_SIZE`
+- `YOUTUBE_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS`
 
 Use `backend/.env.example` as the starting point.
 
@@ -368,10 +396,16 @@ It covers login rate limiting, seed/password safety, JWT/localStorage risk, and 
 
 ### YouTube Integration Plan
 
-Review the YouTube integration technical design before writing OAuth or upload code:
+Review the YouTube integration technical design and current implementation status:
 
 ```text
 docs/integrations/youtube-integration-plan.md
+```
+
+The scheduled YouTube auto-upload worker runbook is:
+
+```text
+docs/operations/youtube-auto-upload-worker.md
 ```
 
 ### Known Staging Risks
@@ -379,6 +413,7 @@ docs/integrations/youtube-integration-plan.md
 - Local uploads require persistent disk.
 - PostgreSQL backups and uploads backups must be stored outside the Coolify host before relying on real content.
 - Multiple backend instances each start the missed-reminder worker.
+- The scheduled YouTube worker is in-process and disabled by default. Do not leave it enabled unless auto uploads are intentionally running.
 - Prisma CLI is currently in `devDependencies`, so the deploy pipeline must install dev dependencies for migrate/generate or change deployment strategy later.
 - Vite large chunk warning is non-blocking.
 - `.claude/settings.json` should not be committed accidentally.
@@ -400,31 +435,30 @@ docs/integrations/youtube-integration-plan.md
 
 ## Known Limitations
 
-- No auto publishing yet.
-- No YouTube, Meta, or TikTok OAuth yet.
+- Scheduled YouTube auto-upload is implemented, but should remain disabled unless intentionally running due uploads.
+- No always-on external queue or separate worker service yet.
+- No Meta or TikTok OAuth yet.
 - No analytics yet.
-- No platform settings page yet.
-- No background worker yet.
+- No richer frontend worker state yet.
+- No `externalVideoId` field yet.
 - No automated tests yet.
 - Uploads are local and public.
 - JWT is stored in localStorage.
-- The app is not production hardened yet.
+- The app still needs more production hardening.
 
 ## Roadmap Next
 
 Recommended order:
 
-1. Platform Settings page
-2. Deployment readiness
-3. Basic smoke tests
-4. Upload backup/storage plan
-5. YouTube integration research
-6. Analytics foundation later
+1. Keep backup and restore procedures current.
+2. Keep read-only production smoke checks current.
+3. Decide whether the YouTube worker should run continuously or remain manually activated.
+4. Add richer frontend worker state if continuous operation is enabled.
+5. Add `externalVideoId` or equivalent YouTube ID storage.
+6. Analytics foundation later.
 
-Review `docs/operations/postgres-backup-restore.md`, `docs/operations/uploads-backup-restore.md`, `docs/operations/disaster-recovery.md`, and `docs/operations/security-checklist.md` before starting YouTube integration.
+Review `docs/operations/postgres-backup-restore.md`, `docs/operations/uploads-backup-restore.md`, `docs/operations/disaster-recovery.md`, and `docs/operations/security-checklist.md` before risky production changes.
 
 ## MVP Status
 
-The current MVP is usable for a personal/local workflow.
-
-It is not production-ready yet.
+The current MVP is usable for the private JoSam content workflow in production, with YouTube OAuth, manual upload, and a disabled-by-default scheduled YouTube worker.

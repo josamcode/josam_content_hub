@@ -14,6 +14,27 @@ Initial goal:
 
 YouTube should be the first real auto-publishing integration. TikTok remains manual. Meta remains later.
 
+## Implementation Status
+
+Completed:
+
+- Token encryption foundation with `TOKEN_ENCRYPTION_KEY`.
+- YouTube OAuth connect/callback/status/disconnect.
+- Manual YouTube upload from a YouTube `PlatformPost`.
+- Publish logs polish for safe YouTube upload errors.
+- Scheduled worker schema prep with retry metadata.
+- Scheduled YouTube worker MVP.
+- Stale recovery safety fix scoped to YouTube posts with `platformPostUrl = null`.
+- Controlled production activation success: one due auto YouTube schedule was processed with `success=1 retry=0 failed=0`, the platform post became `published`, `platformPostUrl` was saved, Publish Logs showed success, and duplicate upload was blocked.
+
+Future:
+
+- Continuous always-on worker operation.
+- Richer frontend worker state and operational controls.
+- `externalVideoId` or equivalent durable YouTube video ID storage.
+- Analytics import.
+- Meta and TikTok integrations.
+
 ## 2. Non-goals
 
 This phase does not include:
@@ -41,7 +62,7 @@ Existing entities:
 - `Schedule`: already supports `publishMode` values `manual`, `auto`, and `reminder`, plus `scheduledAt`, `timezone`, and statuses including `processing`.
 - `PublishAttempt`: already logs platform, publish mode, status, error message, response payload, and attempt time.
 - `PlatformSetting`: stores per-platform enablement, default publish mode, default tags, templates, and notes.
-- `PlatformAccount`: does not exist yet in the current Prisma schema.
+- `PlatformAccount`: stores encrypted OAuth tokens, granted scopes, account status, account identity, and reconnect state.
 
 Reusable pieces:
 
@@ -52,23 +73,19 @@ Reusable pieces:
 - Success/failure can use existing `PublishAttempt`.
 - Platform Settings can become the UI entry point for connect/status/disconnect.
 
-Missing pieces:
+Remaining gaps:
 
-- OAuth account model.
-- Encrypted token storage.
-- Token refresh flow.
-- External YouTube video ID storage.
-- Upload idempotency guard beyond `platformPostUrl`.
-- Upload service and Google API client integration.
-- UI for connect/status/disconnect.
-- UI/manual action for "Upload/Schedule to YouTube".
-- A worker for automatic due-schedule uploads, if/when wanted.
+- External YouTube video ID storage beyond `platformPostUrl`.
+- Richer frontend state for worker status and operational history.
+- Continuous always-on worker operation decision.
+- Analytics import.
+- Meta and TikTok integrations.
 
-## 4. Required Data Model Changes
+## 4. Data Model Status
 
-No schema changes are implemented in this planning phase.
+The OAuth account model and scheduled worker retry fields have been implemented. The remaining model improvement to consider is a durable YouTube video ID field.
 
-Minimal proposed model:
+Implemented account model shape:
 
 ```prisma
 model PlatformAccount {
@@ -95,14 +112,14 @@ model PlatformAccount {
 }
 ```
 
-Recommended status values:
+Account status values:
 
 - `connected`
 - `needs_reauth`
 - `revoked`
 - `error`
 
-Additional field to consider on `PlatformPost`:
+Additional field still to consider on `PlatformPost`:
 
 - `externalPostId` or `externalVideoId` for the YouTube video ID.
 
@@ -110,9 +127,7 @@ Without `externalVideoId`, the app can store the watch URL in `platformPostUrl`,
 
 Token encryption requires `TOKEN_ENCRYPTION_KEY` before any OAuth token is stored. Losing this key makes stored tokens unusable after restore.
 
-## 5. Environment Variables Needed
-
-Plan only; do not edit env files in this phase.
+## 5. Environment Variables
 
 Required:
 
@@ -125,6 +140,13 @@ YouTube defaults:
 
 - `YOUTUBE_UPLOAD_PRIVACY_STATUS`, default `private`
 - `YOUTUBE_DEFAULT_CATEGORY_ID`, optional
+
+Scheduled worker controls:
+
+- `YOUTUBE_AUTO_UPLOAD_WORKER_ENABLED`, default `false`
+- `YOUTUBE_AUTO_UPLOAD_WORKER_INTERVAL_MS`
+- `YOUTUBE_AUTO_UPLOAD_WORKER_BATCH_SIZE`
+- `YOUTUBE_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS`
 
 Local and production callback URLs must be separate and explicitly configured in Google Cloud Console.
 
@@ -243,38 +265,43 @@ Option B: Worker uploads near scheduled time.
 - App keeps local file until near `scheduledAt`.
 - Worker finds due `auto` schedules and uploads then.
 
-Recommended MVP approach: Option A.
+Implemented MVP approach: both paths exist.
 
-Reasons:
-
-- It avoids building a reliable background queue first.
-- Large local uploads and API failures happen while the user is intentionally triggering the action.
-- It gives immediate feedback and keeps manual fallback.
-- It uses YouTube scheduling rather than relying on the app server being awake at publish time.
+- Manual upload supports immediate upload and YouTube `publishAt` for valid future private schedules.
+- Scheduled worker upload supports due local `auto` schedules and uploads near `scheduledAt`.
+- Manual fallback remains available.
+- The worker is disabled by default and should be enabled only when intentionally processing due auto uploads.
 
 Risks:
 
 - Unverified projects created after July 28, 2020 may have uploads restricted to private until audit/compliance review.
-- Uploading immediately consumes quota earlier.
+- Manual scheduled uploads consume quota earlier because they upload immediately.
+- Worker uploads consume quota when due schedules are processed.
 - Retrying after partial failure requires idempotency handling.
 - If video files are deleted locally after upload, retries may not be possible, but YouTube already has the uploaded video.
 
 ## 10. Worker / Job Strategy
 
-Recommended first path:
+Implemented path:
 
 1. Manual "Upload/Schedule to YouTube" action from the YouTube `PlatformPost`.
-2. Record result in `PublishAttempt`.
-3. Keep manual completion fallback.
+2. Scheduled in-process worker for due YouTube `auto` schedules.
+3. Record result in `PublishAttempt`.
+4. Keep manual completion fallback.
 
-Later worker path:
+Worker behavior:
 
-- Add a worker that finds due YouTube `auto` schedules.
-- Worker should process only schedules that have not been uploaded and have no `platformPostUrl`.
-- Worker must use idempotency checks and avoid duplicate uploads.
-- Worker should not be added until manual upload is stable.
+- Worker is disabled by default.
+- Worker finds due YouTube `auto` schedules with `status=scheduled`, `scheduledAt <= now`, retry due, and `platformPostUrl = null`.
+- Worker claims schedules by moving them to `processing`.
+- Stale recovery is scoped to YouTube `auto` processing schedules where `platformPostUrl = null`.
+- Upload code still blocks duplicates if `platformPostUrl` exists or the platform post is already complete.
 
-Avoid auto worker first. Uploading large local files through a worker increases failure and duplicate risk before the system has token, retry, and idempotency foundations.
+Operational runbook:
+
+```text
+docs/operations/youtube-auto-upload-worker.md
+```
 
 ## 11. Failure Handling
 
@@ -544,13 +571,21 @@ Errors:
 
 ## 17. Implementation Roadmap
 
-- 9.2 schema/env/token encryption foundation
-- 9.3 YouTube OAuth connect/status/disconnect backend
-- 9.4 Platform Settings YouTube connect UI
-- 9.5 YouTube upload service manual trigger backend
-- 9.6 YouTube composer upload/schedule UI
-- 9.7 PublishAttempt/failure polish
-- 9.8 optional worker automation later
+- Done: schema/env/token encryption foundation.
+- Done: YouTube OAuth connect/status/disconnect backend.
+- Done: Platform Settings YouTube connect UI.
+- Done: YouTube upload service manual trigger backend.
+- Done: YouTube composer upload/schedule UI.
+- Done: PublishAttempt/failure polish.
+- Done: scheduled worker retry fields.
+- Done: scheduled YouTube worker MVP.
+- Done: stale recovery safety fix.
+- Done: controlled production activation success.
+- Future: continuous always-on worker operation.
+- Future: richer frontend worker state.
+- Future: `externalVideoId`.
+- Future: analytics.
+- Future: Meta/TikTok integrations.
 
 ## 18. Open Questions / Risks
 
