@@ -173,6 +173,10 @@ model Schedule {
   timezone       String
   status         ScheduleStatus @default(scheduled)
   publishMode    PublishMode    @map("publish_mode")
+  attemptCount   Int            @default(0) @map("attempt_count")
+  lastAttemptAt  DateTime?      @map("last_attempt_at")
+  nextAttemptAt  DateTime?      @map("next_attempt_at")
+  lastError      String?        @map("last_error")
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
   platformPost   PlatformPost   @relation(fields: [platformPostId], references: [id])
@@ -182,6 +186,7 @@ model Schedule {
   @@index([scheduledAt])
   @@index([status])
   @@index([publishMode])
+  @@index([status, nextAttemptAt])
   @@map("schedules")
 }
 
