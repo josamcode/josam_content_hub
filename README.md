@@ -329,6 +329,16 @@ npm run backup:uploads
 
 It reads `BACKUP_UPLOADS_DIR` or `UPLOAD_DIR`, writes timestamped `.tar.gz` archives under `BACKUP_DIR` defaulting to `./backups/uploads`, and fails safely if the uploads directory is missing. Treat PostgreSQL backups and uploads backups as a pair from the same backup window because `MediaAsset` database records depend on files existing on disk.
 
+### Disaster Recovery
+
+Review the disaster recovery runbook before relying on production content and before YouTube integration:
+
+```text
+docs/operations/disaster-recovery.md
+```
+
+The disaster recovery process restores PostgreSQL and uploads from the same backup window, verifies core app workflows, and avoids destructive restore automation.
+
 ### Known Staging Risks
 
 - Local uploads require persistent disk.
@@ -375,6 +385,8 @@ Recommended order:
 4. Upload backup/storage plan
 5. YouTube integration research
 6. Analytics foundation later
+
+Review `docs/operations/postgres-backup-restore.md`, `docs/operations/uploads-backup-restore.md`, and `docs/operations/disaster-recovery.md` before starting YouTube integration.
 
 ## MVP Status
 
