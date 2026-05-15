@@ -12,7 +12,9 @@ Initial goal:
 - Log success and failure in `PublishAttempt`.
 - Keep the existing manual publishing fallback available.
 
-YouTube should be the first real auto-publishing integration. TikTok remains manual. Meta remains later.
+YouTube is the first real auto-publishing integration. Meta and TikTok official API integrations are planned after the core practical automation steps.
+
+Current product direction: keep the app focused on practical AI-assisted publishing. Upload videos one by one, generate platform metadata from one idea field, let the user choose exact schedules manually, and auto-publish only through official APIs. See `docs/product/practical-ai-publishing-roadmap.md`.
 
 ## Implementation Status
 
@@ -29,11 +31,12 @@ Completed:
 
 Future:
 
-- Continuous always-on worker operation.
-- Richer frontend worker state and operational controls.
+- Email hooks for YouTube manual upload and scheduled worker success/failure.
 - `externalVideoId` or equivalent durable YouTube video ID storage.
+- Richer worker state and operational controls.
+- Publishing Control Center for due posts, failed posts, re-auth needs, retry, and logs.
 - Analytics import.
-- Meta and TikTok integrations.
+- Meta and TikTok integrations through official APIs only.
 
 ## 2. Non-goals
 
@@ -76,10 +79,12 @@ Reusable pieces:
 Remaining gaps:
 
 - External YouTube video ID storage beyond `platformPostUrl`.
+- Email notification hooks for manual and worker outcomes.
 - Richer frontend state for worker status and operational history.
 - Continuous always-on worker operation decision.
+- Publishing Control Center.
 - Analytics import.
-- Meta and TikTok integrations.
+- Meta and TikTok official API integrations.
 
 ## 4. Data Model Status
 
@@ -581,11 +586,13 @@ Errors:
 - Done: scheduled YouTube worker MVP.
 - Done: stale recovery safety fix.
 - Done: controlled production activation success.
-- Future: continuous always-on worker operation.
-- Future: richer frontend worker state.
+- Future: email hooks for manual upload success/failure, scheduled worker success/failure, and needs re-auth.
 - Future: `externalVideoId`.
+- Future: richer frontend worker state and Publishing Control Center.
 - Future: analytics.
-- Future: Meta/TikTok integrations.
+- Future: Meta and TikTok integrations through official APIs only.
+
+TikTok should not be delayed out of fear. It is planned after the core practical automation steps, using only official TikTok APIs and no scraping, browser automation, or unofficial publishing hacks.
 
 ## 18. Open Questions / Risks
 

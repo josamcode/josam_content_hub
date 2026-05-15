@@ -12,6 +12,8 @@ The YouTube auto-upload worker is an in-process backend worker for scheduled You
 
 Uploads are real YouTube uploads. Use this runbook before any controlled activation.
 
+Product roadmap context: `docs/product/practical-ai-publishing-roadmap.md`.
+
 ## Safety Defaults
 
 The worker is disabled by default:

@@ -22,6 +22,21 @@ The current MVP is built for a private personal workflow. It helps track content
 - The scheduled worker is disabled by default and should stay disabled unless auto uploads are intentionally being processed.
 - See the YouTube worker runbook: `docs/operations/youtube-auto-upload-worker.md`.
 
+## Current Product Direction
+
+The current goal is practical AI-assisted publishing, not a generic content OS.
+
+- Videos are uploaded one by one for now; a separate bulk upload page is not a priority.
+- AI should generate platform-specific metadata from one idea or prompt field.
+- The user manually chooses exact publish dates and times per video and platform.
+- The system auto-publishes where official APIs allow it.
+- Email notifications should use NodeMailer with SMTP and run best-effort so email failures do not break publishing.
+- Uploads stay on the Coolify persistent volume for now.
+- A Media Library / Server Media Manager is planned for storage visibility, cleanup, and missing-media handling.
+- Meta and TikTok integrations are planned through official APIs only.
+
+See the practical roadmap: `docs/product/practical-ai-publishing-roadmap.md`.
+
 ## Current MVP Features
 
 ### Backend
@@ -438,6 +453,9 @@ docs/operations/youtube-auto-upload-worker.md
 - Scheduled YouTube auto-upload is implemented, but should remain disabled unless intentionally running due uploads.
 - No always-on external queue or separate worker service yet.
 - No Meta or TikTok OAuth yet.
+- No NodeMailer SMTP email notification system yet.
+- No AI metadata generation yet.
+- No Media Library / Server Media Manager yet.
 - No analytics yet.
 - No richer frontend worker state yet.
 - No `externalVideoId` field yet.
@@ -450,15 +468,25 @@ docs/operations/youtube-auto-upload-worker.md
 
 Recommended order:
 
-1. Keep backup and restore procedures current.
-2. Keep read-only production smoke checks current.
-3. Decide whether the YouTube worker should run continuously or remain manually activated.
-4. Add richer frontend worker state if continuous operation is enabled.
-5. Add `externalVideoId` or equivalent YouTube ID storage.
-6. Analytics foundation later.
+1. Add `NotificationEvent` foundation without sending email yet.
+2. Add NodeMailer SMTP email infrastructure.
+3. Hook best-effort email alerts into YouTube manual upload and scheduled worker flows.
+4. Add Media Library / Server Media Manager for storage cleanup and missing-media visibility.
+5. Add AI Brand Profile.
+6. Add AI metadata generation from one idea field.
+7. Add Content Details AI metadata UI.
+8. Add Schedule Matrix inside Content Details.
+9. Add Monthly Planning View as a planning view, not a bulk upload page.
+10. Add Meta and TikTok integrations through official APIs only.
 
 Review `docs/operations/postgres-backup-restore.md`, `docs/operations/uploads-backup-restore.md`, `docs/operations/disaster-recovery.md`, and `docs/operations/security-checklist.md` before risky production changes.
 
+Product roadmap:
+
+```text
+docs/product/practical-ai-publishing-roadmap.md
+```
+
 ## MVP Status
 
-The current MVP is usable for the private JoSam content workflow in production, with YouTube OAuth, manual upload, and a disabled-by-default scheduled YouTube worker.
+The current MVP is usable for the private JoSam content workflow in production, with YouTube OAuth, manual upload, and a disabled-by-default scheduled YouTube worker. The next product direction is practical AI-assisted publishing with manually controlled scheduling, useful email notifications, media cleanup tools, and official API integrations.
