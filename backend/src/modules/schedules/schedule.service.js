@@ -1,6 +1,9 @@
 const prisma = require("../../config/prisma");
 const platformRules = require("../../rules/platformRules");
 const ApiError = require("../../utils/apiError");
+const {
+  recordNotificationEvent,
+} = require("../notifications/notification.service");
 
 const scheduleSelect = {
   id: true,
@@ -248,7 +251,7 @@ async function saveSchedule(userId, platformPostId, payload) {
     );
   }
 
-  return prisma.$transaction(async (tx) => {
+  const schedule = await prisma.$transaction(async (tx) => {
     const schedule = await tx.schedule.upsert({
       where: {
         platformPostId,
@@ -286,6 +289,24 @@ async function saveSchedule(userId, platformPostId, payload) {
 
     return schedule;
   });
+
+  await recordNotificationEvent({
+    userId,
+    type: "schedule_saved",
+    title: "Schedule saved",
+    message: "A platform post schedule was saved.",
+    severity: "info",
+    entityType: "schedule",
+    entityId: schedule.id,
+    payload: {
+      platformPostId: schedule.platformPostId,
+      publishMode: schedule.publishMode,
+      status: schedule.status,
+      scheduledAt: schedule.scheduledAt.toISOString(),
+    },
+  });
+
+  return schedule;
 }
 
 async function updateSchedule(userId, id, payload) {
@@ -310,7 +331,7 @@ async function updateSchedule(userId, id, payload) {
     data.status = getScheduleStatusForPublishMode(payload.publishMode);
   }
 
-  return prisma.$transaction(async (tx) => {
+  const schedule = await prisma.$transaction(async (tx) => {
     const schedule = await tx.schedule.update({
       where: {
         id,
@@ -353,6 +374,24 @@ async function updateSchedule(userId, id, payload) {
 
     return schedule;
   });
+
+  await recordNotificationEvent({
+    userId,
+    type: "schedule_saved",
+    title: "Schedule saved",
+    message: "A platform post schedule was updated.",
+    severity: "info",
+    entityType: "schedule",
+    entityId: schedule.id,
+    payload: {
+      platformPostId: schedule.platformPostId,
+      publishMode: schedule.publishMode,
+      status: schedule.status,
+      scheduledAt: schedule.scheduledAt.toISOString(),
+    },
+  });
+
+  return schedule;
 }
 
 async function cancelSchedule(userId, id) {
@@ -380,6 +419,19 @@ async function cancelSchedule(userId, id) {
         },
       });
     }
+  });
+
+  await recordNotificationEvent({
+    userId,
+    type: "schedule_cancelled",
+    title: "Schedule cancelled",
+    message: "A platform post schedule was cancelled.",
+    severity: "warning",
+    entityType: "schedule",
+    entityId: id,
+    payload: {
+      platformPostId: schedule.platformPostId,
+    },
   });
 }
 

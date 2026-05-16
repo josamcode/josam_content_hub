@@ -85,6 +85,13 @@ enum PublishAttemptStatus {
   cancelled
 }
 
+enum NotificationSeverity {
+  info
+  success
+  warning
+  error
+}
+
 enum MediaAssetType {
   video
   thumbnail
@@ -101,6 +108,7 @@ model User {
   queueSlots              QueueSlot[]
   platformSettings        PlatformSetting[]
   platformAccounts        PlatformAccount[]
+  notificationEvents      NotificationEvent[]
   contentCategoryDefaults ContentCategoryDefault[]
   createdAt               DateTime                 @default(now()) @map("created_at")
   updatedAt               DateTime                 @updatedAt @map("updated_at")
@@ -272,6 +280,31 @@ model PlatformAccount {
   @@index([platform])
   @@index([status])
   @@map("platform_accounts")
+}
+
+model NotificationEvent {
+  id          String               @id @default(uuid())
+  userId      String               @map("user_id")
+  type        String
+  title       String
+  message     String?
+  severity    NotificationSeverity @default(info)
+  entityType  String?              @map("entity_type")
+  entityId    String?              @map("entity_id")
+  payload     Json?
+  isRead      Boolean              @default(false) @map("is_read")
+  emailStatus String?              @map("email_status")
+  sentAt      DateTime?            @map("sent_at")
+  createdAt   DateTime             @default(now()) @map("created_at")
+  user        User                 @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@index([severity])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([userId, isRead, createdAt])
+  @@map("notification_events")
 }
 
 model ContentCategoryDefault {

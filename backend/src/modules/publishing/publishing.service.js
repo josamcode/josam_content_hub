@@ -1,5 +1,8 @@
 const prisma = require("../../config/prisma");
 const ApiError = require("../../utils/apiError");
+const {
+  recordNotificationEvent,
+} = require("../notifications/notification.service");
 
 const completablePlatformPostStatuses = [
   "failed",
@@ -167,7 +170,7 @@ async function manualComplete(userId, payload) {
     platformPostData.platformPostUrl = payload.platformPostUrl;
   }
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const updatedPlatformPost = await tx.platformPost.update({
       where: {
         id: platformPost.id,
@@ -231,6 +234,22 @@ async function manualComplete(userId, payload) {
       publishAttempt,
     };
   });
+
+  await recordNotificationEvent({
+    userId,
+    type: "publish_manual_completed",
+    title: "Manual publish completed",
+    message: "A platform post was marked as manually published.",
+    severity: "success",
+    entityType: "platform_post",
+    entityId: result.platformPostId,
+    payload: {
+      scheduleId: schedule ? schedule.id : null,
+      publishAttemptId: result.publishAttempt.id,
+    },
+  });
+
+  return result;
 }
 
 async function listPublishAttempts(userId, query) {

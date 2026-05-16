@@ -6,6 +6,9 @@ const env = require("../../config/env");
 const prisma = require("../../config/prisma");
 const { getAbsolutePathFromStorageKey } = require("../../config/storage");
 const ApiError = require("../../utils/apiError");
+const {
+  recordNotificationEvent,
+} = require("../notifications/notification.service");
 const { decryptToken, encryptToken } = require("../../utils/tokenCrypto");
 const { YOUTUBE_UPLOAD_SCOPE } = require("./youtube.service");
 
@@ -491,6 +494,14 @@ function buildFailedAttemptPayload(error, uploadRecovery) {
   return payload;
 }
 
+function buildNotificationFailurePayload(error, uploadRecovery) {
+  return {
+    statusCode: getSafeErrorStatus(error),
+    reason: error instanceof ApiError ? error.errors?.youtubeReason || null : null,
+    errorMessage: getSafeErrorMessage(error, uploadRecovery),
+  };
+}
+
 async function persistPlatformPostUrlAfterSaveFailure(
   platformPost,
   platformPostUrl
@@ -695,6 +706,23 @@ async function executeYouTubeUploadPipeline({
       publishAt,
     });
 
+    await recordNotificationEvent({
+      userId,
+      type: "youtube_upload_success",
+      title: "YouTube upload completed",
+      message: "A YouTube upload completed successfully.",
+      severity: "success",
+      entityType: "platform_post",
+      entityId: platformPost.id,
+      payload: {
+        scheduleId: schedule ? schedule.id : null,
+        publishAttemptId: saved.publishAttemptId,
+        publishMode: schedule ? schedule.publishMode : "manual",
+        videoId,
+        platformPostUrl,
+      },
+    });
+
     return {
       platformPostId: platformPost.id,
       videoId,
@@ -717,6 +745,24 @@ async function executeYouTubeUploadPipeline({
       videoId,
       platformPostUrl,
       platformPostUrlPersisted,
+    });
+    await recordNotificationEvent({
+      userId,
+      type: "youtube_upload_failed",
+      title: "YouTube upload failed",
+      message: getSafeErrorMessage(error, {
+        videoId,
+        platformPostUrl,
+        platformPostUrlPersisted,
+      }),
+      severity: "error",
+      entityType: "platform_post",
+      entityId: platformPost.id,
+      payload: buildNotificationFailurePayload(error, {
+        videoId,
+        platformPostUrl,
+        platformPostUrlPersisted,
+      }),
     });
     throw error;
   }

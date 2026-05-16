@@ -4,6 +4,9 @@ const path = require("path");
 const prisma = require("../../config/prisma");
 const ApiError = require("../../utils/apiError");
 const {
+  recordNotificationEvent,
+} = require("../notifications/notification.service");
+const {
   getStorageKey,
   getFileUrl,
   getAbsolutePathFromStorageKey,
@@ -133,6 +136,22 @@ async function deleteMediaAsset(userId, id) {
       throw error;
     }
   }
+
+  await recordNotificationEvent({
+    userId,
+    type: "media_deleted",
+    title: "Media deleted",
+    message: "A media asset was deleted.",
+    severity: "warning",
+    entityType: "media_asset",
+    entityId: mediaAsset.id,
+    payload: {
+      contentItemId: mediaAsset.contentItemId,
+      type: mediaAsset.type,
+      fileName: mediaAsset.fileName,
+      fileSizeBytes: mediaAsset.fileSizeBytes,
+    },
+  });
 }
 
 module.exports = {
