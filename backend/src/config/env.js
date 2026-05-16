@@ -13,6 +13,18 @@ const developmentAllowedOrigins = [
   "http://127.0.0.1:5175",
 ];
 
+function emptyStringToUndefined(value) {
+  return value === "" ? undefined : value;
+}
+
+function parseBooleanString(value) {
+  if (value === "" || value === undefined) return undefined;
+  if (typeof value === "boolean") return value;
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return value;
+}
+
 const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
@@ -84,6 +96,35 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(3),
+  EMAIL_ENABLED: z.preprocess(
+    parseBooleanString,
+    z.boolean().default(false)
+  ),
+  EMAIL_FROM: z.preprocess(
+    emptyStringToUndefined,
+    z.string().trim().min(1).default("JoSam Content Hub <notifications@example.com>")
+  ),
+  EMAIL_TO: z.preprocess(
+    emptyStringToUndefined,
+    z.string().email().optional()
+  ),
+  SMTP_HOST: z.preprocess(
+    emptyStringToUndefined,
+    z.string().trim().min(1).optional()
+  ),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_SECURE: z.preprocess(
+    parseBooleanString,
+    z.boolean().default(false)
+  ),
+  SMTP_USER: z.preprocess(
+    emptyStringToUndefined,
+    z.string().trim().min(1).optional()
+  ),
+  SMTP_PASS: z.preprocess(
+    emptyStringToUndefined,
+    z.string().min(1).optional()
+  ),
   AUTH_RATE_LIMIT_WINDOW_MS: z.coerce
     .number()
     .int()
@@ -175,6 +216,14 @@ module.exports = {
     parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_BATCH_SIZE,
   youtubeAutoUploadWorkerMaxAttempts:
     parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS,
+  emailEnabled: parsedEnv.data.EMAIL_ENABLED,
+  emailFrom: parsedEnv.data.EMAIL_FROM,
+  emailTo: parsedEnv.data.EMAIL_TO,
+  smtpHost: parsedEnv.data.SMTP_HOST,
+  smtpPort: parsedEnv.data.SMTP_PORT,
+  smtpSecure: parsedEnv.data.SMTP_SECURE,
+  smtpUser: parsedEnv.data.SMTP_USER,
+  smtpPass: parsedEnv.data.SMTP_PASS,
   authRateLimitWindowMs: parsedEnv.data.AUTH_RATE_LIMIT_WINDOW_MS,
   authRateLimitMax: parsedEnv.data.AUTH_RATE_LIMIT_MAX,
   seedUserName: parsedEnv.data.SEED_USER_NAME,

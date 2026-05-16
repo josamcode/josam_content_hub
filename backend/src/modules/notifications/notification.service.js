@@ -129,10 +129,64 @@ async function markNotificationRead(userId, id) {
   });
 }
 
+async function markEmailSent(eventId) {
+  return prisma.notificationEvent.update({
+    where: {
+      id: eventId,
+    },
+    data: {
+      emailStatus: "sent",
+      sentAt: new Date(),
+    },
+    select: notificationSelect,
+  });
+}
+
+async function updateEmailStatusWithSafeReason(eventId, status, reason) {
+  const event = await prisma.notificationEvent.findUnique({
+    where: {
+      id: eventId,
+    },
+    select: {
+      payload: true,
+    },
+  });
+
+  const currentPayload =
+    event && event.payload && typeof event.payload === "object"
+      ? event.payload
+      : {};
+
+  return prisma.notificationEvent.update({
+    where: {
+      id: eventId,
+    },
+    data: {
+      emailStatus: status,
+      payload: {
+        ...currentPayload,
+        emailStatusReason: reason ? String(reason).slice(0, 300) : null,
+      },
+    },
+    select: notificationSelect,
+  });
+}
+
+async function markEmailFailed(eventId, reason) {
+  return updateEmailStatusWithSafeReason(eventId, "failed", reason);
+}
+
+async function markEmailSkipped(eventId, reason) {
+  return updateEmailStatusWithSafeReason(eventId, "skipped", reason);
+}
+
 module.exports = {
   createNotificationEvent,
   recordNotificationEvent,
   listNotificationEvents,
   getNotificationEvent,
   markNotificationRead,
+  markEmailSent,
+  markEmailFailed,
+  markEmailSkipped,
 };
