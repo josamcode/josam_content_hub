@@ -9,12 +9,20 @@ export function useDeleteMediaAsset({ id, contentItemId }, options = {}) {
     mutationFn: () => deleteMediaAsset(id),
     ...options,
     onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({
-        queryKey: ["media", contentItemId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["content-item", contentItemId],
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["media", contentItemId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["media-library"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["media-storage-summary"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["content-item", contentItemId],
+        }),
+      ]);
       if (options.onSuccess) options.onSuccess(data, variables, context);
     },
   });

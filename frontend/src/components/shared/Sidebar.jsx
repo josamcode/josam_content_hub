@@ -34,6 +34,13 @@ const ICONS = {
       <path d="M4 6V4h12" />
     </>
   ),
+  media: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m8 13 2.4-2.4a1 1 0 0 1 1.4 0L16 15" />
+      <circle cx="16.5" cy="9.5" r="1.5" />
+    </>
+  ),
   workflow: (
     <>
       <rect x="3" y="4" width="5" height="16" rx="1.5" />
@@ -97,6 +104,13 @@ const ICONS = {
 const NAV = [
   { to: "/dashboard", labelKey: "dashboard", icon: "dashboard", enabled: true },
   { to: "/content", labelKey: "contentLibrary", icon: "library", enabled: true },
+  {
+    to: "/media-library",
+    label: "Media Library",
+    labelKey: "mediaLibrary",
+    icon: "media",
+    enabled: true,
+  },
   { to: "/workflow", labelKey: "workflow", icon: "workflow", enabled: true },
   { to: "/calendar", labelKey: "calendar", icon: "calendar", enabled: true },
   { to: "/reminders", labelKey: "reminders", icon: "reminders", enabled: true },
@@ -106,7 +120,7 @@ const NAV = [
   { to: "/publish-logs", labelKey: "publishLogs", icon: "logs", enabled: true },
 ];
 
-const WORKSPACE_COUNT = 5;
+const WORKSPACE_COUNT = 6;
 
 const SUPPORT_NAV = [
   { to: "/guide", labelKey: "guide", icon: "guide", enabled: true },
@@ -120,7 +134,7 @@ function NavItem({ item }) {
     item.to === "/content" &&
     location.pathname.startsWith("/content/") &&
     location.pathname !== "/content/new";
-  const label = t(item.labelKey);
+  const label = item.label || t(item.labelKey);
 
   if (!item.enabled) {
     return (
@@ -294,7 +308,7 @@ function isLibraryActive(pathname) {
 
 function MobileTile({ item, isActive, onClick }) {
   const { t } = useTranslation("nav");
-  const label = t(item.labelKey);
+  const label = item.label || t(item.labelKey);
   return (
     <NavLink
       to={item.to}
@@ -465,7 +479,9 @@ function MobileMoreLink({ item, onClose }) {
           >
             <Icon path={ICONS[item.icon]} />
           </span>
-          <span className="flex-1 font-medium">{t(item.labelKey)}</span>
+          <span className="flex-1 font-medium">
+            {item.label || t(item.labelKey)}
+          </span>
           <ChevronRightIcon />
         </>
       )}

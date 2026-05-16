@@ -17,6 +17,24 @@ router
     asyncHandler(mediaController.uploadMedia)
   );
 
+router.get(
+  "/media-assets",
+  authMiddleware,
+  asyncHandler(mediaController.listMediaAssets)
+);
+
+router.get(
+  "/media-assets/storage-summary",
+  authMiddleware,
+  asyncHandler(mediaController.getStorageSummary)
+);
+
+router.post(
+  "/media-assets/scan-storage",
+  authMiddleware,
+  asyncHandler(mediaController.scanStorage)
+);
+
 router.delete(
   "/media-assets/:id",
   authMiddleware,

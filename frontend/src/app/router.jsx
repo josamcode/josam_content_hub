@@ -8,6 +8,7 @@ import { DashboardPage } from "../features/dashboard/pages/DashboardPage";
 import { ContentLibraryPage } from "../features/content/pages/ContentLibraryPage";
 import { CreateContentPage } from "../features/content/pages/CreateContentPage";
 import { ContentDetailPage } from "../features/content/pages/ContentDetailPage";
+import { MediaLibraryPage } from "../features/media/pages/MediaLibraryPage";
 import { ContentWorkflowPage } from "../features/workflow/pages/ContentWorkflowPage";
 import { CalendarPage } from "../features/calendar/pages/CalendarPage";
 import { RemindersPage } from "../features/reminders/pages/RemindersPage";
@@ -70,6 +71,7 @@ export function AppRouter() {
         <Route path="/content" element={<ContentLibraryPage />} />
         <Route path="/content/new" element={<CreateContentPage />} />
         <Route path="/content/:id" element={<ContentDetailPage />} />
+        <Route path="/media-library" element={<MediaLibraryPage />} />
         <Route path="/workflow" element={<ContentWorkflowPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/reminders" element={<RemindersPage />} />

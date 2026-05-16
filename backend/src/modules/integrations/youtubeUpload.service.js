@@ -158,6 +158,7 @@ async function getMediaAsset(contentItemId, type) {
     where: {
       contentItemId,
       type,
+      status: "active",
     },
     orderBy: {
       createdAt: "desc",

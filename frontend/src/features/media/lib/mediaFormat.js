@@ -1,7 +1,7 @@
 const UNITS = ["B", "KB", "MB", "GB", "TB"];
 
 export function formatFileSize(bytes) {
-  if (!bytes && bytes !== 0) return "—";
+  if (!bytes && bytes !== 0) return "-";
   if (bytes <= 0) return "0 B";
   let value = Number(bytes);
   let i = 0;
@@ -20,8 +20,24 @@ const TYPE_LABELS = {
   attachment: "Attachment",
 };
 
+const STATUS_LABELS = {
+  active: "Active",
+  missing: "Missing",
+  deleted: "Deleted",
+};
+
 export function formatMediaType(type) {
-  return TYPE_LABELS[type] || type || "—";
+  return TYPE_LABELS[type] || type || "-";
+}
+
+export function formatMediaStatus(status) {
+  return STATUS_LABELS[status] || status || "Active";
+}
+
+export function mediaStatusTone(status) {
+  if (status === "deleted") return "danger";
+  if (status === "missing") return "warning";
+  return "success";
 }
 
 export function isImageAsset(asset) {

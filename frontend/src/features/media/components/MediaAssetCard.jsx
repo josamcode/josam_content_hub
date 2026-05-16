@@ -8,9 +8,11 @@ import { formatDateTime } from "../../../lib/format";
 import { useDeleteMediaAsset } from "../hooks/useDeleteMediaAsset";
 import {
   formatFileSize,
+  formatMediaStatus,
   formatMediaType,
   isImageAsset,
   isVideoAsset,
+  mediaStatusTone,
 } from "../lib/mediaFormat";
 import { buildMediaUrl } from "../lib/mediaUrl";
 
@@ -54,6 +56,14 @@ function FileIcon() {
 }
 
 function AssetPreview({ asset, url }) {
+  if (asset.status === "deleted" || asset.status === "missing") {
+    return (
+      <div className="flex aspect-video w-full items-center justify-center rounded-xl border border-dashed border-border bg-canvas text-sm text-muted">
+        {asset.status === "deleted" ? "Deleted media" : "File missing"}
+      </div>
+    );
+  }
+
   if (isVideoAsset(asset)) {
     return (
       <video
@@ -102,6 +112,9 @@ export function MediaAssetCard({ asset, contentItemId }) {
 
   const url = buildMediaUrl(asset.fileUrl);
   const typeLabel = formatMediaType(asset.type);
+  const status = asset.status || "active";
+  const canOpen = status === "active" && Boolean(url);
+  const canDelete = status !== "deleted";
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-4">
@@ -110,6 +123,9 @@ export function MediaAssetCard({ asset, contentItemId }) {
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <Badge tone="accent">{typeLabel}</Badge>
+          <Badge tone={mediaStatusTone(status)}>
+            {formatMediaStatus(status)}
+          </Badge>
           {asset.mimeType && (
             <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
               {asset.mimeType}
@@ -126,7 +142,7 @@ export function MediaAssetCard({ asset, contentItemId }) {
       </div>
 
       <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border pt-3">
-        {url ? (
+        {canOpen ? (
           <a
             href={url}
             target="_blank"
@@ -160,7 +176,7 @@ export function MediaAssetCard({ asset, contentItemId }) {
               {deleteMutation.isPending ? "Deleting" : "Confirm"}
             </Button>
           </div>
-        ) : (
+        ) : canDelete ? (
           <Button
             type="button"
             variant="ghost"
@@ -172,7 +188,10 @@ export function MediaAssetCard({ asset, contentItemId }) {
           >
             Delete
           </Button>
-        )}
+        ) : null}
+        {status === "deleted" ? (
+          <span className="text-xs text-muted">Record kept for history</span>
+        ) : null}
       </div>
 
       {error && (

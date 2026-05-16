@@ -4,6 +4,7 @@ const mediaService = require("./media.service");
 const {
   uploadMediaSchema,
   listMediaQuerySchema,
+  listMediaAssetsQuerySchema,
   idParamsSchema,
 } = require("./media.validation");
 
@@ -63,17 +64,51 @@ async function listMedia(req, res) {
   });
 }
 
+async function listMediaAssets(req, res) {
+  const parsedQuery = listMediaAssetsQuerySchema.safeParse(req.query);
+
+  if (!parsedQuery.success) {
+    throw new ApiError(422, "Invalid media asset filters");
+  }
+
+  const result = await mediaService.listAllMediaAssets(
+    req.user.id,
+    parsedQuery.data
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: result.data,
+    meta: result.meta,
+  });
+}
+
+async function getStorageSummary(req, res) {
+  const data = await mediaService.getStorageSummary(req.user.id);
+
+  return successResponse(res, 200, "Media storage summary loaded", data);
+}
+
+async function scanStorage(req, res) {
+  const data = await mediaService.scanStorage(req.user.id);
+
+  return successResponse(res, 200, "Media storage scan completed", data);
+}
+
 async function deleteMedia(req, res) {
   const { id } = validateParams(req.params);
 
-  await mediaService.deleteMediaAsset(req.user.id, id);
+  const data = await mediaService.deleteMediaAsset(req.user.id, id);
 
-  return successResponse(res, 200, "Media asset deleted successfully");
+  return successResponse(res, 200, "Media asset deleted successfully", data);
 }
 
 module.exports = {
   ensureContentItemAccess,
   uploadMedia,
   listMedia,
+  listMediaAssets,
+  getStorageSummary,
+  scanStorage,
   deleteMedia,
 };
