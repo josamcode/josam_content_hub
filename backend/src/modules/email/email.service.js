@@ -159,10 +159,42 @@ async function sendNotificationEventEmail(event, to) {
   return result;
 }
 
+async function sendNotificationForEvent(event, to) {
+  if (!event) {
+    return {
+      status: "skipped",
+      reason: "notification_event_missing",
+    };
+  }
+
+  try {
+    return await sendNotificationEventEmail(event, to);
+  } catch (error) {
+    const reason = getSafeErrorMessage(error);
+    console.error(`Notification email failed: ${reason}`);
+
+    try {
+      await notificationService.markEmailFailed(event.id, reason);
+    } catch (statusError) {
+      console.error(
+        `Notification email status update failed: ${getSafeErrorMessage(
+          statusError
+        )}`
+      );
+    }
+
+    return {
+      status: "failed",
+      reason,
+    };
+  }
+}
+
 module.exports = {
   createTransport,
   isEmailConfigured,
   sendMail,
   sendTestEmail,
   sendNotificationEventEmail,
+  sendNotificationForEvent,
 };

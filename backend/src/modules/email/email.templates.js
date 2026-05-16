@@ -43,11 +43,37 @@ function testEmailTemplate({ appName = APP_NAME, timestamp }) {
 
 function notificationEventTemplate(event) {
   const title = event.title || "Notification event";
+  const payload =
+    event.payload && typeof event.payload === "object" ? event.payload : {};
+  const isYouTubeEvent =
+    event.type === "youtube_upload_success" ||
+    event.type === "youtube_upload_failed";
+  const status = payload.status || (event.severity === "error" ? "failed" : "success");
+  const nextAction =
+    payload.nextAction ||
+    (payload.errorMessage &&
+    /reconnect|authorization|auth|token/i.test(payload.errorMessage)
+      ? "Reconnect YouTube from Platform Settings."
+      : payload.errorMessage &&
+          /title|media|video|file|required|validation/i.test(
+            payload.errorMessage
+          )
+        ? "Check the content title and uploaded video media, then try again."
+        : payload.errorMessage
+          ? "Check Publish Logs for details before retrying."
+          : null);
   const lines = [
     title,
     "",
     event.message || "A notification event was recorded.",
     "",
+    payload.contentTitle ? `Content: ${payload.contentTitle}` : null,
+    payload.platform ? `Platform: ${payload.platform}` : null,
+    payload.status || isYouTubeEvent ? `Status: ${status}` : null,
+    payload.publishMode ? `Mode: ${payload.publishMode}` : null,
+    payload.platformPostUrl ? `URL: ${payload.platformPostUrl}` : null,
+    payload.errorMessage ? `Error: ${payload.errorMessage}` : null,
+    nextAction ? `Next action: ${nextAction}` : null,
     `Type: ${event.type}`,
     `Severity: ${event.severity}`,
     event.entityType ? `Entity: ${event.entityType}${event.entityId ? ` ${event.entityId}` : ""}` : null,
@@ -59,6 +85,41 @@ function notificationEventTemplate(event) {
           event.message || "A notification event was recorded."
         )}</p>
         <table style="border-collapse:collapse;width:100%;font-size:14px;color:#334155;">
+          ${
+            payload.contentTitle
+              ? `<tr><td style="padding:6px 0;font-weight:bold;">Content</td><td style="padding:6px 0;">${escapeHtml(payload.contentTitle)}</td></tr>`
+              : ""
+          }
+          ${
+            payload.platform
+              ? `<tr><td style="padding:6px 0;font-weight:bold;">Platform</td><td style="padding:6px 0;">${escapeHtml(payload.platform)}</td></tr>`
+              : ""
+          }
+          ${
+            payload.status || isYouTubeEvent
+              ? `<tr><td style="padding:6px 0;font-weight:bold;">Status</td><td style="padding:6px 0;">${escapeHtml(status)}</td></tr>`
+              : ""
+          }
+          ${
+            payload.publishMode
+              ? `<tr><td style="padding:6px 0;font-weight:bold;">Mode</td><td style="padding:6px 0;">${escapeHtml(payload.publishMode)}</td></tr>`
+              : ""
+          }
+          ${
+            payload.platformPostUrl
+              ? `<tr><td style="padding:6px 0;font-weight:bold;">URL</td><td style="padding:6px 0;"><a href="${escapeHtml(payload.platformPostUrl)}">${escapeHtml(payload.platformPostUrl)}</a></td></tr>`
+              : ""
+          }
+          ${
+            payload.errorMessage
+              ? `<tr><td style="padding:6px 0;font-weight:bold;">Error</td><td style="padding:6px 0;">${escapeHtml(payload.errorMessage)}</td></tr>`
+              : ""
+          }
+          ${
+            nextAction
+              ? `<tr><td style="padding:6px 0;font-weight:bold;">Next action</td><td style="padding:6px 0;">${escapeHtml(nextAction)}</td></tr>`
+              : ""
+          }
           <tr><td style="padding:6px 0;font-weight:bold;">Type</td><td style="padding:6px 0;">${escapeHtml(event.type)}</td></tr>
           <tr><td style="padding:6px 0;font-weight:bold;">Severity</td><td style="padding:6px 0;">${escapeHtml(event.severity)}</td></tr>
           ${

@@ -6,6 +6,7 @@ const env = require("../../config/env");
 const prisma = require("../../config/prisma");
 const { getAbsolutePathFromStorageKey } = require("../../config/storage");
 const ApiError = require("../../utils/apiError");
+const { sendNotificationForEvent } = require("../email/email.service");
 const {
   recordNotificationEvent,
 } = require("../notifications/notification.service");
@@ -496,6 +497,8 @@ function buildFailedAttemptPayload(error, uploadRecovery) {
 
 function buildNotificationFailurePayload(error, uploadRecovery) {
   return {
+    platform: "YouTube",
+    status: "failed",
     statusCode: getSafeErrorStatus(error),
     reason: error instanceof ApiError ? error.errors?.youtubeReason || null : null,
     errorMessage: getSafeErrorMessage(error, uploadRecovery),
@@ -706,7 +709,7 @@ async function executeYouTubeUploadPipeline({
       publishAt,
     });
 
-    await recordNotificationEvent({
+    const notificationEvent = await recordNotificationEvent({
       userId,
       type: "youtube_upload_success",
       title: "YouTube upload completed",
@@ -715,6 +718,10 @@ async function executeYouTubeUploadPipeline({
       entityType: "platform_post",
       entityId: platformPost.id,
       payload: {
+        platform: "YouTube",
+        status: "success",
+        contentTitle: platformPost.contentItem?.title || null,
+        platformPostTitle: platformPost.title || null,
         scheduleId: schedule ? schedule.id : null,
         publishAttemptId: saved.publishAttemptId,
         publishMode: schedule ? schedule.publishMode : "manual",
@@ -722,6 +729,7 @@ async function executeYouTubeUploadPipeline({
         platformPostUrl,
       },
     });
+    await sendNotificationForEvent(notificationEvent);
 
     return {
       platformPostId: platformPost.id,
@@ -746,7 +754,7 @@ async function executeYouTubeUploadPipeline({
       platformPostUrl,
       platformPostUrlPersisted,
     });
-    await recordNotificationEvent({
+    const notificationEvent = await recordNotificationEvent({
       userId,
       type: "youtube_upload_failed",
       title: "YouTube upload failed",
@@ -758,12 +766,19 @@ async function executeYouTubeUploadPipeline({
       severity: "error",
       entityType: "platform_post",
       entityId: platformPost.id,
-      payload: buildNotificationFailurePayload(error, {
-        videoId,
+      payload: {
+        ...buildNotificationFailurePayload(error, {
+          videoId,
+          platformPostUrl,
+          platformPostUrlPersisted,
+        }),
+        contentTitle: platformPost.contentItem?.title || null,
+        platformPostTitle: platformPost.title || null,
+        publishMode: schedule ? schedule.publishMode : "manual",
         platformPostUrl,
-        platformPostUrlPersisted,
-      }),
+      },
     });
+    await sendNotificationForEvent(notificationEvent);
     throw error;
   }
 }
