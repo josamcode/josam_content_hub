@@ -902,6 +902,105 @@
       }
     }
   },
+  "mediaLibrary": {
+    "eyebrow": "التخزين",
+    "title": "مكتبة الوسائط",
+    "subtitle": "تصفح الوسائط المرفوعة، استهلاك التخزين، الملفات المفقودة، وخيارات التنظيف.",
+    "actions": {
+      "scanStorage": "فحص التخزين",
+      "scanning": "جارٍ الفحص",
+      "preview": "معاينة",
+      "openOriginal": "فتح الملف الأصلي",
+      "openContent": "فتح المحتوى",
+      "delete": "حذف",
+      "confirmDelete": "تأكيد",
+      "keep": "إبقاء",
+      "deleting": "جارٍ الحذف"
+    },
+    "filters": {
+      "search": "بحث",
+      "searchPlaceholder": "اسم الملف، أو MIME type، أو عنوان المحتوى",
+      "allTypes": "كل الأنواع",
+      "allStatuses": "كل الحالات",
+      "type": "النوع",
+      "status": "الحالة",
+      "sort": "الترتيب",
+      "newestFirst": "الأحدث أولًا",
+      "oldestFirst": "الأقدم أولًا",
+      "largestFirst": "الأكبر أولًا",
+      "smallestFirst": "الأصغر أولًا",
+      "refreshing": "جارٍ تحديث النتائج...",
+      "autoApply": "تُطبّق الفلاتر تلقائيًا",
+      "clearFilters": "مسح الفلاتر"
+    },
+    "loading": "جارٍ تحميل الوسائط...",
+    "empty": {
+      "noMedia": "لا توجد وسائط بعد",
+      "noMediaDescription": "ستظهر الملفات المرفوعة هنا.",
+      "filteredTitle": "لا توجد وسائط تطابق هذه الفلاتر",
+      "filteredDescription": "امسح فلترًا أو وسّع نطاق البحث."
+    },
+    "types": {
+      "video": "فيديو",
+      "thumbnail": "صورة مصغّرة",
+      "image": "صورة",
+      "attachment": "مرفق"
+    },
+    "statuses": {
+      "active": "نشط",
+      "missing": "مفقود",
+      "deleted": "محذوف"
+    },
+    "fileCount": "{{count}} ملف",
+    "filesCount": "{{count}} ملفات",
+    "preview": {
+      "title": "معاينة الوسائط",
+      "close": "إغلاق",
+      "metadata": "التفاصيل",
+      "fileName": "اسم الملف",
+      "type": "النوع",
+      "status": "الحالة",
+      "size": "الحجم",
+      "mimeType": "MIME type",
+      "uploaded": "تاريخ الرفع",
+      "content": "المحتوى",
+      "noContent": "لا يوجد محتوى مرتبط",
+      "missing": "الملف الفعلي غير موجود وقت الفحص.",
+      "deleted": "الملف الفعلي محذوف؛ السجل محفوظ للتاريخ.",
+      "notAvailable": "المعاينة غير متاحة",
+      "brokenMedia": "هذا الملف غير متاح الآن.",
+      "brokenMediaHelper": "السجل موجود في قاعدة البيانات، لكن الملف قد يكون محذوفًا من التخزين."
+    },
+    "summary": {
+      "dbMedia": "وسائط قاعدة البيانات",
+      "uploadVolume": "حجم الرفع",
+      "missing": "مفقودة",
+      "deleted": "محذوفة",
+      "byType": "حسب النوع",
+      "dbMediaHelper": "إجمالي السجلات في قاعدة البيانات",
+      "missingHelper": "سجلات ملفاتها غير موجودة",
+      "deletedHelper": "سجلات محذوفة محفوظة للتاريخ",
+      "uploadVolumeUserScoped": "مجلدات الرفع الخاصة بالمستخدم",
+      "uploadVolumeBestEffort": "أفضل تقدير"
+    },
+    "scanResult": {
+      "title": "نتيجة الفحص",
+      "checked": "تم فحص {{checked}} سجل. وُسمت {{missing}} كمفقودة، استعيدت {{restored}}، ووُجد {{orphans}} ملف بدون سجل. لم تُحذف أي ملفات."
+    },
+    "error": {
+      "summaryTitle": "تعذر تحميل ملخص التخزين",
+      "mediaTitle": "تعذر تحميل الوسائط",
+      "deleteTitle": "تعذر الحذف",
+      "deleteFallback": "لم نتمكن من حذف هذا الملف الآن."
+    },
+    "pagination": {
+      "showing": "عرض {{start}}-{{end}} من {{total}}",
+      "noResults": "لا توجد نتائج",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "deletedRecord": "السجل محفوظ للتاريخ"
+  },
   "guide": {
     "title": "تعلّم JoSam Content Hub"
   }

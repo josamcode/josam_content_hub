@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { PageHeader } from "../../../components/shared/PageHeader";
 import { Button } from "../../../components/ui/Button";
@@ -7,7 +8,9 @@ import { EmptyState } from "../../../components/ui/EmptyState";
 import { Input } from "../../../components/ui/Input";
 import { Select } from "../../../components/ui/Select";
 import { extractErrorMessage } from "../../../lib/axios";
-import { MediaLibraryTable } from "../components/MediaLibraryTable";
+import { MediaAssetCard } from "../components/MediaAssetCard";
+import { MediaAssetSkeleton } from "../components/MediaAssetSkeleton";
+import { MediaPreviewModal } from "../components/MediaPreviewModal";
 import { MediaStorageSummary } from "../components/MediaStorageSummary";
 import {
   useMediaLibraryAssets,
@@ -26,27 +29,33 @@ const DEFAULT_FILTERS = {
   sortOrder: "desc",
 };
 
-const TYPE_OPTIONS = [
-  { value: "", label: "All types" },
-  { value: "video", label: "Video" },
-  { value: "thumbnail", label: "Thumbnail" },
-  { value: "image", label: "Image" },
-  { value: "attachment", label: "Attachment" },
-];
-
-const STATUS_OPTIONS = [
-  { value: "", label: "All statuses" },
-  { value: "active", label: "Active" },
-  { value: "missing", label: "Missing" },
-  { value: "deleted", label: "Deleted" },
-];
-
-const SORT_OPTIONS = [
-  { value: "createdAt:desc", label: "Newest first" },
-  { value: "createdAt:asc", label: "Oldest first" },
-  { value: "fileSizeBytes:desc", label: "Largest first" },
-  { value: "fileSizeBytes:asc", label: "Smallest first" },
-];
+function useFilterLabelMap() {
+  const { t } = useTranslation("pages");
+  return useMemo(
+    () => ({
+      TYPE_OPTIONS: [
+        { value: "", label: t("mediaLibrary.filters.allTypes") },
+        { value: "video", label: t("mediaLibrary.types.video") },
+        { value: "thumbnail", label: t("mediaLibrary.types.thumbnail") },
+        { value: "image", label: t("mediaLibrary.types.image") },
+        { value: "attachment", label: t("mediaLibrary.types.attachment") },
+      ],
+      STATUS_OPTIONS: [
+        { value: "", label: t("mediaLibrary.filters.allStatuses") },
+        { value: "active", label: t("mediaLibrary.statuses.active") },
+        { value: "missing", label: t("mediaLibrary.statuses.missing") },
+        { value: "deleted", label: t("mediaLibrary.statuses.deleted") },
+      ],
+      SORT_OPTIONS: [
+        { value: "createdAt:desc", label: t("mediaLibrary.filters.newestFirst") },
+        { value: "createdAt:asc", label: t("mediaLibrary.filters.oldestFirst") },
+        { value: "fileSizeBytes:desc", label: t("mediaLibrary.filters.largestFirst") },
+        { value: "fileSizeBytes:asc", label: t("mediaLibrary.filters.smallestFirst") },
+      ],
+    }),
+    [t]
+  );
+}
 
 function ErrorBlock({ title, message, onRetry }) {
   return (
@@ -65,32 +74,34 @@ function ErrorBlock({ title, message, onRetry }) {
 }
 
 function MediaLibraryFilters({ filters, onChange, onReset, isFetching }) {
+  const { t } = useTranslation("pages");
+  const { TYPE_OPTIONS, STATUS_OPTIONS, SORT_OPTIONS } = useFilterLabelMap();
   const sortValue = `${filters.sortBy}:${filters.sortOrder}`;
   const hasFilters = Boolean(filters.type || filters.status || filters.search);
 
   return (
     <Card padding="md">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Input
-          label="Search"
-          placeholder="File name, MIME type, or content title"
+          label={t("mediaLibrary.filters.search")}
+          placeholder={t("mediaLibrary.filters.searchPlaceholder")}
           value={filters.search}
           onChange={(event) => onChange({ search: event.target.value })}
         />
         <Select
-          label="Type"
+          label={t("mediaLibrary.filters.type")}
           value={filters.type}
           onChange={(event) => onChange({ type: event.target.value })}
           options={TYPE_OPTIONS}
         />
         <Select
-          label="Status"
+          label={t("mediaLibrary.filters.status")}
           value={filters.status}
           onChange={(event) => onChange({ status: event.target.value })}
           options={STATUS_OPTIONS}
         />
         <Select
-          label="Sort"
+          label={t("mediaLibrary.filters.sort")}
           value={sortValue}
           onChange={(event) => {
             const [sortBy, sortOrder] = event.target.value.split(":");
@@ -101,12 +112,14 @@ function MediaLibraryFilters({ filters, onChange, onReset, isFetching }) {
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
-        <p className="text-[11px] uppercase tracking-[0.16em] text-muted">
-          {isFetching ? "Refreshing results..." : "Filters apply automatically"}
+        <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
+          {isFetching
+            ? t("mediaLibrary.filters.refreshing")
+            : t("mediaLibrary.filters.autoApply")}
         </p>
         {hasFilters ? (
           <Button variant="ghost" size="sm" onClick={onReset}>
-            Clear filters
+            {t("mediaLibrary.filters.clearFilters")}
           </Button>
         ) : null}
       </div>
@@ -115,6 +128,7 @@ function MediaLibraryFilters({ filters, onChange, onReset, isFetching }) {
 }
 
 function Pagination({ meta, page, isFetching, onChange }) {
+  const { t } = useTranslation("pages");
   const totalPages = Math.max(1, Number(meta.totalPages) || 1);
   const canPrev = page > 1;
   const canNext = page < totalPages;
@@ -125,7 +139,9 @@ function Pagination({ meta, page, isFetching, onChange }) {
   return (
     <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
       <p className="text-xs text-muted">
-        {total === 0 ? "No results" : `Showing ${start}-${end} of ${total}`}
+        {total === 0
+          ? t("mediaLibrary.pagination.noResults")
+          : t("mediaLibrary.pagination.showing", { start, end, total })}
       </p>
       <div className="flex items-center gap-2">
         <Button
@@ -134,11 +150,12 @@ function Pagination({ meta, page, isFetching, onChange }) {
           disabled={!canPrev || isFetching}
           onClick={() => onChange(page - 1)}
         >
-          Previous
+          {t("mediaLibrary.pagination.previous")}
         </Button>
         <span className="rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-ink">
-          Page <strong className="font-semibold">{page}</strong>{" "}
-          <span className="text-muted">of {totalPages}</span>
+          {t("common:page")}{" "}
+          <strong className="font-semibold">{page}</strong>{" "}
+          <span className="text-muted">{t("common:of")}</span> {totalPages}
         </span>
         <Button
           variant="outline"
@@ -146,7 +163,7 @@ function Pagination({ meta, page, isFetching, onChange }) {
           disabled={!canNext || isFetching}
           onClick={() => onChange(page + 1)}
         >
-          Next
+          {t("mediaLibrary.pagination.next")}
         </Button>
       </div>
     </div>
@@ -154,8 +171,10 @@ function Pagination({ meta, page, isFetching, onChange }) {
 }
 
 export function MediaLibraryPage() {
+  const { t } = useTranslation("pages");
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [scanResult, setScanResult] = useState(null);
+  const [previewAsset, setPreviewAsset] = useState(null);
 
   const queryFilters = useMemo(
     () => ({
@@ -202,24 +221,26 @@ export function MediaLibraryPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        eyebrow="Storage"
-        title="Media Library"
-        subtitle="Inspect uploaded media, storage usage, missing files, and cleanup candidates."
+        eyebrow={t("mediaLibrary.eyebrow")}
+        title={t("mediaLibrary.title")}
+        subtitle={t("mediaLibrary.subtitle")}
         actions={
           <Button
             variant="outline"
             loading={scanMutation.isPending}
             onClick={() => scanMutation.mutate()}
           >
-            {scanMutation.isPending ? "Scanning" : "Scan storage"}
+            {scanMutation.isPending
+              ? t("mediaLibrary.actions.scanning")
+              : t("mediaLibrary.actions.scanStorage")}
           </Button>
         }
       />
 
       {summaryQuery.isError ? (
         <ErrorBlock
-          title="Couldn't load storage summary"
-          message={extractErrorMessage(summaryQuery.error, "Unexpected error.")}
+          title={t("mediaLibrary.error.summaryTitle")}
+          message={extractErrorMessage(summaryQuery.error, t("common:unexpectedError"))}
           onRetry={() => summaryQuery.refetch()}
         />
       ) : (
@@ -230,16 +251,17 @@ export function MediaLibraryPage() {
       )}
 
       {scanResult ? (
-        <Card padding="md" className="border-amber-200 bg-amber-50">
+        <Card padding="md" className="border-amber-200/60 bg-amber-50/50">
           <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-amber-900">
-            Scan result
+            {t("mediaLibrary.scanResult.title")}
           </p>
           <p className="mt-2 text-sm text-ink">
-            Checked {scanResult.checkedDbMediaCount || 0} DB records. Marked{" "}
-            {scanResult.markedMissingCount || 0} missing, restored{" "}
-            {scanResult.restoredActiveCount || 0}, found{" "}
-            {scanResult.orphanFileCount || 0} orphan files. No physical files
-            were deleted.
+            {t("mediaLibrary.scanResult.checked", {
+              checked: scanResult.checkedDbMediaCount || 0,
+              missing: scanResult.markedMissingCount || 0,
+              restored: scanResult.restoredActiveCount || 0,
+              orphans: scanResult.orphanFileCount || 0,
+            })}
           </p>
         </Card>
       ) : null}
@@ -252,34 +274,46 @@ export function MediaLibraryPage() {
       />
 
       {assetsQuery.isLoading ? (
-        <Card padding="lg" className="flex items-center justify-center py-16">
-          <p className="text-sm text-muted">Loading media...</p>
-        </Card>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <MediaAssetSkeleton count={6} />
+        </div>
       ) : assetsQuery.isError ? (
         <ErrorBlock
-          title="Couldn't load media"
-          message={extractErrorMessage(assetsQuery.error, "Unexpected error.")}
+          title={t("mediaLibrary.error.mediaTitle")}
+          message={extractErrorMessage(assetsQuery.error, t("common:unexpectedError"))}
           onRetry={() => assetsQuery.refetch()}
         />
       ) : items.length === 0 ? (
         <EmptyState
-          title={hasFilters ? "No media matches those filters" : "No media yet"}
+          title={
+            hasFilters
+              ? t("mediaLibrary.empty.filteredTitle")
+              : t("mediaLibrary.empty.noMedia")
+          }
           description={
             hasFilters
-              ? "Clear a filter or widen the search."
-              : "Uploaded files will appear here."
+              ? t("mediaLibrary.empty.filteredDescription")
+              : t("mediaLibrary.empty.noMediaDescription")
           }
           action={
             hasFilters ? (
               <Button variant="outline" size="sm" onClick={resetFilters}>
-                Clear filters
+                {t("mediaLibrary.filters.clearFilters")}
               </Button>
             ) : null
           }
         />
       ) : (
         <>
-          <MediaLibraryTable assets={items} />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((asset) => (
+              <MediaAssetCard
+                key={asset.id}
+                asset={asset}
+                onPreview={setPreviewAsset}
+              />
+            ))}
+          </div>
           <Pagination
             meta={meta}
             page={meta.page || filters.page}
@@ -288,6 +322,12 @@ export function MediaLibraryPage() {
           />
         </>
       )}
+
+      <MediaPreviewModal
+        asset={previewAsset}
+        open={Boolean(previewAsset)}
+        onClose={() => setPreviewAsset(null)}
+      />
     </div>
   );
 }

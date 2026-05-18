@@ -106,7 +106,6 @@ const NAV = [
   { to: "/content", labelKey: "contentLibrary", icon: "library", enabled: true },
   {
     to: "/media-library",
-    label: "Media Library",
     labelKey: "mediaLibrary",
     icon: "media",
     enabled: true,

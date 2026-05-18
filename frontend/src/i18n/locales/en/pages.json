@@ -902,6 +902,105 @@
       }
     }
   },
+  "mediaLibrary": {
+    "eyebrow": "Storage",
+    "title": "Media Library",
+    "subtitle": "Inspect uploaded media, storage usage, missing files, and cleanup candidates.",
+    "actions": {
+      "scanStorage": "Scan storage",
+      "scanning": "Scanning",
+      "preview": "Preview",
+      "openOriginal": "Open original",
+      "openContent": "Open content",
+      "delete": "Delete",
+      "confirmDelete": "Confirm",
+      "keep": "Keep",
+      "deleting": "Deleting"
+    },
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "File name, MIME type, or content title",
+      "allTypes": "All types",
+      "allStatuses": "All statuses",
+      "type": "Type",
+      "status": "Status",
+      "sort": "Sort",
+      "newestFirst": "Newest first",
+      "oldestFirst": "Oldest first",
+      "largestFirst": "Largest first",
+      "smallestFirst": "Smallest first",
+      "refreshing": "Refreshing results...",
+      "autoApply": "Filters apply automatically",
+      "clearFilters": "Clear filters"
+    },
+    "loading": "Loading media...",
+    "empty": {
+      "noMedia": "No media yet",
+      "noMediaDescription": "Uploaded files will appear here.",
+      "filteredTitle": "No media matches those filters",
+      "filteredDescription": "Clear a filter or widen the search."
+    },
+    "types": {
+      "video": "Video",
+      "thumbnail": "Thumbnail",
+      "image": "Image",
+      "attachment": "Attachment"
+    },
+    "statuses": {
+      "active": "Active",
+      "missing": "Missing",
+      "deleted": "Deleted"
+    },
+    "fileCount": "{{count}} file",
+    "filesCount": "{{count}} files",
+    "preview": {
+      "title": "Media preview",
+      "close": "Close",
+      "metadata": "Details",
+      "fileName": "File name",
+      "type": "Type",
+      "status": "Status",
+      "size": "Size",
+      "mimeType": "MIME type",
+      "uploaded": "Uploaded",
+      "content": "Content",
+      "noContent": "No linked content",
+      "missing": "Physical file was not found during scan.",
+      "deleted": "Physical file was removed; DB record remains.",
+      "notAvailable": "Preview not available",
+      "brokenMedia": "This media file is not available.",
+      "brokenMediaHelper": "The database record exists, but the file may have been removed from storage."
+    },
+    "summary": {
+      "dbMedia": "DB media",
+      "uploadVolume": "Upload volume",
+      "missing": "Missing",
+      "deleted": "Deleted",
+      "byType": "By type",
+      "dbMediaHelper": "Total records tracked in the database",
+      "missingHelper": "DB records whose files are missing",
+      "deletedHelper": "Soft-deleted records kept for history",
+      "uploadVolumeUserScoped": "User-owned upload folders",
+      "uploadVolumeBestEffort": "Best effort"
+    },
+    "scanResult": {
+      "title": "Scan result",
+      "checked": "Checked {{checked}} DB records. Marked {{missing}} missing, restored {{restored}}, found {{orphans}} orphan files. No physical files were deleted."
+    },
+    "error": {
+      "summaryTitle": "Couldn't load storage summary",
+      "mediaTitle": "Couldn't load media",
+      "deleteTitle": "Couldn't delete",
+      "deleteFallback": "We couldn't delete this asset just now."
+    },
+    "pagination": {
+      "showing": "Showing {{start}}-{{end}} of {{total}}",
+      "noResults": "No results",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "deletedRecord": "Record kept for history"
+  },
   "guide": {
     "title": "Learn JoSam Content Hub"
   }
