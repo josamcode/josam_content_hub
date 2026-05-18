@@ -105,6 +105,15 @@ enum MediaAssetStatus {
   deleted
 }
 
+enum AiGenerationType {
+  platform_metadata
+}
+
+enum AiGenerationStatus {
+  success
+  failed
+}
+
 model User {
   id                      String                   @id @default(cuid())
   name                    String
@@ -117,6 +126,7 @@ model User {
   notificationEvents      NotificationEvent[]
   contentCategoryDefaults ContentCategoryDefault[]
   aiBrandProfile          AiBrandProfile?
+  aiGenerationAttempts    AiGenerationAttempt[]
   createdAt               DateTime                 @default(now()) @map("created_at")
   updatedAt               DateTime                 @updatedAt @map("updated_at")
 
@@ -354,6 +364,26 @@ model AiBrandProfile {
   user                 User     @relation(fields: [userId], references: [id])
 
   @@map("ai_brand_profiles")
+}
+
+model AiGenerationAttempt {
+  id           String              @id @default(cuid())
+  userId       String              @map("user_id")
+  type         AiGenerationType
+  input        Json
+  output       Json?
+  status       AiGenerationStatus
+  errorMessage String?             @map("error_message")
+  provider     String
+  model        String?
+  createdAt    DateTime            @default(now()) @map("created_at")
+  user         User                @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@map("ai_generation_attempts")
 }
 
 model MediaAsset {

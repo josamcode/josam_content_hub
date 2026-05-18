@@ -141,6 +141,17 @@ const envSchema = z.object({
     .default("http://localhost:5000/uploads"),
   FRONTEND_URL: z.string().url().optional(),
   ALLOWED_ORIGINS: z.string().optional(),
+  AI_PROVIDER: z.string().trim().min(1).default("deepseek"),
+  AI_API_KEY: z
+    .preprocess(emptyStringToUndefined, z.string().min(1).optional()),
+  AI_BASE_URL: z
+    .preprocess(emptyStringToUndefined, z.string().url().optional()),
+  AI_MODEL: z
+    .preprocess(emptyStringToUndefined, z.string().min(1).optional()),
+  AI_METADATA_ENABLED: z.preprocess(
+    parseBooleanString,
+    z.boolean().default(true)
+  ),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -234,4 +245,9 @@ module.exports = {
   frontendUrl: parsedEnv.data.FRONTEND_URL,
   allowedOrigins,
   isProduction: parsedEnv.data.NODE_ENV === "production",
+  aiProvider: parsedEnv.data.AI_PROVIDER,
+  aiApiKey: parsedEnv.data.AI_API_KEY,
+  aiBaseUrl: parsedEnv.data.AI_BASE_URL,
+  aiModel: parsedEnv.data.AI_MODEL,
+  aiMetadataEnabled: parsedEnv.data.AI_METADATA_ENABLED,
 };
