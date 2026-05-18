@@ -1151,6 +1151,61 @@
       "loaded": "تم تحميل الإعدادات العربية. راجعها ثم احفظ."
     }
   },
+  "monthlyPlan": {
+    "eyebrow": "الخطة",
+    "title": "خطة الشهر",
+    "subtitle": "اطلع على المحتوى غير المجدول والمجدول والمنشور وما يحتاج انتباهك هذا الشهر.",
+    "actions": {
+      "today": "اليوم",
+      "previousMonth": "الشهر السابق",
+      "nextMonth": "الشهر التالي"
+    },
+    "filters": {
+      "searchPlaceholder": "ابحث في العنوان أو الافتتاحية أو التصنيف",
+      "anyStatus": "أي حالة",
+      "anyCategory": "أي تصنيف",
+      "anyPlatform": "أي منصة",
+      "refreshing": "جارٍ تحديث النتائج...",
+      "autoApply": "تُطبّق الفلاتر تلقائيًا"
+    },
+    "stats": {
+      "total": "الإجمالي",
+      "totalHelper": "عنصر محمّل",
+      "unscheduled": "غير مجدول",
+      "unscheduledHelper": "يحتاج موعدًا",
+      "unscheduledHelperEmpty": "الكل موضوع",
+      "scheduled": "مجدول",
+      "scheduledHelper": "هذا الشهر",
+      "scheduledHelperEmpty": "لا يوجد محتوى مجدول",
+      "attention": "يحتاج انتباهك",
+      "attentionHelper": "يحتاج إجراء",
+      "attentionHelperEmpty": "كل شيء واضح"
+    },
+    "sections": {
+      "needsAttention": "يحتاج متابعة",
+      "unscheduled": "المحتوى غير المجدول",
+      "scheduled": "المجدول هذا الشهر",
+      "published": "المنشور هذا الشهر"
+    },
+    "empty": {
+      "filteredTitle": "لا توجد نتائج بهذه الفلاتر",
+      "filteredDescription": "وسّع البحث أو امسح فلترًا أو اثنين.",
+      "noContentTitle": "لا يوجد محتوى بعد",
+      "noContentDescription": "أنشئ محتوى من المكتبة لبدء تخطيط الشهر.",
+      "noAttention": "لا يوجد ما يحتاج متابعة حاليًا.",
+      "noUnscheduled": "لا يوجد محتوى غير مجدول هنا حاليًا.",
+      "noScheduled": "لا يوجد محتوى مجدول هذا الشهر بعد.",
+      "noPublished": "لا يوجد محتوى منشور هذا الشهر بعد."
+    },
+    "card": {
+      "openContent": "افتح المحتوى",
+      "plusMore": "+{{count}} أخرى"
+    },
+    "error": {
+      "title": "تعذر تحميل خطة الشهر",
+      "fallback": "لم نتمكن من الوصول إلى API الآن."
+    }
+  },
   "guide": {
     "title": "تعلّم JoSam Content Hub"
   }

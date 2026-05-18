@@ -11,6 +11,7 @@ import { ContentDetailPage } from "../features/content/pages/ContentDetailPage";
 import { MediaLibraryPage } from "../features/media/pages/MediaLibraryPage";
 import { ContentWorkflowPage } from "../features/workflow/pages/ContentWorkflowPage";
 import { CalendarPage } from "../features/calendar/pages/CalendarPage";
+import { MonthlyPlanPage } from "../features/monthlyPlan/pages/MonthlyPlanPage";
 import { RemindersPage } from "../features/reminders/pages/RemindersPage";
 import { QueueSettingsPage } from "../features/queueSlots/pages/QueueSettingsPage";
 import { PublishLogsPage } from "../features/publishLogs/pages/PublishLogsPage";
@@ -75,6 +76,7 @@ export function AppRouter() {
         <Route path="/media-library" element={<MediaLibraryPage />} />
         <Route path="/workflow" element={<ContentWorkflowPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/monthly-plan" element={<MonthlyPlanPage />} />
         <Route path="/reminders" element={<RemindersPage />} />
         <Route path="/queue" element={<QueueSettingsPage />} />
         <Route path="/publish-logs" element={<PublishLogsPage />} />

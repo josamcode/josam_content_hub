@@ -61,6 +61,14 @@ const ICONS = {
       <path d="M8 3v4M16 3v4" />
     </>
   ),
+  monthlyPlan: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M3 10h18" />
+      <path d="M8 2v4M16 2v4" />
+      <path d="M12 14v4" />
+    </>
+  ),
   reminders: (
     <>
       <path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" />
@@ -118,6 +126,7 @@ const NAV = [
   },
   { to: "/workflow", labelKey: "workflow", icon: "workflow", enabled: true },
   { to: "/calendar", labelKey: "calendar", icon: "calendar", enabled: true },
+  { to: "/monthly-plan", labelKey: "monthlyPlan", icon: "monthlyPlan", enabled: true },
   { to: "/reminders", labelKey: "reminders", icon: "reminders", enabled: true },
   { to: "/queue", labelKey: "queueSettings", icon: "queue", enabled: true },
   { to: "/platforms", labelKey: "platformSettings", icon: "platform", enabled: true },
@@ -126,7 +135,7 @@ const NAV = [
   { to: "/publish-logs", labelKey: "publishLogs", icon: "logs", enabled: true },
 ];
 
-const WORKSPACE_COUNT = 6;
+const WORKSPACE_COUNT = 7;
 
 const SUPPORT_NAV = [
   { to: "/guide", labelKey: "guide", icon: "guide", enabled: true },

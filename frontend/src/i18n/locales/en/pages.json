@@ -1151,6 +1151,61 @@
       "loaded": "Arabic defaults loaded. Review then save."
     }
   },
+  "monthlyPlan": {
+    "eyebrow": "Plan",
+    "title": "Monthly Plan",
+    "subtitle": "See what's unscheduled, scheduled, published, and what needs attention this month.",
+    "actions": {
+      "today": "Today",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month"
+    },
+    "filters": {
+      "searchPlaceholder": "Search title, hook or category",
+      "anyStatus": "Any status",
+      "anyCategory": "Any category",
+      "anyPlatform": "Any platform",
+      "refreshing": "Refreshing results...",
+      "autoApply": "Filters apply automatically"
+    },
+    "stats": {
+      "total": "Total",
+      "totalHelper": "Items loaded",
+      "unscheduled": "Unscheduled",
+      "unscheduledHelper": "Need a slot",
+      "unscheduledHelperEmpty": "All placed",
+      "scheduled": "Scheduled",
+      "scheduledHelper": "This month",
+      "scheduledHelperEmpty": "Nothing queued",
+      "attention": "Needs attention",
+      "attentionHelper": "Requires action",
+      "attentionHelperEmpty": "All clear"
+    },
+    "sections": {
+      "needsAttention": "Needs attention",
+      "unscheduled": "Unscheduled content",
+      "scheduled": "Scheduled this month",
+      "published": "Published this month"
+    },
+    "empty": {
+      "filteredTitle": "Nothing matches those filters",
+      "filteredDescription": "Try widening your search or clearing a filter or two.",
+      "noContentTitle": "No content yet",
+      "noContentDescription": "Create a content item from the library to start planning your month.",
+      "noAttention": "Nothing needs attention right now.",
+      "noUnscheduled": "No unscheduled content here currently.",
+      "noScheduled": "No content scheduled for this month yet.",
+      "noPublished": "No published content in this month yet."
+    },
+    "card": {
+      "openContent": "Open content",
+      "plusMore": "+{{count}} more"
+    },
+    "error": {
+      "title": "Couldn't load monthly plan",
+      "fallback": "We couldn't reach the API just now."
+    }
+  },
   "guide": {
     "title": "Learn JoSam Content Hub"
   }
