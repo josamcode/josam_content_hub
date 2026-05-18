@@ -92,6 +92,12 @@ const ICONS = {
       <path d="M17 16l2 2 3-3" />
     </>
   ),
+  aiSettings: (
+    <>
+      <path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v15a2.5 2.5 0 0 0 4 2l4.96-4.96a1 1 0 0 1 .7-.29H19.5a2.5 2.5 0 0 0 2.5-2.5V4.5A2.5 2.5 0 0 0 19.5 2H9.5Z" />
+      <path d="M9 9h6M9 13h6" />
+    </>
+  ),
   guide: (
     <>
       <circle cx="12" cy="12" r="9" />
@@ -116,6 +122,7 @@ const NAV = [
   { to: "/queue", labelKey: "queueSettings", icon: "queue", enabled: true },
   { to: "/platforms", labelKey: "platformSettings", icon: "platform", enabled: true },
   { to: "/category-defaults", labelKey: "categoryDefaults", icon: "categoryDefaults", enabled: true },
+  { to: "/ai-settings", labelKey: "aiSettings", icon: "aiSettings", enabled: true },
   { to: "/publish-logs", labelKey: "publishLogs", icon: "logs", enabled: true },
 ];
 

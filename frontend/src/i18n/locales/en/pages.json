@@ -1001,6 +1001,111 @@
     },
     "deletedRecord": "Record kept for history"
   },
+  "aiBrandProfile": {
+    "eyebrow": "AI Settings",
+    "title": "AI Brand Profile",
+    "subtitle": "Controls how future AI-generated metadata should sound.",
+    "loading": "Loading AI brand profile...",
+    "notice": {
+      "eyebrow": "No AI calls yet",
+      "body": "This page does not call any AI model. It only stores writing instructions that future AI metadata generation will read."
+    },
+    "error": {
+      "title": "Couldn't load AI brand profile",
+      "fallback": "We couldn't reach the API just now.",
+      "saveTitle": "Couldn't save"
+    },
+    "sections": {
+      "profile": {
+        "title": "Brand profile",
+        "description": "Core writing identity that shapes every future AI-generated caption, title, and description."
+      },
+      "lists": {
+        "title": "Lists & banks",
+        "description": "Words, hashtags, services, and topics the AI should know about."
+      },
+      "platformInstructions": {
+        "title": "Platform instructions",
+        "description": "Per-platform guidance for future AI metadata generation."
+      }
+    },
+    "fields": {
+      "audience": {
+        "label": "Audience",
+        "placeholder": "Who are you writing for?",
+        "hint": "Describe your core audience - who they are, their level, what they need."
+      },
+      "tone": {
+        "label": "Tone",
+        "placeholder": "How should the content sound?"
+      },
+      "language": {
+        "label": "Language",
+        "placeholder": "Primary content language"
+      },
+      "contentGoal": {
+        "label": "Content goal",
+        "placeholder": "What should the content achieve?"
+      },
+      "ctaStyle": {
+        "label": "CTA style",
+        "placeholder": "How should calls-to-action feel?"
+      },
+      "forbiddenWords": {
+        "label": "Forbidden words",
+        "hint": "Words and phrases the AI should avoid.",
+        "placeholder": "Type a word and press Enter"
+      },
+      "hashtagBank": {
+        "label": "Hashtag bank",
+        "hint": "Hashtags the AI can choose from when generating metadata.",
+        "placeholder": "Type a hashtag and press Enter"
+      },
+      "servicesToPromote": {
+        "label": "Services to promote",
+        "hint": "Services the AI may naturally mention when relevant.",
+        "placeholder": "Type a service and press Enter"
+      },
+      "courseTopics": {
+        "label": "Course topics",
+        "hint": "Course topics the AI may reference naturally.",
+        "placeholder": "Type a topic and press Enter"
+      },
+      "platformInstructions": {
+        "youtube": {
+          "label": "YouTube instructions",
+          "placeholder": "Guidance for YouTube titles, descriptions, and tags"
+        },
+        "instagram": {
+          "label": "Instagram instructions",
+          "placeholder": "Guidance for Instagram captions and hashtags"
+        },
+        "facebook": {
+          "label": "Facebook instructions",
+          "placeholder": "Guidance for Facebook posts"
+        },
+        "tiktok": {
+          "label": "TikTok instructions",
+          "placeholder": "Guidance for TikTok captions"
+        }
+      }
+    },
+    "arrayEditor": {
+      "add": "Add",
+      "remove": "Remove"
+    },
+    "preview": {
+      "title": "Profile summary",
+      "description": "How future AI generation will write your content.",
+      "noticeEyebrow": "Coming later",
+      "noticeBody": "AI metadata generation is coming later. No AI API is called from this page."
+    },
+    "actions": {
+      "saved": "Profile saved.",
+      "unsavedChanges": "Unsaved changes",
+      "allSaved": "All changes saved"
+    }
+  },
   "guide": {
     "title": "Learn JoSam Content Hub"
   }

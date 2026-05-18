@@ -17,6 +17,7 @@ import { PublishLogsPage } from "../features/publishLogs/pages/PublishLogsPage";
 import { PlatformSettingsPage } from "../features/platformSettings/pages/PlatformSettingsPage";
 import { CategoryDefaultsPage } from "../features/categoryDefaults/pages/CategoryDefaultsPage";
 import { GuidePage } from "../features/guide/pages/GuidePage";
+import { AiBrandProfilePage } from "../features/aiBrandProfile/pages/AiBrandProfilePage";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 function FullPageLoader() {
@@ -79,6 +80,7 @@ export function AppRouter() {
         <Route path="/publish-logs" element={<PublishLogsPage />} />
         <Route path="/platforms" element={<PlatformSettingsPage />} />
         <Route path="/category-defaults" element={<CategoryDefaultsPage />} />
+        <Route path="/ai-settings" element={<AiBrandProfilePage />} />
         <Route path="/guide" element={<GuidePage />} />
         <Route path="/help" element={<Navigate to="/guide" replace />} />
       </Route>
