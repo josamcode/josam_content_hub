@@ -770,10 +770,15 @@ async function disconnect(userId) {
 
 module.exports = {
   META_PLATFORM,
+  META_GRAPH_API_VERSION,
+  META_GRAPH_API_BASE,
   META_SCOPES,
+  buildGraphUrl,
   disconnect,
   getPages,
   getStatus,
+  graphGet,
+  graphPost,
   handleCallback,
   selectPage,
   startConnect,

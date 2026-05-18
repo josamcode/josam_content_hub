@@ -57,11 +57,14 @@ const youtubeUploadSchema = z
   })
   .strict();
 
+const facebookPublishSchema = z.object({}).strict();
+
 const idParamsSchema = z.object({
   id: z.string().min(1),
 });
 
 module.exports = {
+  facebookPublishSchema,
   createPlatformPostSchema,
   updatePlatformPostSchema,
   applyPlatformDefaultsSchema,

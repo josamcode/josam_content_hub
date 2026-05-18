@@ -29,6 +29,12 @@ router.post(
   asyncHandler(platformPostController.uploadYouTube)
 );
 
+router.post(
+  "/platform-posts/:id/facebook/publish",
+  authMiddleware,
+  asyncHandler(platformPostController.publishFacebook)
+);
+
 router
   .route("/platform-posts/:id")
   .patch(authMiddleware, asyncHandler(platformPostController.updatePlatformPost))

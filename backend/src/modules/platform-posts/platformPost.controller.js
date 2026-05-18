@@ -1,12 +1,16 @@
 const ApiError = require("../../utils/apiError");
 const { successResponse } = require("../../utils/apiResponse");
 const youtubeUploadService = require("../integrations/youtubeUpload.service");
+const {
+  publishFacebookPlatformPost,
+} = require("../integrations/metaPublish.service");
 const platformPostService = require("./platformPost.service");
 const {
   createPlatformPostSchema,
   updatePlatformPostSchema,
   applyPlatformDefaultsSchema,
   youtubeUploadSchema,
+  facebookPublishSchema,
   idParamsSchema,
 } = require("./platformPost.validation");
 
@@ -121,7 +125,24 @@ async function uploadYouTube(req, res) {
   return successResponse(res, 200, "YouTube upload completed", data);
 }
 
+async function publishFacebook(req, res) {
+  const { id } = validateParams(req.params);
+  const parsedBody = facebookPublishSchema.safeParse(req.body || {});
+
+  if (!parsedBody.success) {
+    throw new ApiError(422, "Invalid Facebook publish data");
+  }
+
+  const data = await publishFacebookPlatformPost({
+    userId: req.user.id,
+    platformPostId: id,
+  });
+
+  return successResponse(res, 200, "Facebook publish completed", data);
+}
+
 module.exports = {
+  publishFacebook,
   listPlatformPosts,
   createPlatformPost,
   applyPlatformDefaults,
