@@ -287,6 +287,7 @@ model PlatformAccount {
   scopes                String[]              @default([])
   status                PlatformAccountStatus @default(connected)
   lastError             String?               @map("last_error")
+  metadata              Json?                 @map("metadata")
   connectedAt           DateTime              @default(now()) @map("connected_at")
   createdAt             DateTime              @default(now()) @map("created_at")
   updatedAt             DateTime              @updatedAt @map("updated_at")
