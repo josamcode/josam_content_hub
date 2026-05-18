@@ -901,6 +901,25 @@
         }
       }
     },
+    "scheduleMatrix": {
+      "title": "Schedule Matrix",
+      "description": "Schedule all platform versions from one place.",
+      "enabled": "Enabled",
+      "date": "Date",
+      "time": "Time",
+      "mode": "Mode",
+      "currentSchedule": "Current schedule",
+      "applySameDate": "Apply same date",
+      "offsetTimes": "Offset times",
+      "saveSchedules": "Save schedules",
+      "emptyPlatforms": "No platform versions found. Add platforms first.",
+      "pastWarning": "Date/time is in the past",
+      "savedSuccess": "Schedules saved successfully.",
+      "someFailed": "Some schedules failed to save.",
+      "noRowsEnabled": "Enable at least one platform row before saving.",
+      "fixErrors": "Save or fix schedule rows before continuing.",
+      "cancelSchedule": "Cancel schedule"
+    },
     "aiMetadata": {
       "title": "AI Metadata",
       "description": "Generate platform metadata from one idea.",

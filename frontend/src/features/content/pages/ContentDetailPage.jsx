@@ -29,6 +29,7 @@ import { MediaUploadSection } from "../../media/components/MediaUploadSection";
 import { PlatformTabs } from "../components/PlatformTabs";
 import { PublishHistorySummary } from "../components/PublishHistorySummary";
 import { AiMetadataPanel } from "../components/ai-metadata/AiMetadataPanel";
+import { ScheduleMatrix } from "../components/schedule-matrix/ScheduleMatrix";
 import { useContentItem } from "../hooks/useContentItem";
 import { useUpdateContentItem } from "../hooks/useUpdateContentItem";
 
@@ -629,6 +630,11 @@ export function ContentDetailPage() {
             category={data.category}
             platformPosts={data.platformPosts}
             isParentDirty={isDirty}
+          />
+
+          <ScheduleMatrix
+            contentItemId={data.id}
+            platformPosts={data.platformPosts}
           />
 
           <section>

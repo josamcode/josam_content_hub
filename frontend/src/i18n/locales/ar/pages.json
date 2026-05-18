@@ -901,6 +901,25 @@
         }
       }
     },
+    "scheduleMatrix": {
+      "title": "جدول مواعيد المنصات",
+      "description": "حدد مواعيد كل نسخ المنصات من مكان واحد.",
+      "enabled": "مفعّل",
+      "date": "التاريخ",
+      "time": "الوقت",
+      "mode": "نوع النشر",
+      "currentSchedule": "الموعد الحالي",
+      "applySameDate": "تطبيق نفس التاريخ",
+      "offsetTimes": "توزيع الأوقات",
+      "saveSchedules": "حفظ المواعيد",
+      "emptyPlatforms": "لا توجد نسخ منصات. أضف منصات أولاً.",
+      "pastWarning": "التاريخ/الوقت في الماضي",
+      "savedSuccess": "تم حفظ المواعيد بنجاح.",
+      "someFailed": "بعض المواعيد فشل حفظها.",
+      "noRowsEnabled": "فعّل صف منصة واحدًا على الأقل قبل الحفظ.",
+      "fixErrors": "راجع صفوف الجدولة قبل المتابعة.",
+      "cancelSchedule": "إلغاء الجدولة"
+    },
     "aiMetadata": {
       "title": "بيانات AI",
       "description": "جهّز بيانات المنصات من فكرة واحدة.",
