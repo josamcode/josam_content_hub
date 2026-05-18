@@ -96,6 +96,45 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(3),
+  META_APP_ID: z.preprocess(
+    emptyStringToUndefined,
+    z.string().min(1).optional()
+  ),
+  META_APP_SECRET: z.preprocess(
+    emptyStringToUndefined,
+    z.string().min(1).optional()
+  ),
+  META_REDIRECT_URI: z.preprocess(
+    emptyStringToUndefined,
+    z.string().url().optional()
+  ),
+  META_OAUTH_SUCCESS_REDIRECT_URL: z.preprocess(
+    emptyStringToUndefined,
+    z.string().url().optional()
+  ),
+  META_OAUTH_ERROR_REDIRECT_URL: z.preprocess(
+    emptyStringToUndefined,
+    z.string().url().optional()
+  ),
+  META_AUTO_UPLOAD_WORKER_ENABLED: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.enum(["true", "false"]).default("false")
+  ),
+  META_AUTO_UPLOAD_WORKER_INTERVAL_MS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(60000),
+  META_AUTO_UPLOAD_WORKER_BATCH_SIZE: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(1),
+  META_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(3),
   EMAIL_ENABLED: z.preprocess(
     parseBooleanString,
     z.boolean().default(false)
@@ -227,6 +266,20 @@ module.exports = {
     parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_BATCH_SIZE,
   youtubeAutoUploadWorkerMaxAttempts:
     parsedEnv.data.YOUTUBE_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS,
+  metaAppId: parsedEnv.data.META_APP_ID,
+  metaAppSecret: parsedEnv.data.META_APP_SECRET,
+  metaRedirectUri: parsedEnv.data.META_REDIRECT_URI,
+  metaOauthSuccessRedirectUrl:
+    parsedEnv.data.META_OAUTH_SUCCESS_REDIRECT_URL,
+  metaOauthErrorRedirectUrl: parsedEnv.data.META_OAUTH_ERROR_REDIRECT_URL,
+  metaAutoUploadWorkerEnabled:
+    parsedEnv.data.META_AUTO_UPLOAD_WORKER_ENABLED === "true",
+  metaAutoUploadWorkerIntervalMs:
+    parsedEnv.data.META_AUTO_UPLOAD_WORKER_INTERVAL_MS,
+  metaAutoUploadWorkerBatchSize:
+    parsedEnv.data.META_AUTO_UPLOAD_WORKER_BATCH_SIZE,
+  metaAutoUploadWorkerMaxAttempts:
+    parsedEnv.data.META_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS,
   emailEnabled: parsedEnv.data.EMAIL_ENABLED,
   emailFrom: parsedEnv.data.EMAIL_FROM,
   emailTo: parsedEnv.data.EMAIL_TO,

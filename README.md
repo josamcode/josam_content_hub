@@ -176,6 +176,20 @@ YouTube integration variables:
 - `YOUTUBE_AUTO_UPLOAD_WORKER_BATCH_SIZE`
 - `YOUTUBE_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS`
 
+Meta (Facebook/Instagram) integration variables (planned; all optional):
+
+- `META_APP_ID`
+- `META_APP_SECRET`
+- `META_REDIRECT_URI`
+- `META_OAUTH_SUCCESS_REDIRECT_URL`
+- `META_OAUTH_ERROR_REDIRECT_URL`
+- `META_AUTO_UPLOAD_WORKER_ENABLED`, default `false`
+- `META_AUTO_UPLOAD_WORKER_INTERVAL_MS`
+- `META_AUTO_UPLOAD_WORKER_BATCH_SIZE`
+- `META_AUTO_UPLOAD_WORKER_MAX_ATTEMPTS`
+
+Do not commit real Meta secrets. Meta integration is planned and not yet implemented.
+
 Use `backend/.env.example` as the starting point.
 
 ### Frontend
