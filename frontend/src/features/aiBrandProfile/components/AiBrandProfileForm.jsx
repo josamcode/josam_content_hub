@@ -11,6 +11,61 @@ import { ArrayFieldEditor } from "./ArrayFieldEditor";
 import { PlatformInstructionsEditor } from "./PlatformInstructionsEditor";
 import { useUpdateAiBrandProfile } from "../hooks/useUpdateAiBrandProfile";
 
+const ARABIC_DEFAULTS = {
+  audience:
+    "مطورون عرب مبتدئون ومتوسطون يريدون تعلم البرمجة وهندسة البرمجيات وبناء مشاريع حقيقية تساعدهم في الشغل والبيع.",
+  tone:
+    "لهجة مصرية واضحة ومباشرة، عملية، واثقة، بدون مبالغة أو كلام تسويقي فارغ.",
+  language: "العربية",
+  contentGoal:
+    "بناء الثقة، تعليم البرمجة وهندسة البرمجيات بشكل عملي، ودعم بيع خدمات تطوير الويب والكورسات المستقبلية.",
+  ctaStyle:
+    "دعوة بسيطة ومفيدة لاتخاذ إجراء. تجنب البيع المباشر المزعج، واستخدم CTA واضح فقط عندما يكون مناسبًا للمحتوى.",
+  forbiddenWords: [
+    "ثوري",
+    "لا يصدق",
+    "سر خطير",
+    "هاك سحري",
+    "اكسب ملايين",
+    "اربح بسرعة",
+    "نجاح مضمون",
+    "100%",
+    "لن تفشل أبدًا",
+    "يغير قواعد اللعبة",
+  ],
+  hashtagBank: [
+    "برمجة",
+    "تطوير_ويب",
+    "هندسة_برمجيات",
+    "مشاريع_برمجية",
+    "تعلم_البرمجة",
+    "جوسام_كود",
+  ],
+  servicesToPromote: [
+    "تطوير مواقع وتطبيقات ويب",
+    "أنظمة أعمال ولوحات تحكم",
+    "ARA Financial",
+    "كورسات هندسة البرمجيات",
+  ],
+  courseTopics: [
+    "أساسيات البرمجة",
+    "تطوير Full-stack",
+    "هندسة البرمجيات",
+    "بناء مشاريع حقيقية",
+    "الحصول على عملاء",
+  ],
+  platformInstructions: {
+    youtube:
+      "العنوان والوصف والوسوم يجب أن تكون واضحة وقابلة للبحث. ركّز على كلمات مفتاحية عربية مفهومة بدون حشو.",
+    instagram:
+      "الكابشن يكون مختصر وجذاب. وضّح الفكرة الأساسية في أول سطر.",
+    tiktok:
+      "الكابشن يكون قصيرًا ومبنيًا على hook قوي. ركّز على أول ثانية وفكرة واحدة واضحة.",
+    facebook:
+      "الكابشن يمكن أن يكون أطول قليلًا وأكثر شرحًا، ومناسبًا للنقاش وبناء الثقة.",
+  },
+};
+
 function arraysEqual(a, b) {
   if (a === b) return true;
   if (!Array.isArray(a) || !Array.isArray(b)) return false;
@@ -98,10 +153,12 @@ function SectionHeader({ title, description }) {
 }
 
 export function AiBrandProfileForm({ profile, onProfileUpdated }) {
-  const { t } = useTranslation(["common", "pages"]);
+  const { t } = useTranslation("pages");
+  const { t: tc } = useTranslation("common");
   const [form, setForm] = useState(() => buildInitialForm(profile));
   const [savedAt, setSavedAt] = useState(null);
   const [submitError, setSubmitError] = useState(null);
+  const [defaultsLoadedAt, setDefaultsLoadedAt] = useState(null);
 
   useEffect(() => {
     setForm(buildInitialForm(profile));
@@ -114,13 +171,14 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
     onSuccess: (data) => {
       setSavedAt(Date.now());
       setSubmitError(null);
+      setDefaultsLoadedAt(null);
       if (onProfileUpdated) onProfileUpdated(data);
     },
     onError: (error) => {
       setSubmitError(
         extractErrorMessage(
           error,
-          t("aiBrandProfile.error.fallback", { ns: "pages", defaultValue: "We couldn't save the profile." })
+          t("aiBrandProfile.error.fallback", { defaultValue: "We couldn't save the profile." })
         )
       );
     },
@@ -149,6 +207,26 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
 
   function handleReset() {
     setForm(buildInitialForm(profile));
+    setSavedAt(null);
+    setSubmitError(null);
+    setDefaultsLoadedAt(null);
+  }
+
+  function handleLoadArabicDefaults() {
+    setForm((prev) => ({
+      ...prev,
+      audience: ARABIC_DEFAULTS.audience,
+      tone: ARABIC_DEFAULTS.tone,
+      language: ARABIC_DEFAULTS.language,
+      contentGoal: ARABIC_DEFAULTS.contentGoal,
+      ctaStyle: ARABIC_DEFAULTS.ctaStyle,
+      forbiddenWords: [...ARABIC_DEFAULTS.forbiddenWords],
+      hashtagBank: [...ARABIC_DEFAULTS.hashtagBank],
+      servicesToPromote: [...ARABIC_DEFAULTS.servicesToPromote],
+      courseTopics: [...ARABIC_DEFAULTS.courseTopics],
+      platformInstructions: { ...ARABIC_DEFAULTS.platformInstructions },
+    }));
+    setDefaultsLoadedAt(Date.now());
     setSavedAt(null);
     setSubmitError(null);
   }
@@ -210,12 +288,14 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
 
       {/* Lists section */}
       <Card padding="lg">
-        <SectionHeader
-          title={t("aiBrandProfile.sections.lists.title", { defaultValue: "Lists & banks" })}
-          description={t("aiBrandProfile.sections.lists.description", {
-            defaultValue: "Words, hashtags, services, and topics the AI should know about.",
-          })}
-        />
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+          <SectionHeader
+            title={t("aiBrandProfile.sections.lists.title", { defaultValue: "Lists & banks" })}
+            description={t("aiBrandProfile.sections.lists.description", {
+              defaultValue: "Words, hashtags, services, and topics the AI should know about.",
+            })}
+          />
+        </div>
 
         <div className="flex flex-col gap-5">
           <ArrayFieldEditor
@@ -267,11 +347,42 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
         />
       </Card>
 
+      {/* Arabic defaults action */}
+      <Card padding="md" className="border-amber-200 bg-amber-50">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-amber-900">
+              {t("aiBrandProfile.arabicDefaults.title", { defaultValue: "Load Arabic defaults" })}
+            </p>
+            <p className="mt-0.5 text-xs text-amber-800/80">
+              {t("aiBrandProfile.arabicDefaults.hint", {
+                defaultValue: "This will replace the current form values only. It will not save until you click Save changes.",
+              })}
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleLoadArabicDefaults}
+          >
+            {t("aiBrandProfile.arabicDefaults.action", { defaultValue: "Load Arabic defaults" })}
+          </Button>
+        </div>
+        {defaultsLoadedAt && (
+          <p className="mt-2 text-xs text-amber-800">
+            {t("aiBrandProfile.arabicDefaults.loaded", {
+              defaultValue: "Arabic defaults loaded. Review then save.",
+            })}
+          </p>
+        )}
+      </Card>
+
       {/* Errors and success */}
       {submitError && (
         <div className="rounded-lg border border-danger/30 bg-danger/5 px-4 py-3">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-danger">
-            {t("aiBrandProfile.error.saveTitle", { ns: "pages", defaultValue: "Couldn't save" })}
+            {t("aiBrandProfile.error.saveTitle", { defaultValue: "Couldn't save" })}
           </p>
           <p className="mt-1 text-sm text-ink">{submitError}</p>
         </div>
@@ -279,7 +390,7 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
 
       {!submitError && savedAt && !isDirty && (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          {t("aiBrandProfile.actions.saved", { ns: "pages", defaultValue: "Saved." })}
+          {t("aiBrandProfile.actions.saved", { defaultValue: "Profile saved." })}
         </div>
       )}
 
@@ -287,11 +398,11 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
         {isDirty ? (
           <Badge tone="warning">
-            {t("aiBrandProfile.actions.unsavedChanges", { ns: "pages", defaultValue: "Unsaved changes" })}
+            {t("aiBrandProfile.actions.unsavedChanges", { defaultValue: "Unsaved changes" })}
           </Badge>
         ) : (
           <span className="text-[11px] text-muted">
-            {t("aiBrandProfile.actions.allSaved", { ns: "pages", defaultValue: "All changes saved" })}
+            {t("aiBrandProfile.actions.allSaved", { defaultValue: "All changes saved" })}
           </span>
         )}
 
@@ -303,7 +414,7 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
             onClick={handleReset}
             disabled={!isDirty || submitting}
           >
-            {t("revert", { ns: "common" })}
+            {tc("revert")}
           </Button>
           <Button
             type="submit"
@@ -312,9 +423,7 @@ export function AiBrandProfileForm({ profile, onProfileUpdated }) {
             loading={submitting}
             disabled={!isDirty || submitting}
           >
-            {submitting
-              ? t("saving", { ns: "common" })
-              : t("saveChanges", { ns: "common" })}
+            {submitting ? tc("saving") : tc("saveChanges")}
           </Button>
         </div>
       </div>

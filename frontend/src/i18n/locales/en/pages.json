@@ -1096,14 +1096,20 @@
     },
     "preview": {
       "title": "Profile summary",
-      "description": "How future AI generation will write your content.",
+      "description": "How the AI will write your content later.",
       "noticeEyebrow": "Coming later",
-      "noticeBody": "AI metadata generation is coming later. No AI API is called from this page."
+      "noticeBody": "AI metadata generation is coming later. No AI model is called from this page."
     },
     "actions": {
       "saved": "Profile saved.",
       "unsavedChanges": "Unsaved changes",
       "allSaved": "All changes saved"
+    },
+    "arabicDefaults": {
+      "title": "Load Arabic defaults",
+      "hint": "This will replace the current form values only. It will not save until you click Save changes.",
+      "action": "Load Arabic defaults",
+      "loaded": "Arabic defaults loaded. Review then save."
     }
   },
   "guide": {
