@@ -900,6 +900,26 @@
           }
         }
       }
+    },
+    "aiMetadata": {
+      "title": "AI Metadata",
+      "description": "Generate platform metadata from one idea.",
+      "ideaLabel": "Content idea",
+      "ideaPlaceholder": "Describe the content idea - the AI will generate titles, captions, descriptions and hashtags per platform.",
+      "targetPlatforms": "Target platforms",
+      "generate": "Generate metadata",
+      "generating": "Generating...",
+      "preview": "Generated preview",
+      "applyEmptyFields": "Fill empty fields",
+      "overwriteFields": "Overwrite fields",
+      "composerDirtyWarning": "Save or revert composer changes before applying AI metadata.",
+      "generatedSuccessfully": "AI metadata generated successfully.",
+      "failedToGenerate": "Failed to generate metadata.",
+      "overwriteConfirmation": "This will replace the current values with AI-generated metadata. Status, schedule, and publish history are not changed.",
+      "noPlatformsSelected": "Select at least one platform.",
+      "emptyIdea": "Enter a content idea first.",
+      "appliedEmpty": "AI metadata applied to empty fields.",
+      "appliedOverwrite": "AI metadata applied."
     }
   },
   "mediaLibrary": {

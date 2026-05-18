@@ -63,5 +63,7 @@
   "allSystemsCalm": "All systems calm",
   "studio": "{{name}}'s studio",
   "defaultStudio": "JoSam's Studio",
-  "language": "Language"
+  "language": "Language",
+  "generate": "Generate",
+  "generating": "Generating"
 }

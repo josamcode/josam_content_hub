@@ -28,6 +28,7 @@ import { ContentDetailSkeleton } from "../components/ContentDetailSkeleton";
 import { MediaUploadSection } from "../../media/components/MediaUploadSection";
 import { PlatformTabs } from "../components/PlatformTabs";
 import { PublishHistorySummary } from "../components/PublishHistorySummary";
+import { AiMetadataPanel } from "../components/ai-metadata/AiMetadataPanel";
 import { useContentItem } from "../hooks/useContentItem";
 import { useUpdateContentItem } from "../hooks/useUpdateContentItem";
 
@@ -622,6 +623,13 @@ export function ContentDetailPage() {
           </Card>
 
           <MediaUploadSection contentItemId={data.id} />
+
+          <AiMetadataPanel
+            contentItemId={data.id}
+            category={data.category}
+            platformPosts={data.platformPosts}
+            isParentDirty={isDirty}
+          />
 
           <section>
             <div className="mb-4 flex flex-col gap-1">

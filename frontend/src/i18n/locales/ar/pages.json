@@ -900,6 +900,26 @@
           }
         }
       }
+    },
+    "aiMetadata": {
+      "title": "بيانات AI",
+      "description": "جهّز بيانات المنصات من فكرة واحدة.",
+      "ideaLabel": "فكرة المحتوى",
+      "ideaPlaceholder": "اكتب فكرة المحتوى - سيقوم الذكاء الاصطناعي بتوليد عناوين وكابشنز ووصف وهاشتاجز لكل منصة.",
+      "targetPlatforms": "المنصات المستهدفة",
+      "generate": "توليد البيانات",
+      "generating": "جارٍ التوليد...",
+      "preview": "معاينة النتيجة",
+      "applyEmptyFields": "ملء الحقول الفارغة",
+      "overwriteFields": "استبدال الحقول",
+      "composerDirtyWarning": "احفظ أو ارجع تعديلات النسخة الحالية قبل تطبيق بيانات AI.",
+      "generatedSuccessfully": "تم توليد البيانات بنجاح.",
+      "failedToGenerate": "فشل توليد البيانات.",
+      "overwriteConfirmation": "سيؤدي هذا إلى استبدال القيم الحالية بالبيانات التي ولّدها الذكاء الاصطناعي. الحالة والجدولة وسجل النشر لن تتغير.",
+      "noPlatformsSelected": "اختر منصة واحدة على الأقل.",
+      "emptyIdea": "اكتب فكرة المحتوى أولًا.",
+      "appliedEmpty": "تم تطبيق بيانات AI على الحقول الفارغة.",
+      "appliedOverwrite": "تم تطبيق بيانات AI."
     }
   },
   "mediaLibrary": {

@@ -63,5 +63,7 @@
   "allSystemsCalm": "الأنظمة هادئة",
   "studio": "استوديو {{name}}",
   "defaultStudio": "استوديو JoSam",
-  "language": "اللغة"
+  "language": "اللغة",
+  "generate": "توليد",
+  "generating": "جارٍ التوليد"
 }
