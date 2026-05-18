@@ -1,5 +1,6 @@
 const express = require("express");
 
+const aiBrandProfileRoutes = require("../modules/ai-brand-profile/aiBrandProfile.routes");
 const authRoutes = require("../modules/auth/auth.routes");
 const categoryDefaultRoutes = require("../modules/category-defaults/categoryDefault.routes");
 const contentRoutes = require("../modules/content/content.routes");
@@ -18,6 +19,7 @@ const scheduleRoutes = require("../modules/schedules/schedule.routes");
 
 const router = express.Router();
 
+router.use("/ai-brand-profile", aiBrandProfileRoutes);
 router.use("/auth", authRoutes);
 router.use("/category-defaults", categoryDefaultRoutes);
 router.use("/content-items", contentRoutes);

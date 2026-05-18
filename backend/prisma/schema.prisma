@@ -116,6 +116,7 @@ model User {
   platformAccounts        PlatformAccount[]
   notificationEvents      NotificationEvent[]
   contentCategoryDefaults ContentCategoryDefault[]
+  aiBrandProfile          AiBrandProfile?
   createdAt               DateTime                 @default(now()) @map("created_at")
   updatedAt               DateTime                 @updatedAt @map("updated_at")
 
@@ -333,6 +334,26 @@ model ContentCategoryDefault {
   @@index([category])
   @@index([isActive])
   @@map("content_category_defaults")
+}
+
+model AiBrandProfile {
+  id                   String   @id @default(uuid())
+  userId               String   @unique @map("user_id")
+  audience             String?  @db.Text
+  tone                 String?  @db.Text
+  language             String?  @db.VarChar(80)
+  contentGoal          String?  @db.Text @map("content_goal")
+  ctaStyle             String?  @db.Text @map("cta_style")
+  forbiddenWords       String[] @default([]) @map("forbidden_words")
+  hashtagBank          String[] @default([]) @map("hashtag_bank")
+  servicesToPromote    String[] @default([]) @map("services_to_promote")
+  courseTopics         String[] @default([]) @map("course_topics")
+  platformInstructions Json?    @map("platform_instructions")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+  user                 User     @relation(fields: [userId], references: [id])
+
+  @@map("ai_brand_profiles")
 }
 
 model MediaAsset {
